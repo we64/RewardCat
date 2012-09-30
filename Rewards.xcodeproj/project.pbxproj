@@ -1,0 +1,278 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B0DC90721619048B00F20C78 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90711619048B00F20C78 /* UIKit.framework */; };
+		B0DC90741619048B00F20C78 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90731619048B00F20C78 /* Foundation.framework */; };
+		B0DC90761619048B00F20C78 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90751619048B00F20C78 /* CoreGraphics.framework */; };
+		B0DC907C1619048B00F20C78 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B0DC907A1619048B00F20C78 /* InfoPlist.strings */; };
+		B0DC907E1619048B00F20C78 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC907D1619048B00F20C78 /* main.m */; };
+		B0DC90821619048B00F20C78 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC90811619048B00F20C78 /* AppDelegate.m */; };
+		B0DC90841619048B00F20C78 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC90831619048B00F20C78 /* Default.png */; };
+		B0DC90861619048B00F20C78 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC90851619048B00F20C78 /* Default@2x.png */; };
+		B0DC90881619048B00F20C78 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC90871619048B00F20C78 /* Default-568h@2x.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B0DC906D1619048B00F20C78 /* Rewards.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rewards.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0DC90711619048B00F20C78 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		B0DC90731619048B00F20C78 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		B0DC90751619048B00F20C78 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		B0DC90791619048B00F20C78 /* Rewards-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Rewards-Info.plist"; sourceTree = "<group>"; };
+		B0DC907B1619048B00F20C78 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B0DC907D1619048B00F20C78 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		B0DC907F1619048B00F20C78 /* Rewards-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Rewards-Prefix.pch"; sourceTree = "<group>"; };
+		B0DC90801619048B00F20C78 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		B0DC90811619048B00F20C78 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		B0DC90831619048B00F20C78 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		B0DC90851619048B00F20C78 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		B0DC90871619048B00F20C78 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B0DC906A1619048B00F20C78 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0DC90721619048B00F20C78 /* UIKit.framework in Frameworks */,
+				B0DC90741619048B00F20C78 /* Foundation.framework in Frameworks */,
+				B0DC90761619048B00F20C78 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B0DC90621619048B00F20C78 = {
+			isa = PBXGroup;
+			children = (
+				B0DC90771619048B00F20C78 /* Rewards */,
+				B0DC90701619048B00F20C78 /* Frameworks */,
+				B0DC906E1619048B00F20C78 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B0DC906E1619048B00F20C78 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B0DC906D1619048B00F20C78 /* Rewards.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B0DC90701619048B00F20C78 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B0DC90711619048B00F20C78 /* UIKit.framework */,
+				B0DC90731619048B00F20C78 /* Foundation.framework */,
+				B0DC90751619048B00F20C78 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B0DC90771619048B00F20C78 /* Rewards */ = {
+			isa = PBXGroup;
+			children = (
+				B0DC90801619048B00F20C78 /* AppDelegate.h */,
+				B0DC90811619048B00F20C78 /* AppDelegate.m */,
+				B0DC90781619048B00F20C78 /* Supporting Files */,
+			);
+			path = Rewards;
+			sourceTree = "<group>";
+		};
+		B0DC90781619048B00F20C78 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B0DC90791619048B00F20C78 /* Rewards-Info.plist */,
+				B0DC907A1619048B00F20C78 /* InfoPlist.strings */,
+				B0DC907D1619048B00F20C78 /* main.m */,
+				B0DC907F1619048B00F20C78 /* Rewards-Prefix.pch */,
+				B0DC90831619048B00F20C78 /* Default.png */,
+				B0DC90851619048B00F20C78 /* Default@2x.png */,
+				B0DC90871619048B00F20C78 /* Default-568h@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B0DC906C1619048B00F20C78 /* Rewards */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B0DC908B1619048B00F20C78 /* Build configuration list for PBXNativeTarget "Rewards" */;
+			buildPhases = (
+				B0DC90691619048B00F20C78 /* Sources */,
+				B0DC906A1619048B00F20C78 /* Frameworks */,
+				B0DC906B1619048B00F20C78 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Rewards;
+			productName = Rewards;
+			productReference = B0DC906D1619048B00F20C78 /* Rewards.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B0DC90641619048B00F20C78 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = TZ;
+			};
+			buildConfigurationList = B0DC90671619048B00F20C78 /* Build configuration list for PBXProject "Rewards" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = B0DC90621619048B00F20C78;
+			productRefGroup = B0DC906E1619048B00F20C78 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B0DC906C1619048B00F20C78 /* Rewards */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B0DC906B1619048B00F20C78 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0DC907C1619048B00F20C78 /* InfoPlist.strings in Resources */,
+				B0DC90841619048B00F20C78 /* Default.png in Resources */,
+				B0DC90861619048B00F20C78 /* Default@2x.png in Resources */,
+				B0DC90881619048B00F20C78 /* Default-568h@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B0DC90691619048B00F20C78 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0DC907E1619048B00F20C78 /* main.m in Sources */,
+				B0DC90821619048B00F20C78 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		B0DC907A1619048B00F20C78 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B0DC907B1619048B00F20C78 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B0DC90891619048B00F20C78 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		B0DC908A1619048B00F20C78 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B0DC908C1619048B00F20C78 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Rewards/Rewards-Prefix.pch";
+				INFOPLIST_FILE = "Rewards/Rewards-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		B0DC908D1619048B00F20C78 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Rewards/Rewards-Prefix.pch";
+				INFOPLIST_FILE = "Rewards/Rewards-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B0DC90671619048B00F20C78 /* Build configuration list for PBXProject "Rewards" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0DC90891619048B00F20C78 /* Debug */,
+				B0DC908A1619048B00F20C78 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B0DC908B1619048B00F20C78 /* Build configuration list for PBXNativeTarget "Rewards" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0DC908C1619048B00F20C78 /* Debug */,
+				B0DC908D1619048B00F20C78 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B0DC90641619048B00F20C78 /* Project object */;
+}
