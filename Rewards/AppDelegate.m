@@ -2,17 +2,22 @@
 //  AppDelegate.m
 //  Rewards
 //
-//  Created by Chang Liu on 2012-09-30.
+//  Created by Chang Liu on 2012-09-29.
 //  Copyright (c) 2012 TZ. All rights reserved.
 //
 
 #import "AppDelegate.h"
+
+#import "RewardsViewController.h"
+
+#import "ScanViewController.h"
 
 @implementation AppDelegate
 
 - (void)dealloc
 {
     [_window release];
+    [_tabBarController release];
     [super dealloc];
 }
 
@@ -20,7 +25,11 @@
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
+    UIViewController *viewController1 = [[[RewardsViewController alloc] initWithNibName:@"RewardsViewController" bundle:nil] autorelease];
+    UIViewController *viewController2 = [[[ScanViewController alloc] initWithNibName:@"ScanViewController" bundle:nil] autorelease];
+    self.tabBarController = [[[UITabBarController alloc] init] autorelease];
+    self.tabBarController.viewControllers = @[viewController1, viewController2];
+    self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -51,5 +60,19 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+/*
+// Optional UITabBarControllerDelegate method.
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+{
+}
+*/
+
+/*
+// Optional UITabBarControllerDelegate method.
+- (void)tabBarController:(UITabBarController *)tabBarController didEndCustomizingViewControllers:(NSArray *)viewControllers changed:(BOOL)changed
+{
+}
+*/
 
 @end
