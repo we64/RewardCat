@@ -7,7 +7,6 @@
 //
 
 #import "RewardTableModel.h"
-#import "RewardModel.h"
 
 @implementation RewardTableModel
 

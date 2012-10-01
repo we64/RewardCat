@@ -13,6 +13,10 @@
 @synthesize udid;
 @synthesize progressMap;
 
+- (id)init {
+    
+}
+
 - (void) dealloc {
     [udid release], udid = nil;
     [progressMap release], progressMap = nil;

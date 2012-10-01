@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Parse/Parse.h>
 
-@interface RewardTableModel : NSObject
+@interface RewardTableModel : PFObject
 
 @property (nonatomic, retain) NSArray *rewards;
 

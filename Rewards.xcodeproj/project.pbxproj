@@ -26,9 +26,6 @@
 		B0DC90B5161904F600F20C78 /* ScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC90A5161904F600F20C78 /* ScanViewController.m */; };
 		B0DC90B6161904F600F20C78 /* second.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC90A6161904F600F20C78 /* second.png */; };
 		B0DC90B7161904F600F20C78 /* second@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC90A7161904F600F20C78 /* second@2x.png */; };
-		B0DC90C0161909F100F20C78 /* RewardModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC90BF161909F100F20C78 /* RewardModel.m */; };
-		B0DC90C316190D3400F20C78 /* RewardTableModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC90C216190D3400F20C78 /* RewardTableModel.m */; };
-		B0DC90C6161912CB00F20C78 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC90C5161912CB00F20C78 /* UserModel.m */; };
 		B0DC90CC161916A500F20C78 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90CB161916A500F20C78 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		B0DC90CE1619173000F20C78 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90CD1619173000F20C78 /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		B0DC90D0161917FA00F20C78 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90CF161917FA00F20C78 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -79,12 +76,6 @@
 		B0DC90A5161904F600F20C78 /* ScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanViewController.m; sourceTree = "<group>"; };
 		B0DC90A6161904F600F20C78 /* second.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = second.png; sourceTree = "<group>"; };
 		B0DC90A7161904F600F20C78 /* second@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "second@2x.png"; sourceTree = "<group>"; };
-		B0DC90BE161909F100F20C78 /* RewardModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RewardModel.h; sourceTree = "<group>"; };
-		B0DC90BF161909F100F20C78 /* RewardModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RewardModel.m; sourceTree = "<group>"; };
-		B0DC90C116190D3400F20C78 /* RewardTableModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RewardTableModel.h; sourceTree = "<group>"; };
-		B0DC90C216190D3400F20C78 /* RewardTableModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RewardTableModel.m; sourceTree = "<group>"; };
-		B0DC90C4161912CB00F20C78 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
-		B0DC90C5161912CB00F20C78 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
 		B0DC90CB161916A500F20C78 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		B0DC90CD1619173000F20C78 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		B0DC90CF161917FA00F20C78 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
@@ -220,7 +211,6 @@
 		B0DC90B81619051E00F20C78 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				B0DC90BD1619098D00F20C78 /* Models */,
 				B0DC90B91619053800F20C78 /* Controllers */,
 				B0DC9090161904F600F20C78 /* AppDelegate.h */,
 				B0DC9091161904F600F20C78 /* AppDelegate.m */,
@@ -273,19 +263,6 @@
 				B0DC9099161904F600F20C78 /* ScanViewController.xib */,
 			);
 			name = Nibs;
-			sourceTree = "<group>";
-		};
-		B0DC90BD1619098D00F20C78 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				B0DC90BE161909F100F20C78 /* RewardModel.h */,
-				B0DC90BF161909F100F20C78 /* RewardModel.m */,
-				B0DC90C116190D3400F20C78 /* RewardTableModel.h */,
-				B0DC90C216190D3400F20C78 /* RewardTableModel.m */,
-				B0DC90C4161912CB00F20C78 /* UserModel.h */,
-				B0DC90C5161912CB00F20C78 /* UserModel.m */,
-			);
-			name = Models;
 			sourceTree = "<group>";
 		};
 		B0DC90F116191A2000F20C78 /* ZBarSDK */ = {
@@ -433,9 +410,6 @@
 				B0DC90B3161904F600F20C78 /* RewardsTableViewController.m in Sources */,
 				B0DC90B4161904F600F20C78 /* RewardsViewController.m in Sources */,
 				B0DC90B5161904F600F20C78 /* ScanViewController.m in Sources */,
-				B0DC90C0161909F100F20C78 /* RewardModel.m in Sources */,
-				B0DC90C316190D3400F20C78 /* RewardTableModel.m in Sources */,
-				B0DC90C6161912CB00F20C78 /* UserModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

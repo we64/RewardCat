@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Parse/Parse.h>
 
-@interface RewardModel : NSObject
+@interface RewardModel : PFObject
 
 @property (nonatomic) int rewardId;
 @property (nonatomic) BOOL deleted;

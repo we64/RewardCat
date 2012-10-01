@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Parse/Parse.h>
 
-@interface UserModel : NSObject
+@interface UserModel : PFObject
 
 @property (nonatomic, retain) NSString *udid;
 @property (nonatomic, retain) NSMutableDictionary *progressMap;

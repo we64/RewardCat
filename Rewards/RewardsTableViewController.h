@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Parse/Parse.h>
 
-@interface RewardsTableViewController : UITableViewController
+@interface RewardsTableViewController : PFQueryTableViewController
 
 @end
