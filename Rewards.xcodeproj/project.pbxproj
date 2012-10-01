@@ -42,6 +42,10 @@
 		B0DC90E01619189A00F20C78 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90DF1619189A00F20C78 /* SystemConfiguration.framework */; };
 		B0DC90E2161918AE00F20C78 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90E1161918AE00F20C78 /* CFNetwork.framework */; };
 		B0DC90E41619191C00F20C78 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90E31619191C00F20C78 /* Parse.framework */; };
+		B0DC90EA1619199500F20C78 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90E91619199500F20C78 /* AVFoundation.framework */; };
+		B0DC90EC161919A100F20C78 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90EB161919A100F20C78 /* CoreMedia.framework */; };
+		B0DC90EE161919AA00F20C78 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90ED161919AA00F20C78 /* CoreVideo.framework */; };
+		B0DC90F0161919C300F20C78 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90EF161919C300F20C78 /* libiconv.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -89,6 +93,10 @@
 		B0DC90DF1619189A00F20C78 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		B0DC90E1161918AE00F20C78 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		B0DC90E31619191C00F20C78 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		B0DC90E91619199500F20C78 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		B0DC90EB161919A100F20C78 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		B0DC90ED161919AA00F20C78 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		B0DC90EF161919C300F20C78 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +104,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0DC90F0161919C300F20C78 /* libiconv.dylib in Frameworks */,
+				B0DC90EE161919AA00F20C78 /* CoreVideo.framework in Frameworks */,
+				B0DC90EC161919A100F20C78 /* CoreMedia.framework in Frameworks */,
+				B0DC90EA1619199500F20C78 /* AVFoundation.framework in Frameworks */,
 				B0DC90E41619191C00F20C78 /* Parse.framework in Frameworks */,
 				B0DC90E2161918AE00F20C78 /* CFNetwork.framework in Frameworks */,
 				B0DC90E01619189A00F20C78 /* SystemConfiguration.framework in Frameworks */,
@@ -138,6 +150,10 @@
 		B0DC90701619048B00F20C78 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B0DC90EF161919C300F20C78 /* libiconv.dylib */,
+				B0DC90ED161919AA00F20C78 /* CoreVideo.framework */,
+				B0DC90EB161919A100F20C78 /* CoreMedia.framework */,
+				B0DC90E91619199500F20C78 /* AVFoundation.framework */,
 				B0DC90E31619191C00F20C78 /* Parse.framework */,
 				B0DC90E1161918AE00F20C78 /* CFNetwork.framework */,
 				B0DC90DF1619189A00F20C78 /* SystemConfiguration.framework */,
