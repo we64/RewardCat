@@ -10,4 +10,7 @@
 
 @interface UserModel : NSObject
 
+@property (nonatomic, retain) NSString *udid;
+@property (nonatomic, retain) NSMutableDictionary *progressMap;
+
 @end

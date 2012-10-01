@@ -10,4 +10,13 @@
 
 @implementation UserModel
 
+@synthesize udid;
+@synthesize progressMap;
+
+- (void) dealloc {
+    [udid release], udid = nil;
+    [progressMap release], progressMap = nil;
+    [super dealloc];
+}
+
 @end

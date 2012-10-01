@@ -10,4 +10,6 @@
 
 @interface RewardTableModel : NSObject
 
+@property (nonatomic, retain) NSArray *rewards;
+
 @end

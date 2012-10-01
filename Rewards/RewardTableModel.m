@@ -7,7 +7,24 @@
 //
 
 #import "RewardTableModel.h"
+#import "RewardModel.h"
 
 @implementation RewardTableModel
+
+@synthesize rewards;
+
+- (id)init {
+    self = [super init];
+    if (!self) {
+        return self;
+    }
+    
+    return self;
+}
+
+- (void)dealloc {
+    [rewards release], rewards = nil;
+    [super dealloc];
+}
 
 @end

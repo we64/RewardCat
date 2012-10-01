@@ -10,12 +10,27 @@
 		B0DC90721619048B00F20C78 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90711619048B00F20C78 /* UIKit.framework */; };
 		B0DC90741619048B00F20C78 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90731619048B00F20C78 /* Foundation.framework */; };
 		B0DC90761619048B00F20C78 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90751619048B00F20C78 /* CoreGraphics.framework */; };
-		B0DC907C1619048B00F20C78 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B0DC907A1619048B00F20C78 /* InfoPlist.strings */; };
-		B0DC907E1619048B00F20C78 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC907D1619048B00F20C78 /* main.m */; };
-		B0DC90821619048B00F20C78 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC90811619048B00F20C78 /* AppDelegate.m */; };
-		B0DC90841619048B00F20C78 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC90831619048B00F20C78 /* Default.png */; };
-		B0DC90861619048B00F20C78 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC90851619048B00F20C78 /* Default@2x.png */; };
-		B0DC90881619048B00F20C78 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC90871619048B00F20C78 /* Default-568h@2x.png */; };
+		B0DC90A8161904F600F20C78 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC9091161904F600F20C78 /* AppDelegate.m */; };
+		B0DC90A9161904F600F20C78 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC9092161904F600F20C78 /* Default-568h@2x.png */; };
+		B0DC90AA161904F600F20C78 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC9093161904F600F20C78 /* Default.png */; };
+		B0DC90AB161904F600F20C78 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC9094161904F600F20C78 /* Default@2x.png */; };
+		B0DC90AC161904F600F20C78 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B0DC9095161904F600F20C78 /* InfoPlist.strings */; };
+		B0DC90AD161904F600F20C78 /* RewardsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0DC9097161904F600F20C78 /* RewardsViewController.xib */; };
+		B0DC90AE161904F600F20C78 /* ScanViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0DC9099161904F600F20C78 /* ScanViewController.xib */; };
+		B0DC90AF161904F600F20C78 /* first.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC909B161904F600F20C78 /* first.png */; };
+		B0DC90B0161904F600F20C78 /* first@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC909C161904F600F20C78 /* first@2x.png */; };
+		B0DC90B1161904F600F20C78 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC909D161904F600F20C78 /* main.m */; };
+		B0DC90B2161904F600F20C78 /* Rewards-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B0DC909E161904F600F20C78 /* Rewards-Info.plist */; };
+		B0DC90B3161904F600F20C78 /* RewardsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC90A1161904F600F20C78 /* RewardsTableViewController.m */; };
+		B0DC90B4161904F600F20C78 /* RewardsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC90A3161904F600F20C78 /* RewardsViewController.m */; };
+		B0DC90B5161904F600F20C78 /* ScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC90A5161904F600F20C78 /* ScanViewController.m */; };
+		B0DC90B6161904F600F20C78 /* second.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC90A6161904F600F20C78 /* second.png */; };
+		B0DC90B7161904F600F20C78 /* second@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0DC90A7161904F600F20C78 /* second@2x.png */; };
+		B0DC90C0161909F100F20C78 /* RewardModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC90BF161909F100F20C78 /* RewardModel.m */; };
+		B0DC90C316190D3400F20C78 /* RewardTableModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC90C216190D3400F20C78 /* RewardTableModel.m */; };
+		B0DC90C6161912CB00F20C78 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DC90C5161912CB00F20C78 /* UserModel.m */; };
+		B0DC90CC161916A500F20C78 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90CB161916A500F20C78 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		B0DC90CE1619173000F20C78 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90CD1619173000F20C78 /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,15 +38,35 @@
 		B0DC90711619048B00F20C78 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		B0DC90731619048B00F20C78 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		B0DC90751619048B00F20C78 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		B0DC90791619048B00F20C78 /* Rewards-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Rewards-Info.plist"; sourceTree = "<group>"; };
-		B0DC907B1619048B00F20C78 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		B0DC907D1619048B00F20C78 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		B0DC907F1619048B00F20C78 /* Rewards-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Rewards-Prefix.pch"; sourceTree = "<group>"; };
-		B0DC90801619048B00F20C78 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		B0DC90811619048B00F20C78 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		B0DC90831619048B00F20C78 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		B0DC90851619048B00F20C78 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		B0DC90871619048B00F20C78 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		B0DC9090161904F600F20C78 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		B0DC9091161904F600F20C78 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		B0DC9092161904F600F20C78 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		B0DC9093161904F600F20C78 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		B0DC9094161904F600F20C78 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		B0DC9096161904F600F20C78 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B0DC9098161904F600F20C78 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RewardsViewController.xib; sourceTree = "<group>"; };
+		B0DC909A161904F600F20C78 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ScanViewController.xib; sourceTree = "<group>"; };
+		B0DC909B161904F600F20C78 /* first.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = first.png; sourceTree = "<group>"; };
+		B0DC909C161904F600F20C78 /* first@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "first@2x.png"; sourceTree = "<group>"; };
+		B0DC909D161904F600F20C78 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		B0DC909E161904F600F20C78 /* Rewards-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Rewards-Info.plist"; sourceTree = "<group>"; };
+		B0DC909F161904F600F20C78 /* Rewards-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Rewards-Prefix.pch"; sourceTree = "<group>"; };
+		B0DC90A0161904F600F20C78 /* RewardsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RewardsTableViewController.h; sourceTree = "<group>"; };
+		B0DC90A1161904F600F20C78 /* RewardsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RewardsTableViewController.m; sourceTree = "<group>"; };
+		B0DC90A2161904F600F20C78 /* RewardsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RewardsViewController.h; sourceTree = "<group>"; };
+		B0DC90A3161904F600F20C78 /* RewardsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RewardsViewController.m; sourceTree = "<group>"; };
+		B0DC90A4161904F600F20C78 /* ScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScanViewController.h; sourceTree = "<group>"; };
+		B0DC90A5161904F600F20C78 /* ScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanViewController.m; sourceTree = "<group>"; };
+		B0DC90A6161904F600F20C78 /* second.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = second.png; sourceTree = "<group>"; };
+		B0DC90A7161904F600F20C78 /* second@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "second@2x.png"; sourceTree = "<group>"; };
+		B0DC90BE161909F100F20C78 /* RewardModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RewardModel.h; sourceTree = "<group>"; };
+		B0DC90BF161909F100F20C78 /* RewardModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RewardModel.m; sourceTree = "<group>"; };
+		B0DC90C116190D3400F20C78 /* RewardTableModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RewardTableModel.h; sourceTree = "<group>"; };
+		B0DC90C216190D3400F20C78 /* RewardTableModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RewardTableModel.m; sourceTree = "<group>"; };
+		B0DC90C4161912CB00F20C78 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
+		B0DC90C5161912CB00F20C78 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
+		B0DC90CB161916A500F20C78 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		B0DC90CD1619173000F20C78 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +74,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0DC90CE1619173000F20C78 /* Social.framework in Frameworks */,
+				B0DC90CC161916A500F20C78 /* AdSupport.framework in Frameworks */,
 				B0DC90721619048B00F20C78 /* UIKit.framework in Frameworks */,
 				B0DC90741619048B00F20C78 /* Foundation.framework in Frameworks */,
 				B0DC90761619048B00F20C78 /* CoreGraphics.framework in Frameworks */,
@@ -51,7 +88,7 @@
 		B0DC90621619048B00F20C78 = {
 			isa = PBXGroup;
 			children = (
-				B0DC90771619048B00F20C78 /* Rewards */,
+				B0DC908F161904F600F20C78 /* Rewards */,
 				B0DC90701619048B00F20C78 /* Frameworks */,
 				B0DC906E1619048B00F20C78 /* Products */,
 			);
@@ -68,6 +105,8 @@
 		B0DC90701619048B00F20C78 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B0DC90CD1619173000F20C78 /* Social.framework */,
+				B0DC90CB161916A500F20C78 /* AdSupport.framework */,
 				B0DC90711619048B00F20C78 /* UIKit.framework */,
 				B0DC90731619048B00F20C78 /* Foundation.framework */,
 				B0DC90751619048B00F20C78 /* CoreGraphics.framework */,
@@ -75,28 +114,86 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		B0DC90771619048B00F20C78 /* Rewards */ = {
+		B0DC908F161904F600F20C78 /* Rewards */ = {
 			isa = PBXGroup;
 			children = (
-				B0DC90801619048B00F20C78 /* AppDelegate.h */,
-				B0DC90811619048B00F20C78 /* AppDelegate.m */,
-				B0DC90781619048B00F20C78 /* Supporting Files */,
+				B0DC90BA1619056400F20C78 /* Resources */,
+				B0DC90B81619051E00F20C78 /* Classes */,
+				B0DC909E161904F600F20C78 /* Rewards-Info.plist */,
+				B0DC909F161904F600F20C78 /* Rewards-Prefix.pch */,
 			);
 			path = Rewards;
 			sourceTree = "<group>";
 		};
-		B0DC90781619048B00F20C78 /* Supporting Files */ = {
+		B0DC90B81619051E00F20C78 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				B0DC90791619048B00F20C78 /* Rewards-Info.plist */,
-				B0DC907A1619048B00F20C78 /* InfoPlist.strings */,
-				B0DC907D1619048B00F20C78 /* main.m */,
-				B0DC907F1619048B00F20C78 /* Rewards-Prefix.pch */,
-				B0DC90831619048B00F20C78 /* Default.png */,
-				B0DC90851619048B00F20C78 /* Default@2x.png */,
-				B0DC90871619048B00F20C78 /* Default-568h@2x.png */,
+				B0DC90BD1619098D00F20C78 /* Models */,
+				B0DC90B91619053800F20C78 /* Controllers */,
+				B0DC9090161904F600F20C78 /* AppDelegate.h */,
+				B0DC9091161904F600F20C78 /* AppDelegate.m */,
+				B0DC909D161904F600F20C78 /* main.m */,
 			);
-			name = "Supporting Files";
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		B0DC90B91619053800F20C78 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				B0DC90A0161904F600F20C78 /* RewardsTableViewController.h */,
+				B0DC90A1161904F600F20C78 /* RewardsTableViewController.m */,
+				B0DC90A2161904F600F20C78 /* RewardsViewController.h */,
+				B0DC90A3161904F600F20C78 /* RewardsViewController.m */,
+				B0DC90A4161904F600F20C78 /* ScanViewController.h */,
+				B0DC90A5161904F600F20C78 /* ScanViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		B0DC90BA1619056400F20C78 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B0DC9095161904F600F20C78 /* InfoPlist.strings */,
+				B0DC90BC1619057500F20C78 /* Nibs */,
+				B0DC90BB1619056F00F20C78 /* Images */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		B0DC90BB1619056F00F20C78 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				B0DC9092161904F600F20C78 /* Default-568h@2x.png */,
+				B0DC9093161904F600F20C78 /* Default.png */,
+				B0DC9094161904F600F20C78 /* Default@2x.png */,
+				B0DC909B161904F600F20C78 /* first.png */,
+				B0DC909C161904F600F20C78 /* first@2x.png */,
+				B0DC90A6161904F600F20C78 /* second.png */,
+				B0DC90A7161904F600F20C78 /* second@2x.png */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
+		B0DC90BC1619057500F20C78 /* Nibs */ = {
+			isa = PBXGroup;
+			children = (
+				B0DC9097161904F600F20C78 /* RewardsViewController.xib */,
+				B0DC9099161904F600F20C78 /* ScanViewController.xib */,
+			);
+			name = Nibs;
+			sourceTree = "<group>";
+		};
+		B0DC90BD1619098D00F20C78 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B0DC90BE161909F100F20C78 /* RewardModel.h */,
+				B0DC90BF161909F100F20C78 /* RewardModel.m */,
+				B0DC90C116190D3400F20C78 /* RewardTableModel.h */,
+				B0DC90C216190D3400F20C78 /* RewardTableModel.m */,
+				B0DC90C4161912CB00F20C78 /* UserModel.h */,
+				B0DC90C5161912CB00F20C78 /* UserModel.m */,
+			);
+			name = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -150,10 +247,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0DC907C1619048B00F20C78 /* InfoPlist.strings in Resources */,
-				B0DC90841619048B00F20C78 /* Default.png in Resources */,
-				B0DC90861619048B00F20C78 /* Default@2x.png in Resources */,
-				B0DC90881619048B00F20C78 /* Default-568h@2x.png in Resources */,
+				B0DC90A9161904F600F20C78 /* Default-568h@2x.png in Resources */,
+				B0DC90AA161904F600F20C78 /* Default.png in Resources */,
+				B0DC90AB161904F600F20C78 /* Default@2x.png in Resources */,
+				B0DC90AC161904F600F20C78 /* InfoPlist.strings in Resources */,
+				B0DC90AD161904F600F20C78 /* RewardsViewController.xib in Resources */,
+				B0DC90AE161904F600F20C78 /* ScanViewController.xib in Resources */,
+				B0DC90AF161904F600F20C78 /* first.png in Resources */,
+				B0DC90B0161904F600F20C78 /* first@2x.png in Resources */,
+				B0DC90B2161904F600F20C78 /* Rewards-Info.plist in Resources */,
+				B0DC90B6161904F600F20C78 /* second.png in Resources */,
+				B0DC90B7161904F600F20C78 /* second@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,20 +268,42 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0DC907E1619048B00F20C78 /* main.m in Sources */,
-				B0DC90821619048B00F20C78 /* AppDelegate.m in Sources */,
+				B0DC90A8161904F600F20C78 /* AppDelegate.m in Sources */,
+				B0DC90B1161904F600F20C78 /* main.m in Sources */,
+				B0DC90B3161904F600F20C78 /* RewardsTableViewController.m in Sources */,
+				B0DC90B4161904F600F20C78 /* RewardsViewController.m in Sources */,
+				B0DC90B5161904F600F20C78 /* ScanViewController.m in Sources */,
+				B0DC90C0161909F100F20C78 /* RewardModel.m in Sources */,
+				B0DC90C316190D3400F20C78 /* RewardTableModel.m in Sources */,
+				B0DC90C6161912CB00F20C78 /* UserModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		B0DC907A1619048B00F20C78 /* InfoPlist.strings */ = {
+		B0DC9095161904F600F20C78 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				B0DC907B1619048B00F20C78 /* en */,
+				B0DC9096161904F600F20C78 /* en */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		B0DC9097161904F600F20C78 /* RewardsViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B0DC9098161904F600F20C78 /* en */,
+			);
+			name = RewardsViewController.xib;
+			sourceTree = "<group>";
+		};
+		B0DC9099161904F600F20C78 /* ScanViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B0DC909A161904F600F20C78 /* en */,
+			);
+			name = ScanViewController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
