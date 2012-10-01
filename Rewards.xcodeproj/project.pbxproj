@@ -41,6 +41,7 @@
 		B0DC90DE1619189300F20C78 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90DD1619189300F20C78 /* MobileCoreServices.framework */; };
 		B0DC90E01619189A00F20C78 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90DF1619189A00F20C78 /* SystemConfiguration.framework */; };
 		B0DC90E2161918AE00F20C78 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90E1161918AE00F20C78 /* CFNetwork.framework */; };
+		B0DC90E41619191C00F20C78 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90E31619191C00F20C78 /* Parse.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +88,7 @@
 		B0DC90DD1619189300F20C78 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		B0DC90DF1619189A00F20C78 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		B0DC90E1161918AE00F20C78 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		B0DC90E31619191C00F20C78 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0DC90E41619191C00F20C78 /* Parse.framework in Frameworks */,
 				B0DC90E2161918AE00F20C78 /* CFNetwork.framework in Frameworks */,
 				B0DC90E01619189A00F20C78 /* SystemConfiguration.framework in Frameworks */,
 				B0DC90DE1619189300F20C78 /* MobileCoreServices.framework in Frameworks */,
@@ -135,6 +138,7 @@
 		B0DC90701619048B00F20C78 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B0DC90E31619191C00F20C78 /* Parse.framework */,
 				B0DC90E1161918AE00F20C78 /* CFNetwork.framework */,
 				B0DC90DF1619189A00F20C78 /* SystemConfiguration.framework */,
 				B0DC90DD1619189300F20C78 /* MobileCoreServices.framework */,
@@ -399,6 +403,10 @@
 		B0DC908C1619048B00F20C78 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Rewards/Rewards-Prefix.pch";
 				INFOPLIST_FILE = "Rewards/Rewards-Info.plist";
@@ -410,6 +418,10 @@
 		B0DC908D1619048B00F20C78 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Rewards/Rewards-Prefix.pch";
 				INFOPLIST_FILE = "Rewards/Rewards-Info.plist";
