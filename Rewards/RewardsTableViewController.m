@@ -20,7 +20,7 @@
     if (!self) {
         return self;
     }
-    self.objectsPerPage = 1;
+    self.objectsPerPage = 20;
     return self;
 }
 

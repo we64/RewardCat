@@ -36,6 +36,10 @@
     return self;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [self.rewardsTableViewController loadObjects];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
