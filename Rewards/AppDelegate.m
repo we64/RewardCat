@@ -27,16 +27,12 @@
     // Override point for customization after application launch.
     ScanViewController *viewController1 = [[[ScanViewController alloc] initWithNibName:@"ScanViewController" bundle:nil] autorelease];
     UIViewController *viewController2 = [[[RewardsViewController alloc] initWithNibName:@"RewardsViewController" bundle:nil] autorelease];
-    viewController1.tabViewSwitchingDelegate = self;
     self.tabBarController = [[[UITabBarController alloc] init] autorelease];
+    viewController1.tabBarController = self.tabBarController;
     self.tabBarController.viewControllers = @[viewController1, viewController2];
     self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
     return YES;
-}
-
-- (void)switchToTab:(int)tabIndex {
-    [self.tabBarController setSelectedIndex:tabIndex];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

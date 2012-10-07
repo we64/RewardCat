@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ScanViewController.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate, UITabViewSwitchingDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

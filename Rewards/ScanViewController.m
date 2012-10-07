@@ -20,7 +20,6 @@
 @implementation ScanViewController
 
 @synthesize reader;
-@synthesize tabViewSwitchingDelegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -32,20 +31,21 @@
     self.tabBarItem.image = [UIImage imageNamed:@"second"];
     
     [self login];
+    [self setUpCamera];
+    
     return self;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [self setUpCamera];
+- (void)viewWillAppear:(BOOL)animated {
+    [self.reader.readerView start];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    [self.reader.view removeFromSuperview];
+    [self.reader.readerView stop];
 }
 
 - (void)dealloc {
     [reader release], reader = nil;
-    [tabViewSwitchingDelegate release], tabViewSwitchingDelegate = nil;
     [super dealloc];
 }
 
@@ -53,6 +53,8 @@
     [ZBarReaderViewController class];
     self.reader = [[[ZBarReaderViewController alloc] init] autorelease];
     self.reader.readerDelegate = self;
+    self.reader.readerView.tracksSymbols = YES;
+    self.reader.readerView.trackingColor = [UIColor redColor];
     self.reader.showsZBarControls = NO;
     self.reader.supportedOrientationsMask = ZBarOrientationMaskAll;
     self.reader.wantsFullScreenLayout = NO;
@@ -64,6 +66,11 @@
     [self.reader.scanner setSymbology: ZBAR_QRCODE
                                config: ZBAR_CFG_ENABLE
                                    to: 1];
+
+    self.view.frame = CGRectMake(self.tabBarController.view.frame.origin.x,
+                                 self.tabBarController.view.frame.origin.y,
+                                 self.tabBarController.view.frame.size.width,
+                                 self.tabBarController.view.frame.size.height);
     self.reader.view.frame = self.view.frame;
     [self.view addSubview:self.reader.view];
 }
@@ -77,7 +84,7 @@
     for(ZBarSymbol *sym in syms) {
         NSLog(@"%@", sym.data);
         NSArray *qrData = [sym.data componentsSeparatedByString:@"?r="];
-        if ([[qrData objectAtIndex:0] isEqualToString:@"http://www.rewardCat.com"]) {
+        if ([[[qrData objectAtIndex:0] lowercaseString] isEqualToString:@"http://www.rewardcat.com"]) {
             NSString *rewardId = [qrData objectAtIndex:1];
             
             PFUser *currentUser = [PFUser currentUser];
@@ -95,7 +102,14 @@
             progress++;
             [progressMap setObject:[[NSNumber numberWithInt:progress] stringValue] forKey:rewardId];
             [currentUser save];
-            [self.tabViewSwitchingDelegate switchToTab:1];
+            [self.tabBarController setSelectedIndex:1];
+        } else {
+            UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Invalid QR code"
+                                                            message:@"This is not a valid Reward Cat QR code."
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil] autorelease];
+            [alert show];
         }
         break;
     }
@@ -108,23 +122,22 @@
     } else {
         PFUser *user = [PFUser user];
         UIDevice *device = [UIDevice currentDevice];
-        NSString *uuid;
+        NSString *deviceUUID = nil;
         if ([device respondsToSelector:@selector(identifierForVendor)]) {
-            uuid = device.identifierForVendor.UUIDString;
-        } else {
-            uuid = device.uniqueIdentifier;
+            deviceUUID = device.identifierForVendor.UUIDString;
         }
-        user.username = uuid;
+        if (deviceUUID == nil || [deviceUUID isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
+            deviceUUID = device.uniqueIdentifier;
+        }
+        user.username = deviceUUID;
         user.password = @"password";
-        [user setObject:uuid forKey:@"uuid"];
+        [user setObject:deviceUUID forKey:@"uuid"];
                 
         [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (!error) {
                 [self refresh];
             } else {
-                //TODO: Handle error
-                //NSString *errorString = [[error userInfo] objectForKey:@"error"];
-                // Show the errorString somewhere and let the user try again.
+                //TODO: Handle Error
             }
         }];
     }
