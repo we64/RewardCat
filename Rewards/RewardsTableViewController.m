@@ -7,12 +7,18 @@
 //
 
 #import "RewardsTableViewController.h"
+#import "RewardsTableViewCell.h"
+#import <Parse/Parse.h>
 
 @interface RewardsTableViewController ()
+
+@property (nonatomic) CGFloat cellHeight;
 
 @end
 
 @implementation RewardsTableViewController
+
+@synthesize cellHeight;
 
 - (id)init
 {
@@ -20,7 +26,9 @@
     if (!self) {
         return self;
     }
-    self.objectsPerPage = 20;
+    RewardsTableViewCell *cell = [[[RewardsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil] autorelease];
+    self.cellHeight = cell.frame.size.height;
+    self.objectsPerPage = ceil(self.view.frame.size.height / self.cellHeight);
     return self;
 }
 
@@ -46,10 +54,12 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
     static NSString *CellIdentifier = @"Cell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    RewardsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell = [[RewardsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
+    
+    cell.indexInTable = indexPath.row;
     
     PFUser *user = [PFUser currentUser];
     NSMutableDictionary *progressMap = [user objectForKey:@"progressMap"];
@@ -60,10 +70,23 @@
     }
     
     NSDictionary *description = [object objectForKey:@"description"];
+    PFFile *imageFile = [object objectForKey:@"image"];
+    cell.imageView.image = nil;
+    int indexInTable = cell.indexInTable;
+    [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *errer) {
+        UIImage *image = [UIImage imageWithData:[imageFile getData]];
+        if (indexInTable == cell.indexInTable) {
+            cell.imageView.image = image;
+        }
+    }];
     cell.textLabel.text = [description objectForKey:@"title"];
     cell.detailTextLabel.text = [NSString stringWithFormat:[description objectForKey:@"description"], progress];
     
     return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return self.cellHeight;
 }
 
 @end

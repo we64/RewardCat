@@ -120,7 +120,6 @@
     if (currentUser) {
         [self refresh];
     } else {
-        PFUser *user = [PFUser user];
         UIDevice *device = [UIDevice currentDevice];
         NSString *deviceUUID = nil;
         if ([device respondsToSelector:@selector(identifierForVendor)]) {
@@ -129,15 +128,22 @@
         if (deviceUUID == nil || [deviceUUID isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
             deviceUUID = device.uniqueIdentifier;
         }
-        user.username = deviceUUID;
-        user.password = @"password";
-        [user setObject:deviceUUID forKey:@"uuid"];
-                
-        [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        [PFUser logInWithUsernameInBackground:deviceUUID password:@"password" block:^(PFUser *user, NSError *error) {
             if (!error) {
                 [self refresh];
             } else {
-                //TODO: Handle Error
+                // User don't exist, processed to sign up
+                PFUser *user = [PFUser user];
+                user.username = deviceUUID;
+                user.password = @"password";
+                [user setObject:deviceUUID forKey:@"uuid"];
+                [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    if (!error) {
+                        [self refresh];
+                    } else {
+                        //TODO: Handle Error
+                    }
+                }];
             }
         }];
     }

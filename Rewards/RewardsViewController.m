@@ -33,6 +33,8 @@
     self.rewardsTableViewController = [[[RewardsTableViewController alloc] init] autorelease];
     [self.rewardsNavigationController pushViewController:self.rewardsTableViewController animated:YES];
     [self.view addSubview:self.rewardsNavigationController.view];
+    self.rewardsNavigationController.view.frame = self.view.frame;
+    self.rewardsTableViewController.view.frame = self.view.frame;
     return self;
 }
 

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B06364C516224115008557F7 /* RewardsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B06364C416224115008557F7 /* RewardsTableViewCell.xib */; };
+		B06364C81622421F008557F7 /* RewardsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B06364C71622421F008557F7 /* RewardsTableViewCell.m */; };
 		B0DC90721619048B00F20C78 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90711619048B00F20C78 /* UIKit.framework */; };
 		B0DC90741619048B00F20C78 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90731619048B00F20C78 /* Foundation.framework */; };
 		B0DC90761619048B00F20C78 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DC90751619048B00F20C78 /* CoreGraphics.framework */; };
@@ -51,6 +53,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B06364C416224115008557F7 /* RewardsTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RewardsTableViewCell.xib; sourceTree = "<group>"; };
+		B06364C61622421F008557F7 /* RewardsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RewardsTableViewCell.h; sourceTree = "<group>"; };
+		B06364C71622421F008557F7 /* RewardsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RewardsTableViewCell.m; sourceTree = "<group>"; };
 		B0DC906D1619048B00F20C78 /* Rewards.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rewards.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0DC90711619048B00F20C78 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		B0DC90731619048B00F20C78 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -152,6 +157,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B06364C2162240C3008557F7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B06364C61622421F008557F7 /* RewardsTableViewCell.h */,
+				B06364C71622421F008557F7 /* RewardsTableViewCell.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		B0DC90621619048B00F20C78 = {
 			isa = PBXGroup;
 			children = (
@@ -211,6 +225,7 @@
 		B0DC90B81619051E00F20C78 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				B06364C2162240C3008557F7 /* Views */,
 				B0DC90B91619053800F20C78 /* Controllers */,
 				B0DC9090161904F600F20C78 /* AppDelegate.h */,
 				B0DC9091161904F600F20C78 /* AppDelegate.m */,
@@ -261,6 +276,7 @@
 			children = (
 				B0DC9097161904F600F20C78 /* RewardsViewController.xib */,
 				B0DC9099161904F600F20C78 /* ScanViewController.xib */,
+				B06364C416224115008557F7 /* RewardsTableViewCell.xib */,
 			);
 			name = Nibs;
 			sourceTree = "<group>";
@@ -395,6 +411,7 @@
 				B0DC911116191A2000F20C78 /* zbar-help.html in Resources */,
 				B0DC911216191A2000F20C78 /* zbar-helpicons.png in Resources */,
 				B0DC911316191A2000F20C78 /* zbar-samples.png in Resources */,
+				B06364C516224115008557F7 /* RewardsTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,6 +427,7 @@
 				B0DC90B3161904F600F20C78 /* RewardsTableViewController.m in Sources */,
 				B0DC90B4161904F600F20C78 /* RewardsViewController.m in Sources */,
 				B0DC90B5161904F600F20C78 /* ScanViewController.m in Sources */,
+				B06364C81622421F008557F7 /* RewardsTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
