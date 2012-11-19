@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "RewardCat": {
+            "applicationId": "ZU1qV0453AatIvaV2lYD1DgwvLZ1UPHA8zhQ9mSD", 
+            "masterKey": "iZ5hX98gINOC9GNkAM0y62vKqjEBefWSzwymC3Yd"
+        }, 
+        "_default": {
+            "link": "RewardCat"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.1.5"
+    }
+}

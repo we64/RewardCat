@@ -8,9 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "ZBarReaderViewController.h"
+#import "RewardCatViewController.h"
 
-@interface ScanViewController : UIViewController <ZBarReaderDelegate>
+@interface ScanViewController : RewardCatViewController <ZBarReaderDelegate>
 
+@property (nonatomic, retain) IBOutlet UIImageView *scanBox;
 @property (nonatomic, retain) UITabBarController *tabBarController;
+
+- (BOOL)connected;
 
 @end

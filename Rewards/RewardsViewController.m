@@ -12,13 +12,12 @@
 @interface RewardsViewController ()
 
 @property (nonatomic, retain) UINavigationController *rewardsNavigationController;
-@property (nonatomic, retain) RewardsTableViewController *rewardsTableViewController;
 
 @end
 
 @implementation RewardsViewController
 
-@synthesize rewardsNavigationController, rewardsTableViewController;
+@synthesize rewardsNavigationController;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -27,19 +26,17 @@
         return nil;
     }
     self.title = @"Rewards";
-    self.tabBarItem.image = [UIImage imageNamed:@"first"];
+    self.selectedImage = [UIImage imageNamed:@"couponon"];
+    self.unselectedImage = [UIImage imageNamed:@"couponoff"];
     
     self.rewardsNavigationController = [[[UINavigationController alloc] init] autorelease];
-    self.rewardsTableViewController = [[[RewardsTableViewController alloc] init] autorelease];
-    [self.rewardsNavigationController pushViewController:self.rewardsTableViewController animated:YES];
+    self.rewardsNavigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+    RewardsTableViewController *rewardsTableViewController = [[[RewardsTableViewController alloc] init] autorelease];
+    [self.rewardsNavigationController pushViewController:rewardsTableViewController animated:YES];
     [self.view addSubview:self.rewardsNavigationController.view];
     self.rewardsNavigationController.view.frame = self.view.frame;
-    self.rewardsTableViewController.view.frame = self.view.frame;
+    rewardsTableViewController.view.frame = self.view.frame;
     return self;
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [self.rewardsTableViewController loadObjects];
 }
 
 - (void)viewDidLoad
@@ -50,7 +47,6 @@
 
 - (void)dealloc {
     [rewardsNavigationController release], rewardsNavigationController = nil;
-    [rewardsTableViewController release], rewardsTableViewController = nil;
     [super dealloc];
 }
 

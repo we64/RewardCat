@@ -8,33 +8,40 @@
 
 #import "RewardsTableViewController.h"
 #import "RewardsTableViewCell.h"
-#import <Parse/Parse.h>
+#import "LoadMoreTableViewCell.h"
+#import "DetailViewController.h"
 
-@interface RewardsTableViewController ()
-
-@property (nonatomic) CGFloat cellHeight;
+@interface RewardsTableViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @end
 
 @implementation RewardsTableViewController
 
-@synthesize cellHeight;
-
-- (id)init
-{
-    self = [super initWithClassName:@"Reward"];
+- (id)initWithStyle:(UITableViewStyle)style {
+    self = [super initWithStyle:style];
     if (!self) {
         return self;
     }
-    RewardsTableViewCell *cell = [[[RewardsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil] autorelease];
-    self.cellHeight = cell.frame.size.height;
-    self.objectsPerPage = ceil(self.view.frame.size.height / self.cellHeight);
+    self.title = @"Rewards";
+    self.className = @"Reward";
+    self.objectsPerPage = 8;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:@"shouldUpdateRewardList" object:nil];  
+    
     return self;
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super dealloc];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [self refresh];
+}
+
+- (void)refresh {
+    [super loadObjects];
 }
 
 #pragma mark - Table view data source
@@ -52,41 +59,34 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"RewardsTableViewCell";
     
     RewardsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[RewardsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
+        cell = [nib objectAtIndex:0];
     }
     
     cell.indexInTable = indexPath.row;
+    cell.rewardsTableViewController = self;
+    [cell setUpWithItem:object];
+
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForNextPageAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *CellIdentifier = @"LoadMoreTableViewCell";
     
-    PFUser *user = [PFUser currentUser];
-    NSMutableDictionary *progressMap = [user objectForKey:@"progressMap"];
-    
-    int progress = 0;
-    if ([progressMap objectForKey:object.objectId]) {
-        progress = [[progressMap objectForKey:object.objectId] intValue];
+    LoadMoreTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
+        cell = [nib objectAtIndex:0];
     }
-    
-    NSDictionary *description = [object objectForKey:@"description"];
-    PFFile *imageFile = [object objectForKey:@"image"];
-    cell.imageView.image = nil;
-    int indexInTable = cell.indexInTable;
-    [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *errer) {
-        UIImage *image = [UIImage imageWithData:[imageFile getData]];
-        if (indexInTable == cell.indexInTable) {
-            cell.imageView.image = image;
-        }
-    }];
-    cell.textLabel.text = [description objectForKey:@"title"];
-    cell.detailTextLabel.text = [NSString stringWithFormat:[description objectForKey:@"description"], progress];
-    
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return self.cellHeight;
+    return [self tableView:(UITableView *)tableView cellForRowAtIndexPath:indexPath].frame.size.height;
 }
 
 @end

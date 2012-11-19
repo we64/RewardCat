@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ScanViewController.h"
+#import "RewardCatTabBarController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property (strong, nonatomic) UITabBarController *tabBarController;
+@property (strong, nonatomic) RewardCatTabBarController *tabBarController;
 
 @end

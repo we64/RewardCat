@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RewardCatViewController.h"
 
-@interface RewardsViewController : UIViewController
+@interface RewardsViewController : RewardCatViewController
 
 @end
