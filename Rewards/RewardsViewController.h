@@ -11,4 +11,6 @@
 
 @interface RewardsViewController : RewardCatViewController
 
+@property (nonatomic, assign) UITabBarController *tabBarController;
+
 @end

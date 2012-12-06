@@ -12,6 +12,6 @@
 
 @interface PointRewardsViewController : RewardCatViewController
 
-@property (nonatomic, retain) IBOutlet UILabel *pointsLabel;
+@property (nonatomic, assign) UITabBarController *tabBarController;
 
 @end

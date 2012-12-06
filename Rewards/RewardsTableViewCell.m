@@ -8,6 +8,11 @@
 
 #import "RewardsTableViewCell.h"
 #import "DetailViewController.h"
+#import "GameUtils.h"
+
+@interface RewardsTableViewCell()
+
+@end
 
 @implementation RewardsTableViewCell
 
@@ -23,19 +28,37 @@
 @synthesize imageFile;
 @synthesize indexInTable;
 @synthesize imageContainerView;
+@synthesize highLightBackgroundView;
+
+- (void)highlight {
+    self.highLightBackgroundView.alpha = 1.0;
+    self.highLightBackgroundView.hidden = NO;
+    [UIView animateWithDuration:2 animations:^{self.highLightBackgroundView.alpha = 0;}];
+}
 
 - (void)setUpViews {
     self.imageView.clipsToBounds = YES;
-    /*
-    self.imageView.layer.cornerRadius = 5;
-    self.imageContainerView.layer.cornerRadius = 5;
-    self.imageContainerView.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.imageContainerView.layer.shadowOffset = CGSizeMake(0, 0.5);
-    self.imageContainerView.layer.shadowOpacity = 1;
-    self.imageContainerView.layer.shadowRadius = 0.5;
-    */
     self.imageContainerView.clipsToBounds = NO;
     self.imageContainerView.backgroundColor = [UIColor clearColor];
+}
+
+- (void)setDetailtextLabelTextAndAdjustCellHeight:(NSString *)newText {
+    CGFloat oldHeight = self.detailTextLabel.frame.size.height;
+    self.detailTextLabel.text = newText;
+    self.detailTextLabel.numberOfLines = 0;
+    [self.detailTextLabel sizeToFit];
+    CGFloat newHeight = self.detailTextLabel.frame.size.height;
+    CGFloat heightDifference = newHeight - oldHeight;
+    self.frame = CGRectMake(self.frame.origin.x,
+                            self.frame.origin.y,
+                            self.frame.size.width,
+                            MAX(self.frame.size.height + heightDifference, 80));
+}
+
+- (void)setUpWithItemForHeight:(PFObject *)item_ {
+    self.item = item_;
+    NSDictionary *description = [self.item objectForKey:@"description"];
+    [self setDetailtextLabelTextAndAdjustCellHeight:[description objectForKey:@"description"]];
 }
 
 - (void)setUpWithItem:(PFObject *)item_ {
@@ -69,13 +92,19 @@
         }
     }
     self.textLabel.text = [description objectForKey:@"title"];
-    self.detailTextLabel.text = [description objectForKey:@"description"];
-    self.detailTextLabel.numberOfLines = 0;
-    [self.detailTextLabel sizeToFit];
+    
+    [self setDetailtextLabelTextAndAdjustCellHeight:[description objectForKey:@"description"]];
 
+    if (progress < 0) {
+        progress = 0;
+    }
+    
+    if (progress > target) {
+        progress = target;
+    }
+    
     if (progress < target) {
-        NSString *progressText = [[[[NSNumber numberWithInt:progress] stringValue]
-                                   stringByAppendingString:@" / "] stringByAppendingString:[[NSNumber numberWithInt:target] stringValue]];
+        NSString *progressText = [NSString stringWithFormat:@"%d / %d", progress, target];
         [self.redeemButton setTitle:progressText forState:UIControlStateNormal];
         self.redeemButton.userInteractionEnabled = NO;
     } else {
@@ -100,31 +129,28 @@
     [progressView release], progressView = nil;
     [progressParentView release], progressParentView = nil;
     [item release], item = nil;
-    [rewardsTableViewController release], rewardsTableViewController = nil;
+    rewardsTableViewController = nil;
     [imageFile release], imageFile = nil;
     [imageContainerView release], imageContainerView = nil;
+    [highLightBackgroundView release], highLightBackgroundView = nil;
     [super dealloc];
 }
 
 - (IBAction)detailsButtonClicked:(id)sender {
     DetailViewController *detailViewController = [[[DetailViewController alloc] initWithReward:self.item redeem:FALSE] autorelease];
-    [[rewardsTableViewController navigationController] pushViewController:detailViewController animated:YES];
+    [self.rewardsTableViewController.navigationController pushViewController:detailViewController animated:YES];
 }
 
 - (IBAction)redeemButtonClicked:(id)sender {
-    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Are you sure you want to redeem this reward?"
-                                                     message:@"Press OK to start the reward redemption process!"
-                                                    delegate:self
-                                           cancelButtonTitle:@"Cancel"
-                                           otherButtonTitles:@"OK", nil] autorelease];
-    [alert show];
+    NSTimeInterval redeemTimeLength = [[self.item objectForKey:@"redeemTimeLength"] doubleValue];
+    [GameUtils showRedeemConfirmationWithTime:redeemTimeLength delegate:self];
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
-    if([title isEqualToString:@"OK"]) {
+    if([title isEqualToString:@"OK"] && self.rewardsTableViewController.navigationController.topViewController.class != [DetailViewController class]) {
         DetailViewController *detailViewController = [[[DetailViewController alloc] initWithReward:self.item redeem:YES] autorelease];
-        [[rewardsTableViewController navigationController] pushViewController:detailViewController animated:YES];
+        [self.rewardsTableViewController.navigationController pushViewController:detailViewController animated:YES];
     }
 }
 

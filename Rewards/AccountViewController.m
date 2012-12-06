@@ -8,11 +8,17 @@
 
 #import "AccountViewController.h"
 
+
 @interface AccountViewController ()
+
+@property (nonatomic, retain) UINavigationController *accountNavigationController;
 
 @end
 
 @implementation AccountViewController
+
+@synthesize accountNavigationController;
+@synthesize tabBarController;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -24,19 +30,39 @@
     self.selectedImage = [UIImage imageNamed:@"personon"];
     self.unselectedImage = [UIImage imageNamed:@"personoff"];
     
+    self.accountNavigationController = [[[UINavigationController alloc] init] autorelease];
+    self.accountNavigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+    
+    LoggedInAccountViewController *loggedInAccountViewController = [[[LoggedInAccountViewController alloc] init] autorelease];
+    [self.accountNavigationController pushViewController:loggedInAccountViewController animated:YES];
+    loggedInAccountViewController.view.frame = self.view.frame;
+    
+    [self.view addSubview:self.accountNavigationController.view];
+    self.accountNavigationController.view.frame = self.view.frame;
+    
     return self;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
 }
 
-- (void)didReceiveMemoryWarning
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    PFUser *user = [PFUser currentUser];
+    NSString *deviceUUID = [user objectForKey:@"uuid"];
+    if ([deviceUUID isEqualToString:[user username]]) {
+        SignUpLogInViewController *signUpLogInViewController = [[[SignUpLogInViewController alloc] init] autorelease];
+        [self.accountNavigationController pushViewController:signUpLogInViewController animated:YES];
+        signUpLogInViewController.view.frame = self.view.frame;
+    }
+}
+
+- (void)dealloc
+{
+    [accountNavigationController release], accountNavigationController = nil;
+    [super dealloc];
 }
 
 @end

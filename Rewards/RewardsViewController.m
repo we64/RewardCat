@@ -18,6 +18,7 @@
 @implementation RewardsViewController
 
 @synthesize rewardsNavigationController;
+@synthesize tabBarController;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -36,6 +37,7 @@
     [self.view addSubview:self.rewardsNavigationController.view];
     self.rewardsNavigationController.view.frame = self.view.frame;
     rewardsTableViewController.view.frame = self.view.frame;
+    
     return self;
 }
 

@@ -13,7 +13,7 @@
 @interface ScanViewController : RewardCatViewController <ZBarReaderDelegate>
 
 @property (nonatomic, retain) IBOutlet UIImageView *scanBox;
-@property (nonatomic, retain) UITabBarController *tabBarController;
+@property (nonatomic, assign) UITabBarController *tabBarController;
 
 - (BOOL)connected;
 

@@ -8,7 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "RewardCatViewController.h"
+#import "SignUpLogInViewController.h"
+#import "LoggedInAccountViewController.h"
 
 @interface AccountViewController : RewardCatViewController
+
+@property (nonatomic, assign) UITabBarController *tabBarController;
 
 @end

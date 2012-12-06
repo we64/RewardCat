@@ -8,6 +8,7 @@
 
 #import "PointRewardsTableViewCell.h"
 #import "DetailViewController.h"
+#import "GameUtils.h"
 
 @implementation PointRewardsTableViewCell
 
@@ -28,6 +29,25 @@
     self.imageView.clipsToBounds = YES;
     self.imageContainerView.clipsToBounds = NO;
     self.imageContainerView.backgroundColor = [UIColor clearColor];
+}
+
+- (void)setUpWithItemForHeight:(PFObject *)item_ {
+    self.item = item_;
+    NSDictionary *description = [self.item objectForKey:@"description"];
+    [self setDetailtextLabelTextAndAdjustCellHeight:[description objectForKey:@"description"]];
+}
+
+- (void)setDetailtextLabelTextAndAdjustCellHeight:(NSString *)newText {
+    CGFloat oldHeight = self.detailTextLabel.frame.size.height;
+    self.detailTextLabel.text = newText;
+    self.detailTextLabel.numberOfLines = 0;
+    [self.detailTextLabel sizeToFit];
+    CGFloat newHeight = self.detailTextLabel.frame.size.height;
+    CGFloat heightDifference = newHeight - oldHeight;
+    self.frame = CGRectMake(self.frame.origin.x,
+                            self.frame.origin.y,
+                            self.frame.size.width,
+                            MAX(self.frame.size.height + heightDifference, 80));
 }
 
 - (void)setUpWithItem:(PFObject *)item_ {
@@ -54,13 +74,12 @@
         }
     }
     self.textLabel.text = [description objectForKey:@"title"];
-    self.detailTextLabel.text = [description objectForKey:@"description"];
-    self.detailTextLabel.numberOfLines = 0;
-    [self.detailTextLabel sizeToFit];
+
+    [self setDetailtextLabelTextAndAdjustCellHeight:[description objectForKey:@"description"]];
     
     [self.redeemButton setBackgroundImage:[UIImage imageNamed:@"redeemgray"] forState:UIControlStateDisabled];
     [self.redeemButton setBackgroundImage:[UIImage imageNamed:@"redeem"] forState:UIControlStateNormal];
-    if ([[self.item objectForKey:@"target"] intValue] > [[user objectForKey:@"RewardCatPoints"] intValue]) {
+    if ([[self.item objectForKey:@"target"] intValue] > [[user objectForKey:@"rewardcatPoints"] intValue]) {
         [starView setImage:[UIImage imageNamed:@"stargray.png"]];
         self.redeemButton.enabled = NO;
     } else {
@@ -88,7 +107,6 @@
     [redeemButton release], redeemButton = nil;
     [detailsButton release], detailsButton = nil;
     [item release], item = nil;
-    [pointRewardsTableViewController release], pointRewardsTableViewController = nil;
     [imageFile release], imageFile = nil;
     [imageContainerView release], imageContainerView = nil;
     [super dealloc];
@@ -96,23 +114,19 @@
 
 - (IBAction)detailsButtonClicked:(id)sender {
     DetailViewController *detailViewController = [[[DetailViewController alloc] initWithReward:self.item redeem:FALSE] autorelease];
-    [[pointRewardsTableViewController navigationController] pushViewController:detailViewController animated:YES];
+    [self.pointRewardsTableViewController.navigationController pushViewController:detailViewController animated:YES];
 }
 
 - (IBAction)redeemButtonClicked:(id)sender {
-    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Are you sure you want to redeem this reward?"
-                                                     message:@"Press OK to start the reward redemption process!"
-                                                    delegate:self
-                                           cancelButtonTitle:@"Cancel"
-                                           otherButtonTitles:@"OK", nil] autorelease];
-    [alert show];
+    NSTimeInterval redeemTimeLength = [[self.item objectForKey:@"redeemTimeLength"] doubleValue];
+    [GameUtils showRedeemConfirmationWithTime:redeemTimeLength delegate:self];
 }
                           
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
-    if([title isEqualToString:@"OK"]) {
+    if([title isEqualToString:@"OK"] && self.pointRewardsTableViewController.navigationController.topViewController.class != [DetailViewController class]) {
         DetailViewController *detailViewController = [[[DetailViewController alloc] initWithReward:self.item redeem:YES] autorelease];
-        [[pointRewardsTableViewController navigationController] pushViewController:detailViewController animated:YES];
+        [self.pointRewardsTableViewController.navigationController pushViewController:detailViewController animated:YES];
     }
 }
 

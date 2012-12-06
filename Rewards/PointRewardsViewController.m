@@ -18,7 +18,7 @@
 @implementation PointRewardsViewController
 
 @synthesize pointRewardsNavigationController;
-@synthesize pointsLabel;
+@synthesize tabBarController;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -37,6 +37,7 @@
     [self.view addSubview:self.pointRewardsNavigationController.view];
     self.pointRewardsNavigationController.view.frame = self.view.frame;
     pointRewardsTableViewController.view.frame = self.view.frame;
+    
     return self;
 }
 
@@ -54,7 +55,6 @@
 
 - (void)dealloc {
     [pointRewardsNavigationController release], pointRewardsNavigationController = nil;
-    [pointsLabel release], pointsLabel = nil;
     [super dealloc];
 }
 @end

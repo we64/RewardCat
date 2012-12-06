@@ -27,9 +27,15 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [Parse setApplicationId:@"ZU1qV0453AatIvaV2lYD1DgwvLZ1UPHA8zhQ9mSD" clientKey:@"VupiJigC5X3DwpavzcQNK8IKDlEL03IE9UwHgUcV"];
+    [PFFacebookUtils initializeWithApplicationId:@"497689073585333"];
     [Flurry startSession:@"XTMKDSXVZY8RDR5K3SV3"];
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     [Flurry setSessionReportsOnPauseEnabled:YES];
+    
+    [[PFUser currentUser] refresh];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdateRewardList" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdatePointsRewardList" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"currentUserRefreshed" object:nil];
     
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
@@ -48,6 +54,10 @@
     self.tabBarController.viewControllers = @[viewController1, viewController2, viewController3, viewController4, viewController5];
     
     viewController1.tabBarController = self.tabBarController;
+    viewController2.tabBarController = self.tabBarController;
+    viewController3.tabBarController = self.tabBarController;
+    viewController4.tabBarController = self.tabBarController;
+    viewController5.tabBarController = self.tabBarController;
     self.window.rootViewController = self.tabBarController;
     
     [Flurry logAllPageViews:self.tabBarController];
@@ -71,6 +81,10 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    [[PFUser currentUser] refresh];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdateRewardList" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdatePointsRewardList" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"currentUserRefreshed" object:nil];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -81,6 +95,11 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [PFFacebookUtils handleOpenURL:url];
 }
 
 void uncaughtExceptionHandler(NSException *exception)

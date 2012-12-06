@@ -22,6 +22,7 @@
 
 @synthesize reader;
 @synthesize scanBox;
+@synthesize tabBarController;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -106,8 +107,8 @@
     for(ZBarSymbol *sym in syms) {
         NSLog(@"%@", sym.data);
         NSArray *qrData = [sym.data componentsSeparatedByString:@"?r="];
-        if ([[[qrData objectAtIndex:0] lowercaseString] isEqualToString:@"http://www.rewardcat.com"]) {
-            [Flurry logEvent:@"Scanned Valid QR code"];
+        if ([[[qrData objectAtIndex:0] lowercaseString] isEqualToString:@"http://www.rewardcat.com"] && qrData.count >= 2) {
+            [Flurry logEvent:@"Scanned_Valid_QR_Code"];
             NSString *rewardId = [qrData objectAtIndex:1];
             NSArray *keys = [NSArray arrayWithObjects:@"rewardID", nil];
             NSArray *objects = [NSArray arrayWithObjects:rewardId, nil];
@@ -115,12 +116,11 @@
                                                                    forKeys:keys];
             [PFCloud callFunctionInBackground:@"IncrementProgress" withParameters:dictionary block:^(id result, NSError *error) {
                 if (!error) {
-                    [Flurry logEvent:@"Scanned Valid QR code and saved successfully to server"];
                     [self refresh];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdateRewardList" object:nil];
+                    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[qrData objectAtIndex:1] forKey:@"rewardId"];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdateRewardListWithReward" object:nil userInfo:userInfo];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdatePointsRewardList" object:nil];
                 } else {
-                    [Flurry logEvent:@"Scanned Valid QR code but rejected by server"];
                     UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Invalid Scan"
                                                                      message:[[error userInfo] objectForKey:@"error"]
                                                                     delegate:nil
@@ -132,7 +132,7 @@
 
             self.tabBarController.selectedIndex = 1;
         } else {
-            [Flurry logEvent:@"Scanned Invalid QR code"];
+            [Flurry logEvent:@"Scanned_Invalid_QR_Code"];
             UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Invalid QR code"
                                                              message:@"This is not a valid Reward Cat QR code."
                                                             delegate:nil
@@ -157,6 +157,7 @@
 }
 
 - (void)signup {
+    self.tabBarController.selectedIndex = 4;
     PFUser *user = [PFUser user];
     user.username = [self deviceUUID];
     user.password = @"password";

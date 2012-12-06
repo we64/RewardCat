@@ -9,21 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
 
-@interface DetailViewController : UIViewController <UIAlertViewDelegate>
+@interface DetailViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, retain) IBOutlet UITextView *descriptionText;
-@property (nonatomic, retain) IBOutlet UIImageView *pictureView;
-@property (nonatomic, retain) IBOutlet UILabel *countDownLabel;
-@property (nonatomic, retain) IBOutlet UILabel *countDownDescriptionLabel;
-@property (nonatomic, retain) IBOutlet UIView *detailsView;
-@property (nonatomic, retain) IBOutlet UIView *pictureContainerView;
-@property (nonatomic, retain) IBOutlet UIView *progressView;
-@property (nonatomic, retain) IBOutlet UIView *progressParentView;
-@property (nonatomic, retain) IBOutlet UIView *countDownParentView;
-@property (nonatomic, retain) IBOutlet UIButton *redeemButton;
-
-@property (nonatomic, retain) NSTimer *countDownTimer;
-@property (nonatomic) NSTimeInterval countDownStartTime;
+@property (nonatomic, retain) IBOutlet UITableView *detailTableView;
 
 @property (nonatomic, retain) PFObject *reward;
 

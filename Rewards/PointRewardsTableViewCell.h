@@ -22,7 +22,7 @@
 @property (nonatomic, retain) IBOutlet UIButton *detailsButton;
 
 @property (nonatomic, retain) PFObject *item;
-@property (nonatomic, retain) PointRewardsTableViewController *pointRewardsTableViewController;
+@property (nonatomic, assign) PointRewardsTableViewController *pointRewardsTableViewController;
 @property (nonatomic, retain) PFFile *imageFile;
 
 @property (nonatomic) int indexInTable;
@@ -30,5 +30,7 @@
 - (void)setUpWithItem:(PFObject *)item;
 - (IBAction)detailsButtonClicked:(id)sender;
 - (IBAction)redeemButtonClicked:(id)sender;
+
+- (void)setUpWithItemForHeight:(PFObject *)item_;
 
 @end

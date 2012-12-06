@@ -45,6 +45,16 @@
     [super loadObjects];
 }
 
+- (void)loadObjects {
+    self.view.userInteractionEnabled = NO;
+    [super loadObjects];
+}
+
+- (void)objectsDidLoad:(NSError *)error {
+    [super objectsDidLoad:error];
+    self.view.userInteractionEnabled = YES;
+}
+
 #pragma mark - Table view data source
 
 - (PFQuery *)queryForTable {
@@ -59,7 +69,21 @@
     return query;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [self tableView:tableView cellForRowAtIndexPath:indexPath checkingForHeight:NO];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath checkingForHeight:(BOOL)checkingForHeight {
+    
+    if (indexPath.section != 0 || indexPath.row >= self.objects.count) {
+        return [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    }
+    
+    PFObject *object = [self.objects objectAtIndex:indexPath.row];
+    if (![object respondsToSelector:@selector(className)] || ![object.className isEqualToString:@"PointReward"]) {
+        return [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    }
+    
     static NSString *CellIdentifier = @"PointRewardsTableViewCell";
     
     PointRewardsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -68,9 +92,13 @@
         cell = [nib objectAtIndex:0];
     }
     
-    cell.indexInTable = indexPath.row;
-    cell.pointRewardsTableViewController = self;
-    [cell setUpWithItem:object];
+    if (checkingForHeight) {
+        [cell setUpWithItemForHeight:object];
+    } else {
+        cell.indexInTable = indexPath.row;
+        cell.pointRewardsTableViewController = self;
+        [cell setUpWithItem:object];
+    }
     
     return cell;
 }
@@ -87,7 +115,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [self tableView:(UITableView *)tableView cellForRowAtIndexPath:indexPath].frame.size.height;
+    return [self tableView:(UITableView *)tableView cellForRowAtIndexPath:indexPath checkingForHeight:YES].frame.size.height;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -103,9 +131,9 @@
         cell = [nib objectAtIndex:0];
     }
     
-    NSNumber *pointsNumber = [[PFUser currentUser] objectForKey:@"RewardCatPoints"];
+    NSNumber *pointsNumber = [[PFUser currentUser] objectForKey:@"rewardcatPoints"];
     if (pointsNumber) {
-        cell.pointsLabel.text = [[[PFUser currentUser] objectForKey:@"RewardCatPoints"] stringValue];
+        cell.pointsLabel.text = [[[PFUser currentUser] objectForKey:@"rewardcatPoints"] stringValue];
     } else {
         cell.pointsLabel.text = @"0";
     }

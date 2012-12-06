@@ -7,7 +7,6 @@
 //
 
 #import "RewardCatViewController.h"
-#import "RewardCatTabBarController.h"
 
 @interface RewardCatViewController ()
 
