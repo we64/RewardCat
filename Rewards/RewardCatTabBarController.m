@@ -65,7 +65,7 @@
         } else {
             iconImage = viewController.unselectedImage;
         }
-        UIImageView *iconView = [[UIImageView alloc] initWithImage:iconImage];
+        UIImageView *iconView = [[[UIImageView alloc] initWithImage:iconImage] autorelease];
         iconView.contentMode = UIViewContentModeScaleAspectFit;
         iconView.frame = CGRectMake(index *iconXSpacing + iconX, iconY, iconWith, iconHeight);
         [self.iconViews addObject:iconView];

@@ -62,9 +62,9 @@
         double latitude = [[self.coordinates objectAtIndex:0] doubleValue];
         double longitude = [[self.coordinates objectAtIndex:1] doubleValue];
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
-        MKPlacemark *placemark = [[MKPlacemark alloc] initWithCoordinate:coordinate
-                                                       addressDictionary:nil];
-        MKMapItem *mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
+        MKPlacemark *placemark = [[[MKPlacemark alloc] initWithCoordinate:coordinate
+                                                       addressDictionary:nil] autorelease];
+        MKMapItem *mapItem = [[[MKMapItem alloc] initWithPlacemark:placemark] autorelease];
         [mapItem setName:businessName];
         // Pass the map item to the Maps app
         [mapItem openInMapsWithLaunchOptions:nil];

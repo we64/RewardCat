@@ -15,6 +15,8 @@
 @implementation HelpViewController
 
 @synthesize tabBarController;
+@synthesize imageView;
+@synthesize scrollView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -29,9 +31,16 @@
     return self;
 }
 
+- (void)dealloc {
+    [scrollView release], scrollView = nil;
+    [imageView release], imageView = nil;
+    [super dealloc];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+    
+    self.scrollView.contentSize = self.imageView.frame.size;
 }
 
 - (void)didReceiveMemoryWarning

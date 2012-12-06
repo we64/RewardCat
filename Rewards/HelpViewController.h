@@ -12,5 +12,7 @@
 @interface HelpViewController : RewardCatViewController
 
 @property (nonatomic, assign) UITabBarController *tabBarController;
+@property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, retain) IBOutlet UIImageView *imageView;
 
 @end

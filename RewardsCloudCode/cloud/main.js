@@ -33,16 +33,41 @@ Parse.Cloud.define('IncrementProgress', function(request, response) {
 		rewardProgress['LastScanTimeStamp'] = currentDate.toString();
 		rewardProgress['Count'] = rewardProgress['Count'] + 1;
 		progressMap[rewardID] = rewardProgress;
+		
+		var rewardCatPoints = 1;
+		var reward = Parse.Object.extend("Reward");
+		var query = new Parse.Query(reward);
+		query.get(rewardID, {
+			success: function(object) {
+				rewardCatPoints = object.get("scanPoint");
 
-		// start the saving process
-		request.user.set("progressMap", progressMap);
-		request.user.increment("RewardCatPoints", 1);
-		request.user.save(null, {
-			success: function(user) {
-				response.success();
+				// start the saving process
+				request.user.set("progressMap", progressMap);
+				request.user.increment("rewardcatPoints", rewardCatPoints);
+				request.user.save(null, {
+					success: function(user) {
+						response.success();
+					},
+					error: function(error) {
+						response.error('Oups something went wrong with User save.');
+					}
+				});
 			},
 			error: function(error) {
-				response.error('Oups something went wrong with User save.');
+				// in case of error, leave the default to 1
+				console.log(error);
+				
+				// start the saving process
+				request.user.set("progressMap", progressMap);
+				request.user.increment("rewardcatPoints", rewardCatPoints);
+				request.user.save(null, {
+					success: function(user) {
+						response.success();
+					},
+					error: function(error) {
+						response.error('Oups something went wrong with User save.');
+					}
+				});
 			}
 		});
 	} else {
@@ -66,7 +91,6 @@ Parse.Cloud.define('redeemReward', function(request, response) {
 		
 		// start the saving process
 		request.user.set("progressMap", progressMap);
-		request.user.increment("RewardCatPoints", 5);
 		request.user.save(null, {
 			success: function(user) {
 				response.success();
@@ -76,7 +100,7 @@ Parse.Cloud.define('redeemReward', function(request, response) {
 			}
 		});
 	} else {
-		request.user.increment("RewardCatPoints", -rewardTarget);
+		request.user.increment("rewardcatPoints", -rewardTarget);
 		request.user.save(null, {
 			success: function(user) {
 				response.success();

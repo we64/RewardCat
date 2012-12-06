@@ -68,11 +68,11 @@
         return YES;
     }
     
-    [[[UIAlertView alloc] initWithTitle:@"Missing Information"
+    [[[[UIAlertView alloc] initWithTitle:@"Missing Information"
                                 message:@"Make sure you fill out all of the information!"
                                delegate:nil
                       cancelButtonTitle:@"ok"
-                      otherButtonTitles:nil] show];
+                      otherButtonTitles:nil] autorelease] show];
     return NO;
 }
 
