@@ -11,8 +11,6 @@
 #import "LoadMoreTableViewCell.h"
 #import "DetailViewController.h"
 
-
-
 @interface RewardsTableViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic) int indexToHighlight;
@@ -30,11 +28,12 @@
     }
     self.title = @"Rewards";
     self.className = @"Reward";
-    self.objectsPerPage = 8;
+    self.objectsPerPage = 15;
     self.indexToHighlight = -1;
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:@"shouldUpdateRewardList" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshAndScrollToRewardId:) name:@"shouldUpdateRewardListWithReward" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshAndScrollToRewardId:) name:@"shouldUpdateRewardListWithReward"
+                                               object:nil];
 
     return self;
 }

@@ -8,6 +8,7 @@
 
 #import "SignUpLogInViewController.h"
 #import "SignUpViewController.h"
+#import "GameUtils.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface SignUpLogInViewController ()
@@ -33,7 +34,7 @@
     [self.navigationItem setHidesBackButton:YES];
     
     [self setDelegate:self];
-    [self setFacebookPermissions:[NSArray arrayWithObjects:@"user_birthday", @"friends_about_me", nil]];
+    [self setFacebookPermissions:[NSArray arrayWithObjects:@"user_birthday", @"publish_stream", @"user_about_me", @"email", @"user_location", nil]];
     [self setFields:PFLogInFieldsUsernameAndPassword | PFLogInFieldsPasswordForgotten | PFLogInFieldsFacebook];
 
     // this is hack to get Facebook/Twitter user login to work
@@ -48,6 +49,7 @@
                                     target:self
                                     action:@selector(signUpButtonClicked:)] autorelease];
     self.navigationItem.rightBarButtonItem = signUpButton;
+
     return self;
 }
 
@@ -69,30 +71,77 @@
     }
     
     [[[[UIAlertView alloc] initWithTitle:@"Missing Information"
-                                message:@"Make sure you fill out all of the information!"
-                               delegate:nil
-                      cancelButtonTitle:@"ok"
-                      otherButtonTitles:nil] autorelease] show];
+                                 message:@"Make sure you fill out all of the information!"
+                                delegate:nil
+                       cancelButtonTitle:@"ok"
+                       otherButtonTitles:nil] autorelease] show];
     return NO;
 }
 
 // Sent to the delegate when a PFUser is logged in.
 - (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
     
-    // this is hack to get Facebook/Twitter user login to work
-    // TODO: should do a merge of the existing progressMap and the logged in user progressMap to preserve scans
-    NSMutableDictionary *progress = [user objectForKey:@"progressMap"];
-    if (!progress) {
-        [user setObject:[self.beforeLoggedInUser objectForKey:@"progressMap"] forKey:@"progressMap"];
-        [user setObject:[self.beforeLoggedInUser objectForKey:@"uuid"] forKey:@"uuid"];
-        if ([self.beforeLoggedInUser objectForKey:@"rewardcatPoints"]) {
-            [user setObject:[self.beforeLoggedInUser objectForKey:@"rewardcatPoints"] forKey:@"rewardcatPoints"];
-        }
-        [user save];
+    // Check if user is linked to Facebook
+    if ([PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
+        [self mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"facebook"];
+    } else {
+        [self mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"login"];
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdateRewardList" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdatePointsRewardList" object:nil];
+}
+
+- (void)mergeDefaultAccountWithFacebookOrSignedUp:(PFUser *)user actionType:(NSString *)type {
+
+    // merge progress
+    NSDictionary *mergedProgress = [self mergeProgress:[user objectForKey:@"progressMap"] with:[self.beforeLoggedInUser objectForKey:@"progressMap"]];
+    
+    // merge points
+    int totalPoints = [[self.beforeLoggedInUser objectForKey:@"rewardcatPoints"] intValue] + [[user objectForKey:@"rewardcatPoints"] intValue];
+    
+    // Need to delete device user after logging in and need to correct transaction userObjectId to the new logged in user
+    NSArray *keys = [NSArray arrayWithObjects:@"userObjectId", @"username", @"progressMap", @"rewardcatPoints", @"uuid", @"type", nil];
+    NSArray *objects = [NSArray arrayWithObjects:self.beforeLoggedInUser.objectId,
+                        self.beforeLoggedInUser.username,
+                        mergedProgress,
+                        [NSNumber numberWithInt:totalPoints],
+                        [self.beforeLoggedInUser objectForKey:@"uuid"],
+                        type,
+                        nil];
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:objects
+                                                           forKeys:keys];
+    [PFCloud callFunctionInBackground:@"MergeDeleteUserAndUpdateTransaction" withParameters:dictionary block:^(id result, NSError *error) {
+        if (error) {
+            NSLog(@"Device user deletion failed");
+        } else {
+            [GameUtils refreshCurrentUser];
+            NSLog(@"Device user deletion successful");
+        }
+    }];
+    
     [[self navigationController] popToRootViewControllerAnimated:YES];
+}
+
+- (NSDictionary *)mergeProgress:(NSDictionary *)account with:(NSDictionary *)onDevice {
+    NSMutableDictionary * result = [NSMutableDictionary dictionaryWithDictionary:account];
+    
+    [onDevice enumerateKeysAndObjectsUsingBlock: ^(id key, id obj, BOOL *stop) {
+        if ([account objectForKey:key] != nil) {
+            // account has this key, merge
+            NSMutableDictionary *newVal = [NSMutableDictionary dictionaryWithDictionary:[account objectForKey:key]];
+            
+            int newCount = [[newVal objectForKey:@"Count"] intValue] + [[obj objectForKey:@"Count"] intValue];
+            [newVal setObject:[NSNumber numberWithInt:newCount] forKey:@"Count"];
+            
+            int newLastScan = MAX([[obj objectForKey:@"LastScanTimeStamp"] intValue], [[newVal objectForKey:@"LastScanTimeStamp"] intValue]);
+            [newVal setObject:[NSNumber numberWithInt:newLastScan] forKey:@"LastScanTimeStamp"];
+            
+            [result setObject:newVal forKey:key];
+        } else {
+            // account does not have this key, simply add
+            [result setObject:obj forKey:key];
+        }
+    }];
+    
+    return (NSDictionary *) [[result mutableCopy] autorelease];
 }
 
 // Sent to the delegate when the log in attempt fails.
@@ -122,30 +171,11 @@
     
     // Display an alert if a field wasn't completed
     if (!informationComplete) {
-        [[[[UIAlertView alloc] initWithTitle:@"Missing Information" message:@"Make sure you fill out all of the information!" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] autorelease] show];
-    } else {
-        // check to see if username already exists
-        PFQuery *query = [PFUser query];
-        [query whereKey:@"username" equalTo:[info objectForKey:@"username"]];
-        
-        if ([query countObjects] <= 0) {
-            // custom sign up
-            [[PFUser currentUser] setUsername:[info objectForKey:@"username"]];
-            [[PFUser currentUser] setPassword:[info objectForKey:@"password"]];
-            [[PFUser currentUser] setEmail:[info objectForKey:@"email"]];
-            [[PFUser currentUser] setObject:[(SignUpViewController *)signUpController birthday] forKey:@"birthday"];
-            [[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (!error) {
-                    [[PFUser currentUser] refresh];
-                } else {
-                    NSLog(@"User Sign Up saving error");
-                }
-            }];
-            informationComplete = NO;
-            
-            self.navigationItem.rightBarButtonItem = nil;
-            [[self navigationController] popToRootViewControllerAnimated:YES];
-        }
+        [[[[UIAlertView alloc] initWithTitle:@"Missing Information"
+                                     message:@"Make sure you fill out all of the information!"
+                                    delegate:nil
+                           cancelButtonTitle:@"Ok"
+                           otherButtonTitles:nil] autorelease] show];
     }
     
     return informationComplete;
@@ -154,6 +184,7 @@
 // Sent to the delegate when a PFUser is signed up.
 - (void)signUpViewController:(PFSignUpViewController *)signUpController didSignUpUser:(PFUser *)user {
     NSLog(@"User signed up, send back to delegate...");
+    [self mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"signup"];
 }
 
 // Sent to the delegate when the sign up attempt fails.
@@ -220,10 +251,8 @@
 - (void)viewDidLayoutSubviews {
     self.logInView.usernameField.frame = CGRectMake(42.5, 60, 235, 45);
     self.logInView.passwordField.frame = CGRectMake(42.5, 105, 235, 45);
-    
     self.logInView.externalLogInLabel.frame = CGRectMake(40, 150, 240, 45);
     self.logInView.facebookButton.frame = CGRectMake(100, 195, 120, 50);
-    
     self.logInView.passwordForgottenButton.frame = CGRectMake(19.5, 77.5, 23, 55);
 }
 

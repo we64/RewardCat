@@ -8,10 +8,11 @@
 
 #import "RewardsViewController.h"
 #import "RewardsTableViewController.h"
+#import "CustomNavigationController.h"
 
 @interface RewardsViewController ()
 
-@property (nonatomic, retain) UINavigationController *rewardsNavigationController;
+@property (nonatomic, retain) CustomNavigationController *rewardsNavigationController;
 
 @end
 
@@ -30,7 +31,7 @@
     self.selectedImage = [UIImage imageNamed:@"couponon"];
     self.unselectedImage = [UIImage imageNamed:@"couponoff"];
     
-    self.rewardsNavigationController = [[[UINavigationController alloc] init] autorelease];
+    self.rewardsNavigationController = [[[CustomNavigationController alloc] init] autorelease];
     self.rewardsNavigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     RewardsTableViewController *rewardsTableViewController = [[[RewardsTableViewController alloc] init] autorelease];
     [self.rewardsNavigationController pushViewController:rewardsTableViewController animated:YES];

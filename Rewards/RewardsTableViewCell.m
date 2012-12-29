@@ -75,8 +75,9 @@
     }
     
     NSDictionary *description = [self.item objectForKey:@"description"];
-    if (![self.imageFile.url isEqual:((PFFile *)[self.item objectForKey:@"image"]).url]) {
-        self.imageFile = [self.item objectForKey:@"image"];
+    PFFile *itemImageFile = [self.item objectForKey:@"image"];
+    if (itemImageFile != (id)[NSNull null] && ![self.imageFile.url isEqual:itemImageFile.url]) {
+        self.imageFile = itemImageFile;
         self.imageView.image = nil;
         if (self.imageFile.isDataAvailable) {
             UIImage *image = [UIImage imageWithData:[imageFile getData]];

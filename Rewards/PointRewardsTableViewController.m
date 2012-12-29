@@ -25,7 +25,7 @@
     }
     self.title = @"Points";
     self.className = @"PointReward";
-    self.objectsPerPage = 8;
+    self.objectsPerPage = 15;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:@"shouldUpdatePointsRewardList" object:nil];
     

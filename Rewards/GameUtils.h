@@ -11,5 +11,6 @@
 @interface GameUtils : NSObject <UIAlertViewDelegate>
 
 + (void)showRedeemConfirmationWithTime:(NSTimeInterval) time delegate:(id<UIAlertViewDelegate>)delegate;
++ (void)refreshCurrentUser;
 
 @end

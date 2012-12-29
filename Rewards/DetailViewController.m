@@ -10,13 +10,13 @@
 #import "DetailHeaderCell.h"
 #import "DetailInfoCell.h"
 #import "DetailDescriptionCell.h"
+#import "GameUtils.h"
 
 @interface DetailViewController ()
 
 @property (nonatomic) NSTimeInterval countDownStartTime;
 @property (nonatomic, retain) NSTimer *countDownTimer;
 @property (nonatomic) NSInteger redeemTime;
-@property (nonatomic) BOOL isVisible;
 
 @end
 
@@ -28,7 +28,6 @@
 @synthesize countDownStartTime;
 @synthesize countDownTimer;
 @synthesize redeemTime;
-@synthesize isVisible;
 
 - (id)initWithReward:(PFObject *)reward_ redeem:(BOOL)redeem_ {
     self = [super init];
@@ -40,11 +39,11 @@
     self.redeem = redeem_;
     self.redeemTime = [[self.reward objectForKey:@"redeemTimeLength"] intValue];
     self.title = @"Detail";
-    self.isVisible = YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(redeemTimerExpired:) name:@"redeemTimerExpired" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(redeemReward) name:@"startRedeemReward" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startRedeemCountDown:) name:@"startRedeemCountDown" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishedRedeemReward:) name:@"finishedRedeemReward" object:nil];
     
     return self;
 }
@@ -55,9 +54,28 @@
         return;
     }
     [self.countDownTimer invalidate];
-    if (self.isVisible) {
-        [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)finishedRedeemReward:(NSNotification *)notification {
+    NSString *rewardId = [notification.userInfo objectForKey:@"rewardID"];
+    if (![self.reward.objectId isEqualToString:rewardId]) {
+        return;
     }
+    [self.countDownTimer invalidate];
+}
+
+- (void)startRedeemCountDown:(NSNotification *)notification {
+    NSString *rewardId = [notification.userInfo objectForKey:@"rewardID"];
+    if (![self.reward.objectId isEqualToString:rewardId]) {
+        return;
+    }
+    self.countDownStartTime = [[NSDate date] timeIntervalSince1970];
+    self.countDownTimer = [NSTimer scheduledTimerWithTimeInterval:0.1
+                                                           target:self
+                                                         selector:@selector(updateCountDown)
+                                                         userInfo:nil
+                                                          repeats:YES];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -159,19 +177,6 @@
     return [self tableView: tableView cellForRowAtIndexPath:indexPath checkingForHeight:YES].frame.size.height;
 }
 
-- (void)startRedeemCountDown:(NSNotification *)notification {
-    NSString *rewardId = [notification.userInfo objectForKey:@"rewardID"];
-    if (![self.reward.objectId isEqualToString:rewardId]) {
-        return;
-    }
-    self.countDownStartTime = [[NSDate date] timeIntervalSince1970];
-    self.countDownTimer = [NSTimer scheduledTimerWithTimeInterval:0.1
-                                                           target:self
-                                                         selector:@selector(updateCountDown)
-                                                         userInfo:nil
-                                                          repeats:YES];
-}
-
 - (void)updateCountDown {
     NSTimeInterval timeRemaining = self.countDownStartTime + self.redeemTime - [[NSDate date] timeIntervalSince1970];
     if (timeRemaining > 0) {
@@ -196,7 +201,7 @@
     [PFCloud callFunctionInBackground:@"redeemReward" withParameters:dictionary block:^(id result, NSError *error) {
         if (!error) {
             NSString *className = [dictionary objectForKey:@"rewardType"];
-            [[PFUser currentUser] refresh];
+            [GameUtils refreshCurrentUser];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startRedeemCountDown" object:nil userInfo:dictionary];
             if ([className isEqualToString:@"Reward"]) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdateRewardList" object:nil];
@@ -221,11 +226,6 @@
         [self.countDownTimer invalidate];
         [self redeemReward];
     }
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    self.isVisible = NO;
 }
 
 - (void) dealloc {

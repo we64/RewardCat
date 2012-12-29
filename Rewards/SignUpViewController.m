@@ -25,7 +25,9 @@
 @synthesize birthday;
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
+    
     self.title = @"Sign Up";
     datePicker = [[UIDatePicker alloc] init];
     [datePicker setDatePickerMode:UIDatePickerModeDate];
@@ -42,7 +44,13 @@
     UIImageView *logInFieldBackgroundView = [self.signUpView.subviews objectAtIndex:0];
     [logInFieldBackgroundView removeFromSuperview];
     self.fieldsBackground = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"4box.png"]] autorelease];
-    self.fieldsBackground.frame = CGRectMake(42.5, 60, 235, 180);
+    
+    // hack for parse's retardedness for doing things differently on 4.3
+    if ([[[UIDevice currentDevice] systemVersion] doubleValue] > 5) {
+        self.fieldsBackground.frame = CGRectMake(42.5, 60, 235, 180);
+    } else {
+        self.fieldsBackground.frame = CGRectMake(42.5, 85, 235, 180);
+    }
     [self.signUpView insertSubview:self.fieldsBackground atIndex:0];
     
     self.background = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"alum.png"]] autorelease];

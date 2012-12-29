@@ -14,6 +14,7 @@
 #import "AccountViewController.h"
 #import "HelpViewController.h"
 #import "Flurry.h"
+#import "GameUtils.h"
 
 @implementation AppDelegate
 
@@ -26,16 +27,21 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // Parse Prod
     [Parse setApplicationId:@"ZU1qV0453AatIvaV2lYD1DgwvLZ1UPHA8zhQ9mSD" clientKey:@"VupiJigC5X3DwpavzcQNK8IKDlEL03IE9UwHgUcV"];
-    [PFFacebookUtils initializeWithApplicationId:@"497689073585333"];
+    
+    // Parse Dev
+    //[Parse setApplicationId:@"Lw85NFZvjs7L2yGzSpdUDeimKKpIv1xKdpayewza" clientKey:@"MOhIoElZG3UDhhdJAfE81BJf3tNB5eiUutBUtq4m"];
+    
+    // Flurry Prod
     [Flurry startSession:@"XTMKDSXVZY8RDR5K3SV3"];
+    
+    // Flurry Dev
+    //[Flurry startSession:@"7J7DYNJS748WZG9R5VW7"];
+    
+    [PFFacebookUtils initializeWithApplicationId:@"497689073585333"];
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     [Flurry setSessionReportsOnPauseEnabled:YES];
-    
-    [[PFUser currentUser] refresh];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdateRewardList" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdatePointsRewardList" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"currentUserRefreshed" object:nil];
     
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
@@ -81,10 +87,9 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    [[PFUser currentUser] refresh];
+    [GameUtils refreshCurrentUser];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdateRewardList" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdatePointsRewardList" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"currentUserRefreshed" object:nil];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

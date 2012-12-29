@@ -4,6 +4,10 @@
             "applicationId": "ZU1qV0453AatIvaV2lYD1DgwvLZ1UPHA8zhQ9mSD", 
             "masterKey": "iZ5hX98gINOC9GNkAM0y62vKqjEBefWSzwymC3Yd"
         }, 
+        "RewardCat-DEV": {
+            "applicationId": "Lw85NFZvjs7L2yGzSpdUDeimKKpIv1xKdpayewza", 
+            "masterKey": "hJ0Ysl9FQ6wW6gQdfcdjLdK816sRa7ZMtkymjK6T"
+        }, 
         "_default": {
             "link": "RewardCat"
         }

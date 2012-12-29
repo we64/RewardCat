@@ -11,6 +11,7 @@
 #import "ZBarReaderView.h"
 #import "ZBarReaderViewController.h"
 #import "Reachability.h"
+#import "GameUtils.h"
 
 @interface ScanViewController ()
 
@@ -116,7 +117,7 @@
                                                                    forKeys:keys];
             [PFCloud callFunctionInBackground:@"IncrementProgress" withParameters:dictionary block:^(id result, NSError *error) {
                 if (!error) {
-                    [self refresh];
+                    [GameUtils refreshCurrentUser];
                     NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[qrData objectAtIndex:1] forKey:@"rewardId"];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdateRewardListWithReward" object:nil userInfo:userInfo];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdatePointsRewardList" object:nil];
@@ -165,7 +166,7 @@
     [user setObject:[NSMutableDictionary dictionary] forKey:@"progressMap"];
     [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (!error) {
-            [self refresh];
+            [GameUtils refreshCurrentUser];
         } else {
             //TODO: Handle Error
             NSLog(@"%@", error);
@@ -177,20 +178,16 @@
     PFInstallation *installation = [PFInstallation currentInstallation];
     [installation saveInBackground];
     if ([self userLoggedIn]) {
-        [self refresh];
+        [GameUtils refreshCurrentUser];
     } else {
         [PFUser logInWithUsernameInBackground:[self deviceUUID] password:@"password" block:^(PFUser *user, NSError *error) {
             if (!error) {
-                [self refresh];
+                [GameUtils refreshCurrentUser];
             } else {
                 [self signup];
             }
         }];
     }
-}
-
-- (void)refresh {
-    [[PFUser currentUser] refresh];
 }
 
 - (BOOL)connected

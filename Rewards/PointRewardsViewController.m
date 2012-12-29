@@ -8,10 +8,11 @@
 
 #import "PointRewardsViewController.h"
 #import "PointRewardsTableViewController.h"
+#import "CustomNavigationController.h"
 
 @interface PointRewardsViewController ()
 
-@property (nonatomic, retain) UINavigationController *pointRewardsNavigationController;
+@property (nonatomic, retain) CustomNavigationController *pointRewardsNavigationController;
 
 @end
 
@@ -30,7 +31,7 @@
     self.selectedImage = [UIImage imageNamed:@"staron"];
     self.unselectedImage = [UIImage imageNamed:@"staroff"];
     
-    self.pointRewardsNavigationController = [[[UINavigationController alloc] init] autorelease];
+    self.pointRewardsNavigationController = [[[CustomNavigationController alloc] init] autorelease];
     self.pointRewardsNavigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     PointRewardsTableViewController *pointRewardsTableViewController = [[[PointRewardsTableViewController alloc] init] autorelease];
     [self.pointRewardsNavigationController pushViewController:pointRewardsTableViewController animated:YES];

@@ -8,6 +8,7 @@
 
 #import "GameUtils.h"
 #import "AppDelegate.h"
+#import <Parse/Parse.h>
 
 static GameUtils *gameUtilsInstance;
 
@@ -49,6 +50,19 @@ static GameUtils *gameUtilsInstance;
                                            otherButtonTitles:@"OK", nil] autorelease];
     [alert show];
     [GameUtils instance].showingRedeemConfirmation = YES;
+}
+
++ (void)refreshCurrentUser {
+    [[PFUser currentUser] refreshInBackgroundWithBlock:^(PFObject *object, NSError *error){
+        if (!error) {
+            NSLog(@"Current user refresh successful");
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"currentUserRefreshed" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdateRewardList" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdatePointsRewardList" object:nil];
+        } else {
+            NSLog(@"Current user refresh with error %@ %@", error, [error userInfo]);
+        }
+    }];
 }
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {

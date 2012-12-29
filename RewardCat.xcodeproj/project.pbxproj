@@ -18,8 +18,6 @@
 		B00BA10C1661F53A0081A820 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B00BA10B1661F5390081A820 /* MessageUI.framework */; };
 		B00BA113166212530081A820 /* facebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B00BA10D166212510081A820 /* facebook@2x.png */; };
 		B00BA114166212530081A820 /* facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = B00BA10E166212510081A820 /* facebook.png */; };
-		B00BA115166212530081A820 /* twitter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B00BA10F166212510081A820 /* twitter@2x.png */; };
-		B00BA116166212530081A820 /* twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = B00BA110166212520081A820 /* twitter.png */; };
 		B00BA117166212530081A820 /* signinup@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B00BA111166212520081A820 /* signinup@2x.png */; };
 		B00BA118166212530081A820 /* signinup.png in Resources */ = {isa = PBXBuildFile; fileRef = B00BA112166212530081A820 /* signinup.png */; };
 		B00BA11D166215BB0081A820 /* 2box@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B00BA119166215BA0081A820 /* 2box@2x.png */; };
@@ -66,6 +64,7 @@
 		B0469A0C166C5DC3001A96B9 /* web.png in Resources */ = {isa = PBXBuildFile; fileRef = B0469A04166C5DC3001A96B9 /* web.png */; };
 		B0469A0D166C5DC3001A96B9 /* web@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0469A05166C5DC3001A96B9 /* web@2x.png */; };
 		B0469A11166CB052001A96B9 /* GameUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B0469A10166CB052001A96B9 /* GameUtils.m */; };
+		B05FC03E168D46780000F7B5 /* CustomNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = B05FC03D168D46780000F7B5 /* CustomNavigationController.m */; };
 		B06114F61659BA5000DB1246 /* PointsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B06114F51659BA5000DB1246 /* PointsTableViewCell.xib */; };
 		B06114F91659BAB300DB1246 /* PointRewardsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B06114F81659BAB300DB1246 /* PointRewardsViewController.xib */; };
 		B06114FF1659BB8C00DB1246 /* PointsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B06114FE1659BB8C00DB1246 /* PointsTableViewCell.m */; };
@@ -183,8 +182,6 @@
 		B00BA10B1661F5390081A820 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		B00BA10D166212510081A820 /* facebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook@2x.png"; sourceTree = "<group>"; };
 		B00BA10E166212510081A820 /* facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = facebook.png; sourceTree = "<group>"; };
-		B00BA10F166212510081A820 /* twitter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter@2x.png"; sourceTree = "<group>"; };
-		B00BA110166212520081A820 /* twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = twitter.png; sourceTree = "<group>"; };
 		B00BA111166212520081A820 /* signinup@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "signinup@2x.png"; sourceTree = "<group>"; };
 		B00BA112166212530081A820 /* signinup.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = signinup.png; sourceTree = "<group>"; };
 		B00BA119166215BA0081A820 /* 2box@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "2box@2x.png"; sourceTree = "<group>"; };
@@ -236,6 +233,8 @@
 		B0469A05166C5DC3001A96B9 /* web@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "web@2x.png"; sourceTree = "<group>"; };
 		B0469A0F166CB052001A96B9 /* GameUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameUtils.h; sourceTree = "<group>"; };
 		B0469A10166CB052001A96B9 /* GameUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameUtils.m; sourceTree = "<group>"; };
+		B05FC03C168D46780000F7B5 /* CustomNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomNavigationController.h; sourceTree = "<group>"; };
+		B05FC03D168D46780000F7B5 /* CustomNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomNavigationController.m; sourceTree = "<group>"; };
 		B06114F51659BA5000DB1246 /* PointsTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PointsTableViewCell.xib; sourceTree = "<group>"; };
 		B06114F81659BAB300DB1246 /* PointRewardsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PointRewardsViewController.xib; sourceTree = "<group>"; };
 		B06114FD1659BB8C00DB1246 /* PointsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointsTableViewCell.h; sourceTree = "<group>"; };
@@ -557,6 +556,8 @@
 				B0C144D51658E42200A62BAE /* RewardCatTabBarController.m */,
 				B0C144D71658E5B000A62BAE /* RewardCatViewController.h */,
 				B0C144D81658E5B000A62BAE /* RewardCatViewController.m */,
+				B05FC03C168D46780000F7B5 /* CustomNavigationController.h */,
+				B05FC03D168D46780000F7B5 /* CustomNavigationController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -607,8 +608,6 @@
 				B00BA11C166215BB0081A820 /* 4box.png */,
 				B00BA10D166212510081A820 /* facebook@2x.png */,
 				B00BA10E166212510081A820 /* facebook.png */,
-				B00BA10F166212510081A820 /* twitter@2x.png */,
-				B00BA110166212520081A820 /* twitter.png */,
 				B00BA111166212520081A820 /* signinup@2x.png */,
 				B00BA112166212530081A820 /* signinup.png */,
 				B00BA1031661C3880081A820 /* contact@2x.png */,
@@ -873,8 +872,6 @@
 				B00BA10A1661C3880081A820 /* rate@2x.png in Resources */,
 				B00BA113166212530081A820 /* facebook@2x.png in Resources */,
 				B00BA114166212530081A820 /* facebook.png in Resources */,
-				B00BA115166212530081A820 /* twitter@2x.png in Resources */,
-				B00BA116166212530081A820 /* twitter.png in Resources */,
 				B00BA117166212530081A820 /* signinup@2x.png in Resources */,
 				B00BA118166212530081A820 /* signinup.png in Resources */,
 				B00BA11D166215BB0081A820 /* 2box@2x.png in Resources */,
@@ -948,6 +945,7 @@
 				B00BA152166AE9C40081A820 /* DetailInfoCell.m in Sources */,
 				B0C500BC166B4E27004E26D5 /* DetailDescriptionCell.m in Sources */,
 				B0469A11166CB052001A96B9 /* GameUtils.m in Sources */,
+				B05FC03E168D46780000F7B5 /* CustomNavigationController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
