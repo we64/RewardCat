@@ -10,27 +10,24 @@
 #import <Parse/Parse.h>
 #import "PointRewardsTableViewController.h"
 
-@interface PointRewardsTableViewCell : UITableViewCell <UIAlertViewDelegate>
+@interface PointRewardsTableViewCell : UITableViewCell
 
-@property (nonatomic, retain) IBOutlet UILabel *detailTextLabel;
-@property (nonatomic, retain) IBOutlet UILabel *textLabel;
-@property (nonatomic, retain) IBOutlet UILabel *pointsLabel;
-@property (nonatomic, retain) IBOutlet UIImageView *imageView;
-@property (nonatomic, retain) IBOutlet UIView *imageContainerView;
-@property (nonatomic, retain) IBOutlet UIImageView *starView;
-@property (nonatomic, retain) IBOutlet UIButton *redeemButton;
-@property (nonatomic, retain) IBOutlet UIButton *detailsButton;
+@property (nonatomic, retain) IBOutletCollection(UILabel) NSArray *detailTextLabels;
+@property (nonatomic, retain) IBOutletCollection(UILabel) NSArray *textLabels;
+@property (nonatomic, retain) IBOutletCollection(UILabel) NSArray *pointsLabels;
+@property (nonatomic, retain) IBOutletCollection(UILabel) NSArray *distanceLabels;
+@property (nonatomic, retain) IBOutletCollection(UIImageView) NSArray *imageViews;
+@property (nonatomic, retain) IBOutletCollection(UIView) NSArray *imageContainerViews;
+@property (nonatomic, retain) IBOutletCollection(UIImageView) NSArray *starViews;
+@property (nonatomic, retain) IBOutletCollection(UIButton) NSArray *detailsButtons;
 
-@property (nonatomic, retain) PFObject *item;
+@property (nonatomic, retain) NSArray *items;
 @property (nonatomic, assign) PointRewardsTableViewController *pointRewardsTableViewController;
-@property (nonatomic, retain) PFFile *imageFile;
+@property (nonatomic, retain) NSArray *imageFiles;
 
-@property (nonatomic) int indexInTable;
+@property (nonatomic, retain) NSArray *indicesInTable;
 
-- (void)setUpWithItem:(PFObject *)item;
+- (void)setUpWithItems:(NSArray *)items_;
 - (IBAction)detailsButtonClicked:(id)sender;
-- (IBAction)redeemButtonClicked:(id)sender;
-
-- (void)setUpWithItemForHeight:(PFObject *)item_;
 
 @end

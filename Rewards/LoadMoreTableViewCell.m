@@ -13,8 +13,8 @@
 @synthesize backgroundView;
 @synthesize loadMoreLabel;
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    if (selected) {
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+    if (highlighted) {
         self.backgroundView.alpha = 0.5;
     } else {
         self.backgroundView.alpha = 1;

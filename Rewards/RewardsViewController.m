@@ -48,6 +48,11 @@
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [Flurry logEvent:@"page_view_tab_rewards"];
+}
+
 - (void)dealloc {
     [rewardsNavigationController release], rewardsNavigationController = nil;
     [super dealloc];

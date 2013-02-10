@@ -15,8 +15,6 @@
 
 @property (nonatomic, retain) PFObject *reward;
 
-@property (nonatomic) BOOL redeem;
-
-- (id)initWithReward:(PFObject *)reward_ redeem:(BOOL)redeem;
+- (id)initWithReward:(PFObject *)reward_;
 
 @end

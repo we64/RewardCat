@@ -10,6 +10,7 @@
 #import "SignUpViewController.h"
 #import "GameUtils.h"
 #import <QuartzCore/QuartzCore.h>
+#import "Flurry.h"
 
 @interface SignUpLogInViewController ()
 
@@ -55,6 +56,8 @@
 
 - (IBAction)signUpButtonClicked:(id)sender {
     // Create the sign up view controller
+    [Flurry logEvent:@"action_button_click_show_signup_page"];
+
     SignUpViewController *signUpViewController = [[[SignUpViewController alloc] init] autorelease];
     [signUpViewController setDelegate:self];
     [signUpViewController setFields:PFSignUpFieldsUsernameAndPassword | PFSignUpFieldsEmail | PFSignUpFieldsSignUpButton | PFSignUpFieldsAdditional];
@@ -67,14 +70,18 @@
 // Sent to the delegate to determine whether the log in request should be submitted to the server.
 - (BOOL)logInViewController:(PFLogInViewController *)logInController shouldBeginLogInWithUsername:(NSString *)username password:(NSString *)password {
     if (username && password && username.length && password.length) {
+        [Flurry logEvent:@"action_button_click_login_submitted_successfully"];
         return YES;
     }
     
     [[[[UIAlertView alloc] initWithTitle:@"Missing Information"
                                  message:@"Make sure you fill out all of the information!"
                                 delegate:nil
-                       cancelButtonTitle:@"ok"
+                       cancelButtonTitle:@"Ok"
                        otherButtonTitles:nil] autorelease] show];
+    
+    [Flurry logEvent:@"action_button_click_login_failed_missing_information"];
+
     return NO;
 }
 
@@ -83,8 +90,12 @@
     
     // Check if user is linked to Facebook
     if ([PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
+        
+        [Flurry logEvent:@"action_button_click_facebook_signup"];
         [self mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"facebook"];
     } else {
+        
+        [Flurry logEvent:@"action_button_click_login"];
         [self mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"login"];
     }
 }
@@ -96,7 +107,7 @@
     
     // merge points
     int totalPoints = [[self.beforeLoggedInUser objectForKey:@"rewardcatPoints"] intValue] + [[user objectForKey:@"rewardcatPoints"] intValue];
-    
+
     // Need to delete device user after logging in and need to correct transaction userObjectId to the new logged in user
     NSArray *keys = [NSArray arrayWithObjects:@"userObjectId", @"username", @"progressMap", @"rewardcatPoints", @"uuid", @"type", nil];
     NSArray *objects = [NSArray arrayWithObjects:self.beforeLoggedInUser.objectId,
@@ -109,15 +120,20 @@
     NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:objects
                                                            forKeys:keys];
     [PFCloud callFunctionInBackground:@"MergeDeleteUserAndUpdateTransaction" withParameters:dictionary block:^(id result, NSError *error) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshHistoryList" object:nil];
         if (error) {
             NSLog(@"Device user deletion failed");
+            [[[[UIAlertView alloc] initWithTitle:@"Log In Failed"
+                                         message:@"Sorry, seems like we have a problem with login, please try again later."
+                                        delegate:nil
+                               cancelButtonTitle:@"Ok"
+                               otherButtonTitles:nil] autorelease] show];
         } else {
             [GameUtils refreshCurrentUser];
             NSLog(@"Device user deletion successful");
+            [[self navigationController] popToRootViewControllerAnimated:YES];
         }
     }];
-    
-    [[self navigationController] popToRootViewControllerAnimated:YES];
 }
 
 - (NSDictionary *)mergeProgress:(NSDictionary *)account with:(NSDictionary *)onDevice {
@@ -147,6 +163,7 @@
 // Sent to the delegate when the log in attempt fails.
 - (void)logInViewController:(PFLogInViewController *)logInController didFailToLogInWithError:(NSError *)error {
     NSLog(@"Log in failed...");
+    [Flurry logEvent:@"action_button_click_login_facebook_failed_with_error" withParameters:error.userInfo];
 }
 
 // Sent to the delegate when the log in screen is dismissed.
@@ -176,6 +193,10 @@
                                     delegate:nil
                            cancelButtonTitle:@"Ok"
                            otherButtonTitles:nil] autorelease] show];
+
+        [Flurry logEvent:@"action_button_click_sign_up_failed_missing_information"];
+    } else {
+        [Flurry logEvent:@"action_button_click_sign_up_submitted_successfully"];
     }
     
     return informationComplete;
@@ -183,12 +204,16 @@
 
 // Sent to the delegate when a PFUser is signed up.
 - (void)signUpViewController:(PFSignUpViewController *)signUpController didSignUpUser:(PFUser *)user {
+    
+    [Flurry logEvent:@"action_button_click_sign_up_successful"];
     NSLog(@"User signed up, send back to delegate...");
     [self mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"signup"];
 }
 
 // Sent to the delegate when the sign up attempt fails.
 - (void)signUpViewController:(PFSignUpViewController *)signUpController didFailToSignUpWithError:(NSError *)error {
+    
+    [Flurry logEvent:@"action_button_click_sign_up_failed_with_error" withParameters:error.userInfo];
     NSLog(@"Failed to sign up...");
 }
 
@@ -219,7 +244,7 @@
     [self.logInView.facebookButton setTitle:@"Facebook" forState:UIControlStateNormal];
     self.logInView.facebookButton.adjustsImageWhenHighlighted = TRUE;
     self.logInView.facebookButton.titleEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 0);
-    
+
     [self.logInView.passwordForgottenButton setImage:nil forState:UIControlStateNormal];
     [self.logInView.passwordForgottenButton setBackgroundImage:[UIImage imageNamed:@"forgot.png"] forState:UIControlStateNormal];
     [self.logInView.passwordForgottenButton setBackgroundImage:nil forState:UIControlStateHighlighted];
@@ -246,13 +271,20 @@
     
     self.logInView.usernameField.layer.opacity = 1;
     self.logInView.passwordField.layer.opacity = 1;
+    
+    NSString *signUpMessage = @"Signup to get 10 Coins - that's enough to start redeeming for rewards!";
+    NSString *facebookLogin = @"Sign in with Facebook:";
+    self.logInView.externalLogInLabel.text = [NSString stringWithFormat: @"%@\n\n\n%@", signUpMessage, facebookLogin];
+    self.logInView.externalLogInLabel.font = [UIFont boldSystemFontOfSize:12.0f];
+    self.logInView.externalLogInLabel.lineBreakMode = UILineBreakModeWordWrap;
+    self.logInView.externalLogInLabel.numberOfLines = 0;
 }
 
 - (void)viewDidLayoutSubviews {
     self.logInView.usernameField.frame = CGRectMake(42.5, 60, 235, 45);
     self.logInView.passwordField.frame = CGRectMake(42.5, 105, 235, 45);
-    self.logInView.externalLogInLabel.frame = CGRectMake(40, 150, 240, 45);
-    self.logInView.facebookButton.frame = CGRectMake(100, 195, 120, 50);
+    self.logInView.externalLogInLabel.frame = CGRectMake(40, 165, 240, 80);
+    self.logInView.facebookButton.frame = CGRectMake(100, 245, 120, 50);
     self.logInView.passwordForgottenButton.frame = CGRectMake(19.5, 77.5, 23, 55);
 }
 

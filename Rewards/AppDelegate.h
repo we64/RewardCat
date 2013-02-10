@@ -15,4 +15,6 @@
 
 @property (strong, nonatomic) RewardCatTabBarController *tabBarController;
 
+@property (nonatomic) BOOL connected;
+
 @end

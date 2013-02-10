@@ -15,8 +15,12 @@
 #import "HelpViewController.h"
 #import "Flurry.h"
 #import "GameUtils.h"
+#import "LocationManager.h"
+#import "Reachability.h"
 
 @implementation AppDelegate
+
+@synthesize connected;
 
 - (void)dealloc
 {
@@ -43,32 +47,19 @@
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     [Flurry setSessionReportsOnPauseEnabled:YES];
     
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
-    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    
-    // Override point for customization after application launch.
-    ScanViewController *viewController1 = [[[ScanViewController alloc] initWithNibName:@"ScanViewController" bundle:nil] autorelease];
-    RewardsViewController *viewController2 = [[[RewardsViewController alloc] initWithNibName:@"RewardsViewController" bundle:nil] autorelease];
-    PointRewardsViewController *viewController3 = [[[PointRewardsViewController alloc] initWithNibName:@"PointRewardsViewController" bundle:nil] autorelease];
-    AccountViewController *viewController4 = [[[AccountViewController alloc] initWithNibName:@"AccountViewController" bundle:nil] autorelease];
-    HelpViewController *viewController5 = [[[HelpViewController alloc] initWithNibName:@"HelpViewController" bundle:nil] autorelease];
-    
-    self.tabBarController = [[[RewardCatTabBarController alloc] init] autorelease];
-    if ([self.tabBarController.tabBar respondsToSelector:@selector(selectedImageTintColor)]) {
-        self.tabBarController.tabBar.selectedImageTintColor = [UIColor greenColor];
+    [Flurry logEvent:@"action_app_launch"];
+
+    // get all vendor objects and store in cache
+    if ([self checkConnectivity]) {
+        [PFQuery clearAllCachedResults];
+        PFQuery *queryVendor = [PFQuery queryWithClassName:@"Vendor"];
+        NSArray *allVendors = [queryVendor findObjects];
+        [allVendors enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+            PFObject *vendor = object;
+            [[GameUtils instance].vendorDictionary setObject:vendor forKey:vendor.objectId];
+        }];
     }
-    self.tabBarController.viewControllers = @[viewController1, viewController2, viewController3, viewController4, viewController5];
-    
-    viewController1.tabBarController = self.tabBarController;
-    viewController2.tabBarController = self.tabBarController;
-    viewController3.tabBarController = self.tabBarController;
-    viewController4.tabBarController = self.tabBarController;
-    viewController5.tabBarController = self.tabBarController;
-    self.window.rootViewController = self.tabBarController;
-    
-    [Flurry logAllPageViews:self.tabBarController];
-    [self.window makeKeyAndVisible];
-    
+
     return YES;
 }
 
@@ -82,19 +73,110 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    self.connected = NO;
+    UILocalNotification *notif = [[UILocalNotification alloc] init];
+    
+    NSCalendar *calendar = [NSCalendar autoupdatingCurrentCalendar];
+    // add 3 days
+    NSDateComponents *dateComponents = [calendar components:( NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit )
+                                                   fromDate:[[NSDate date] dateByAddingTimeInterval:60*60*72]];
+    // 11:30 every morning
+    [dateComponents setHour:11];
+    [dateComponents setMinute:30];
+    [dateComponents setSecond:0];
+    
+    notif.fireDate = [calendar dateFromComponents:dateComponents];
+    notif.timeZone = [NSTimeZone defaultTimeZone];
+
+    NSString *message;
+    PFUser *user = [PFUser currentUser];
+    NSString *deviceUUID = [user objectForKey:@"uuid"];
+    if (![deviceUUID isEqualToString:user.username] &&
+        [((NSNumber *)[user objectForKey:@"rewardcatPoints"]) intValue] >= 10) {
+        message = @"RewardCat says you have rewards to redeem *meow*! Visit the Coins tab to see what they are.";
+    } else if ([deviceUUID isEqualToString:user.username]) {
+        message = @"Want to redeem rewards *meow*? Signup on RewardCat, and get enough Coins to start redeeming.";
+    } else {
+        message = @"Getting rewarded is great! Keep using RewardCat to get more rewards!";
+    }
+
+    notif.alertBody = message;
+    notif.alertAction = @"Get Rewards";
+    notif.soundName = UILocalNotificationDefaultSoundName;
+    notif.applicationIconBadgeNumber = 1;
+    
+    [[UIApplication sharedApplication] scheduleLocalNotification:notif];
+    [notif release];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    [GameUtils refreshCurrentUser];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdateRewardList" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdatePointsRewardList" object:nil];
+    [Flurry logEvent:@"action_app_enter_from_background"];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+
+    // check to see if location service is available
+    // start updating current location
+    if ([LocationManager allowLocationService]) {
+        [[LocationManager sharedSingleton] startUpdatingLocation];
+    }
+    
+    // cehck connectivity
+    if ([self checkConnectivity]) {
+        [Flurry logEvent:@"connectivity_on_app_start_yes"];
+        
+        // get all vendor objects and store in cache
+        PFQuery *queryVendor = [PFQuery queryWithClassName:@"Vendor"];
+        [queryVendor findObjectsInBackgroundWithBlock:^(NSArray *allVendors, NSError *error) {
+            [allVendors enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+                PFObject *vendor = object;
+                [[GameUtils instance].vendorDictionary setObject:vendor forKey:vendor.objectId];
+            }];
+        }];
+    } else {
+        [Flurry logEvent:@"connectivity_on_app_start_no"];
+        UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Internet Connection Error"
+                                                         message:@"Please use RewardCat with internet connection."
+                                                        delegate:nil
+                                               cancelButtonTitle:@"OK"
+                                               otherButtonTitles:nil] autorelease];
+        [alert show];
+    }
+    
+    if (self.window == nil) {
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
+        self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+        
+        // Override point for customization after application launch.
+        ScanViewController *viewController1 = [[[ScanViewController alloc] initWithNibName:@"ScanViewController" bundle:nil] autorelease];
+        RewardsViewController *viewController2 = [[[RewardsViewController alloc] initWithNibName:@"RewardsViewController" bundle:nil] autorelease];
+        PointRewardsViewController *viewController3 = [[[PointRewardsViewController alloc] initWithNibName:@"PointRewardsViewController" bundle:nil] autorelease];
+        AccountViewController *viewController4 = [[[AccountViewController alloc] initWithNibName:@"AccountViewController" bundle:nil] autorelease];
+        HelpViewController *viewController5 = [[[HelpViewController alloc] initWithNibName:@"HelpViewController" bundle:nil] autorelease];
+        
+        self.tabBarController = [[[RewardCatTabBarController alloc] init] autorelease];
+        if ([self.tabBarController.tabBar respondsToSelector:@selector(selectedImageTintColor)]) {
+            self.tabBarController.tabBar.selectedImageTintColor = [UIColor greenColor];
+        }
+        self.tabBarController.viewControllers = @[viewController1, viewController2, viewController3, viewController4, viewController5];
+        
+        viewController1.tabBarController = self.tabBarController;
+        viewController2.tabBarController = self.tabBarController;
+        viewController3.tabBarController = self.tabBarController;
+        viewController4.tabBarController = self.tabBarController;
+        viewController5.tabBarController = self.tabBarController;
+        self.window.rootViewController = self.tabBarController;
+        
+        [Flurry logAllPageViews:self.tabBarController];
+        [self.window makeKeyAndVisible];
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -112,6 +194,15 @@ void uncaughtExceptionHandler(NSException *exception)
     [Flurry logError:@"Uncaught"
              message:@"Crash!"
            exception:exception];
+}
+
+- (BOOL)checkConnectivity {
+    if (!self.connected) {
+        Reachability *reachability = [Reachability reachabilityForInternetConnection];
+        NetworkStatus networkStatus = [reachability currentReachabilityStatus];
+        self.connected = !(networkStatus == NotReachable);
+    }
+    return self.connected;
 }
 
 /*

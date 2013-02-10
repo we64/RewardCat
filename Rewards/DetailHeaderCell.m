@@ -42,23 +42,39 @@
     self.countDownLabel.text = text;
 }
 
-- (void)setUpWithReward:(PFObject *)reward_ redeem:(BOOL)redeem_ {
+- (void)redeemTimerExpired:(NSNotification *)notification {
+    NSString *rewardId = [notification.userInfo objectForKey:@"rewardID"];
+    if (![self.reward.objectId isEqualToString:rewardId]) {
+        return;
+    }
+    [self setUpWithReward:self.reward redeem:NO];
+}
+
+- (void)awakeFromNib {
+    [super awakeFromNib];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshIfNotRedeeming) name:@"currentUserRefreshed" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCountDownLabel:) name:@"updateCountDownLabel" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(redeemTimerExpired:) name:@"redeemTimerExpired" object:nil];
+}
+
+- (void)setUpWithReward:(PFObject *)reward_ redeem:(BOOL)redeem_ {
     
     self.reward = reward_;
     self.redeem = redeem_;
+    PFObject *vendor = [[GameUtils instance] getVendor:((PFObject *)[self.reward objectForKey:@"vendor"]).objectId];
     
     PFFile *imageFile = [self.reward objectForKey:@"image"];
     [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         UIImage *image = [UIImage imageWithData:[imageFile getData]];
         self.icon.image = image;
     }];
-    self.businessNameLabel.text = [[self.reward objectForKey:@"description"] objectForKey:@"title"];
+    self.businessNameLabel.text = [vendor objectForKey:@"name"];
     
     if (self.redeem) {
         self.progressParentView.hidden = YES;
         self.countDownParentView.hidden = NO;
+        self.salesButton.hidden = YES;
         return;
     }
 
@@ -66,39 +82,47 @@
     PFUser *user = [PFUser currentUser];
     NSMutableDictionary *progressMap = [user objectForKey:@"progressMap"];
     
-    int target = MAX(1,[[self.reward objectForKey:@"target"] intValue]);
-    int progress = 0;
-    if ([[self.reward className] isEqualToString:@"Reward"]) {
-        if ([progressMap objectForKey:self.reward.objectId] != nil) {
-            progress = MIN([[[progressMap objectForKey:reward.objectId] objectForKey:@"Count"] intValue], target);
+    int target = [[self.reward objectForKey:@"target"] intValue];
+    if (target > 1) {
+        self.progressParentView.hidden = NO;
+        self.salesButton.hidden = YES;
+
+        int progress = 0;
+        if ([[self.reward className] isEqualToString:@"Reward"]) {
+            if ([progressMap objectForKey:self.reward.objectId] != nil) {
+                progress = MIN([[[progressMap objectForKey:reward.objectId] objectForKey:@"Count"] intValue], target);
+            }
+        } else if ([self.reward.className isEqualToString:@"PointReward"]) {
+            progress = MIN([[user objectForKey:@"rewardcatPoints"] intValue], target);
         }
-    } else if ([self.reward.className isEqualToString:@"PointReward"]) {
-        progress = MIN([[user objectForKey:@"rewardcatPoints"] intValue], target);
-    }
-    
-    if (progress < 0) {
-        progress = 0;
-    }
-    
-    if (progress > target) {
-        progress = target;
-    }
-    
-    if (progress < target) {
-        NSString *progressText = [NSString stringWithFormat:@"%d / %d", progress, target];
-        [self.redeemButton setTitle:progressText forState:UIControlStateNormal];
-        self.redeemButton.userInteractionEnabled = NO;
+        
+        if (progress < 0) {
+            progress = 0;
+        }
+        
+        if (progress > target) {
+            progress = target;
+        }
+        
+        if (progress < target) {
+            NSString *progressText = [NSString stringWithFormat:@"%d / %d", progress, target];
+            [self.redeemButton setTitle:progressText forState:UIControlStateNormal];
+            self.redeemButton.userInteractionEnabled = NO;
+        } else {
+            [self.redeemButton setTitle:@"Redeem Now!" forState:UIControlStateNormal];
+            self.redeemButton.userInteractionEnabled = YES;
+            [self.redeemButton setBackgroundImage:[UIImage imageNamed:@"barbigclick"] forState:UIControlStateHighlighted];
+        }
+        CGFloat progressWidth = MIN(self.progressSubParentView.frame.size.width * (float)progress / (float)target, self.progressSubParentView.frame.size.width);
+        self.redeemButton.titleLabel.textAlignment = UITextAlignmentCenter;
+        self.progressView.frame = CGRectMake(self.progressView.frame.origin.x,
+                                             self.progressView.frame.origin.y,
+                                             progressWidth,
+                                             self.progressView.frame.size.height);
     } else {
-        [self.redeemButton setTitle:@"Redeem Now!" forState:UIControlStateNormal];
-        self.redeemButton.userInteractionEnabled = YES;
-        [self.redeemButton setBackgroundImage:[UIImage imageNamed:@"barbigclick"] forState:UIControlStateHighlighted];
+        self.progressParentView.hidden = YES;
+        self.salesButton.hidden = NO;
     }
-    CGFloat progressWidth = MIN(self.progressSubParentView.frame.size.width * (float)progress / (float)target, self.progressSubParentView.frame.size.width);
-    self.redeemButton.titleLabel.textAlignment = UITextAlignmentCenter;
-    self.progressView.frame = CGRectMake(self.progressView.frame.origin.x,
-                                         self.progressView.frame.origin.y,
-                                         progressWidth,
-                                         self.progressView.frame.size.height);
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -116,7 +140,9 @@
     NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
     if([title isEqualToString:@"OK"]) {
         [self setUpWithReward:self.reward redeem:YES];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"startRedeemReward" object:nil];
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    self.reward.objectId, @"rewardID", nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"startRedeemReward" object:nil userInfo:dictionary];
     }
 }
 

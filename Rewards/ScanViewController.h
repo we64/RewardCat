@@ -15,6 +15,4 @@
 @property (nonatomic, retain) IBOutlet UIImageView *scanBox;
 @property (nonatomic, assign) UITabBarController *tabBarController;
 
-- (BOOL)connected;
-
 @end

@@ -16,7 +16,7 @@
 @synthesize topBorder;
 @synthesize middle;
 @synthesize action;
-@synthesize coordinates;
+@synthesize coordinate;
 @synthesize businessName;
 @synthesize icon;
 
@@ -57,13 +57,10 @@
     BOOL isMapUrl = [[self.action absoluteString] rangeOfString:@"maps.google"].location != NSNotFound;
     NSArray *versionArray = [[UIDevice currentDevice].systemVersion componentsSeparatedByString:@"."];
     BOOL isIOS6 = [[versionArray objectAtIndex:0] intValue] >= 6;
-    if (isMapUrl && isIOS6 && self.coordinates && self.coordinates.count >= 2) {
+    if (isMapUrl && isIOS6) {
         // Create an MKMapItem to pass to the Maps app
-        double latitude = [[self.coordinates objectAtIndex:0] doubleValue];
-        double longitude = [[self.coordinates objectAtIndex:1] doubleValue];
-        CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
         MKPlacemark *placemark = [[[MKPlacemark alloc] initWithCoordinate:coordinate
-                                                       addressDictionary:nil] autorelease];
+                                                        addressDictionary:nil] autorelease];
         MKMapItem *mapItem = [[[MKMapItem alloc] initWithPlacemark:placemark] autorelease];
         [mapItem setName:businessName];
         // Pass the map item to the Maps app
@@ -80,7 +77,6 @@
     [topBorder release], topBorder = nil;
     [middle release], middle = nil;
     [action release], action = nil;
-    [coordinates release], coordinates = nil;
     [businessName release], businessName = nil;
     [icon release], icon = nil;
     [super dealloc];

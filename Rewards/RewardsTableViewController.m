@@ -10,16 +10,21 @@
 #import "RewardsTableViewCell.h"
 #import "LoadMoreTableViewCell.h"
 #import "DetailViewController.h"
+#import "LocationManager.h"
+#import "GameUtils.h"
 
 @interface RewardsTableViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic) int indexToHighlight;
+@property (nonatomic, retain) UIBarButtonItem *toggleButton;
+@property (nonatomic) BOOL myRewards;
 
 @end
 
 @implementation RewardsTableViewController
 
 @synthesize indexToHighlight;
+@synthesize toggleButton;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
@@ -30,61 +35,88 @@
     self.className = @"Reward";
     self.objectsPerPage = 15;
     self.indexToHighlight = -1;
+    self.loadingViewEnabled = YES;
+    self.myRewards = NO;
+    self.toggleButton = [[UIBarButtonItem alloc] initWithTitle:@"My Rewards"
+                                                         style:UIBarButtonItemStylePlain
+                                                        target:self
+                                                        action:@selector(showMyRewards)];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:@"shouldUpdateRewardList" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshAndScrollToRewardId:) name:@"shouldUpdateRewardListWithReward"
-                                               object:nil];
-
+    self.tableView.separatorColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.25];
     return self;
+}
+
+- (void)viewDidLoad {
+    self.navigationItem.leftBarButtonItem = self.toggleButton;
+    [super viewDidLoad];
 }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [toggleButton release], toggleButton = nil;
     [super dealloc];
 }
 
-- (void)refresh {
+- (void)showMyRewards {
+    self.myRewards = !self.myRewards;
+    if (self.myRewards) {
+        [self.toggleButton setTitle:@"All Rewards"];
+    } else {
+        [self.toggleButton setTitle:@"My Rewards"];
+    }
     [self loadObjects];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if ([GameUtils instance].hasUserUpdatedForReward) {
+        [self loadObjects];
+        [GameUtils instance].hasUserUpdatedForReward = NO;
+    }
+}
+
 - (void)loadObjects {
-    self.view.userInteractionEnabled = NO;
+    [GameUtils showProcessing];
     [super loadObjects];
 }
 
 - (void)objectsDidLoad:(NSError *)error {
     [super objectsDidLoad:error];
-    self.view.userInteractionEnabled = YES;
-}
-
-- (void)refreshAndScrollToRewardId:(NSNotification *)notification {
-    [self loadObjects];
-    int index = 0;
-    NSString *rewardId = [notification.userInfo objectForKey:@"rewardId"];
-    for (PFObject *reward in self.objects) {
-        if ([reward respondsToSelector:@selector(className)] && [reward.className isEqualToString:@"Reward"] && [reward.objectId isEqualToString:rewardId]) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-            [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
-            [((RewardsTableViewCell *)[self tableView:self.tableView cellForRowAtIndexPath:indexPath]) highlight];
-            self.indexToHighlight = index;
-            return;
-        }
-        index++;
-    }
+    [GameUtils hideProgressing];
 }
 
 #pragma mark - Table view data source
 
 - (PFQuery *)queryForTable {
     PFQuery *query = [PFQuery queryWithClassName:self.className];
-    
-    if ([self.objects count] == 0) {
-        query.cachePolicy = kPFCachePolicyCacheThenNetwork;
+    query.cachePolicy = kPFCachePolicyCacheElseNetwork;
+    query.maxCacheAge = 60 * 60 * 24;  // One day, in seconds.
+
+    if (self.myRewards) {
+        PFUser *user = [PFUser currentUser];
+        NSMutableDictionary *result = [NSMutableDictionary dictionaryWithDictionary:[user objectForKey:@"progressMap"]];
+        
+        [[user objectForKey:@"progressMap"] enumerateKeysAndObjectsUsingBlock: ^(id key, id obj, BOOL *stop) {
+            if ([(NSNumber *)[obj objectForKey:@"Count"] intValue] == 0) {
+                [result removeObjectForKey:key];
+            }
+        }];
+        
+        [query whereKey:@"objectId" containedIn:[result allKeys]];
     }
     
-    [query orderByAscending:@"displayPriority"];
+    [query whereKey:@"expireDate" greaterThanOrEqualTo:[GameUtils getToday]];
+    if ([LocationManager allowLocationService]) {
+        [query whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLocation:[LocationManager sharedSingleton].locationManager.location]];
+    } else {
+        [query orderByDescending:@"createdAt"];
+    }
     
     return query;
+}
+
+- (int)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [super tableView:tableView numberOfRowsInSection:section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -130,7 +162,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForNextPageAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"LoadMoreTableViewCell";
-    
+
     LoadMoreTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];

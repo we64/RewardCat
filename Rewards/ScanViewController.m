@@ -10,7 +10,6 @@
 #import <Parse/Parse.h>
 #import "ZBarReaderView.h"
 #import "ZBarReaderViewController.h"
-#import "Reachability.h"
 #import "GameUtils.h"
 
 @interface ScanViewController ()
@@ -39,17 +38,9 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [Flurry logEvent:@"page_view_tab_scan"];
     if (![self userLoggedIn]) {
-        if ([self connected]) {
-            [self login];
-        } else {
-            UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Internet Connection Error"
-                                                             message:@"Please use RewardCat with internet connection."
-                                                            delegate:nil
-                                                   cancelButtonTitle:@"OK"
-                                                   otherButtonTitles:nil] autorelease];
-            [alert show];
-        }
+        [self login];
     }
 
     [self setUpCamera];
@@ -109,18 +100,20 @@
         NSLog(@"%@", sym.data);
         NSArray *qrData = [sym.data componentsSeparatedByString:@"?r="];
         if ([[[qrData objectAtIndex:0] lowercaseString] isEqualToString:@"http://www.rewardcat.com"] && qrData.count >= 2) {
-            [Flurry logEvent:@"Scanned_Valid_QR_Code"];
+            [Flurry logEvent:@"action_scan_valid_qr_code"];
+            [Flurry logEvent:@"action_scan_valid_qr_code_duration" timed:YES];
+
             NSString *rewardId = [qrData objectAtIndex:1];
-            NSArray *keys = [NSArray arrayWithObjects:@"rewardID", nil];
-            NSArray *objects = [NSArray arrayWithObjects:rewardId, nil];
-            NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:objects
-                                                                   forKeys:keys];
+            NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:rewardId, @"rewardID", nil];
+            [GameUtils showProcessing];
             [PFCloud callFunctionInBackground:@"IncrementProgress" withParameters:dictionary block:^(id result, NSError *error) {
+                [GameUtils hideProgressing];
+                [Flurry endTimedEvent:@"action_scan_valid_qr_code_duration" withParameters:nil];
                 if (!error) {
                     [GameUtils refreshCurrentUser];
-                    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[qrData objectAtIndex:1] forKey:@"rewardId"];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdateRewardListWithReward" object:nil userInfo:userInfo];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"shouldUpdatePointsRewardList" object:nil];
+                    [GameUtils showDoobersWithStamp:[[((NSDictionary *)result) objectForKey:@"rewardDelta"] intValue]
+                                               coin:[[((NSDictionary *)result) objectForKey:@"rewardcatPointsDelta"] intValue]
+                                         vendorName:[[[GameUtils instance].vendorDictionary objectForKey:[result objectForKey:@"vendorId"]] objectForKey:@"name"]];
                 } else {
                     UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Invalid Scan"
                                                                      message:[[error userInfo] objectForKey:@"error"]
@@ -130,10 +123,8 @@
                     [alert show];
                 }
             }];
-
-            self.tabBarController.selectedIndex = 1;
         } else {
-            [Flurry logEvent:@"Scanned_Invalid_QR_Code"];
+            [Flurry logEvent:@"error_action_scan_invalid_qr_code"];
             UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Invalid QR code"
                                                              message:@"This is not a valid Reward Cat QR code."
                                                             delegate:nil
@@ -145,24 +136,24 @@
     }
 }
 
-- (NSString *)deviceUUID {
-    UIDevice *device = [UIDevice currentDevice];
-    NSString *deviceUUID = nil;
-    if ([device respondsToSelector:@selector(identifierForVendor)]) {
-        deviceUUID = device.identifierForVendor.UUIDString;
-    }
-    if (deviceUUID == nil || [deviceUUID isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
-        deviceUUID = device.uniqueIdentifier;
-    }
-    return deviceUUID;
-}
+//- (NSString *)deviceUUID {
+//    UIDevice *device = [UIDevice currentDevice];
+//    NSString *deviceUUID = nil;
+//    if ([device respondsToSelector:@selector(identifierForVendor)]) {
+//        deviceUUID = device.identifierForVendor.UUIDString;
+//    }
+//    if (deviceUUID == nil || [deviceUUID isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
+//        deviceUUID = device.uniqueIdentifier;
+//    }
+//    return deviceUUID;
+//}
 
 - (void)signup {
     self.tabBarController.selectedIndex = 4;
     PFUser *user = [PFUser user];
-    user.username = [self deviceUUID];
+    user.username = [GameUtils uuid];
     user.password = @"password";
-    [user setObject:[self deviceUUID] forKey:@"uuid"];
+    [user setObject:[GameUtils uuid] forKey:@"uuid"];
     [user setObject:[NSMutableDictionary dictionary] forKey:@"progressMap"];
     [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (!error) {
@@ -180,7 +171,7 @@
     if ([self userLoggedIn]) {
         [GameUtils refreshCurrentUser];
     } else {
-        [PFUser logInWithUsernameInBackground:[self deviceUUID] password:@"password" block:^(PFUser *user, NSError *error) {
+        [PFUser logInWithUsernameInBackground:[GameUtils uuid] password:@"password" block:^(PFUser *user, NSError *error) {
             if (!error) {
                 [GameUtils refreshCurrentUser];
             } else {
@@ -190,15 +181,7 @@
     }
 }
 
-- (BOOL)connected
-{
-    Reachability *reachability = [Reachability reachabilityForInternetConnection];
-    NetworkStatus networkStatus = [reachability currentReachabilityStatus];
-    return !(networkStatus == NotReachable);
-}
-
-- (BOOL)userLoggedIn
-{
+- (BOOL)userLoggedIn {
     PFUser *currentUser = [PFUser currentUser];
     if (currentUser) {
         return true;

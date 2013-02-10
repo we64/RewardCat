@@ -39,8 +39,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.scrollView.contentSize = self.imageView.frame.size;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [Flurry logEvent:@"page_view_tab_help"];
 }
 
 - (void)didReceiveMemoryWarning

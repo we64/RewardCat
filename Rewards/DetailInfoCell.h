@@ -17,7 +17,7 @@
 @property (nonatomic, retain) IBOutlet UIImageView *middle;
 @property (nonatomic, retain) IBOutlet UIImageView *bottomBorder;
 @property (nonatomic, retain) NSURL *action;
-@property (nonatomic, retain) NSArray *coordinates;
+@property (nonatomic) CLLocationCoordinate2D coordinate;
 @property (nonatomic, retain) NSString *businessName;
 @property (nonatomic, retain) IBOutlet UIImageView *icon;
 

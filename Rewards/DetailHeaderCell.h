@@ -14,6 +14,7 @@
 @property (nonatomic, retain) IBOutlet UIImageView *icon;
 @property (nonatomic, retain) IBOutlet UIView *progressParentView;
 @property (nonatomic, retain) IBOutlet UIButton *redeemButton;
+@property (nonatomic, retain) IBOutlet UIButton *salesButton;
 @property (nonatomic, retain) IBOutlet UIView *progressView;
 @property (nonatomic, retain) IBOutlet UIView *progressSubParentView;
 @property (nonatomic, retain) IBOutlet UIView *countDownParentView;

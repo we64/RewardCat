@@ -10,9 +10,13 @@
 
 @interface LoggedInAccountViewController ()
 
+@property (nonatomic, retain) HistoryTableViewController *historyTableViewController;
+
 @end
 
 @implementation LoggedInAccountViewController
+
+@synthesize historyTableViewController;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -23,6 +27,13 @@
     self.title = @"Account";
     
     return self;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.historyTableViewController = [[[HistoryTableViewController alloc] init] autorelease];
+    self.historyTableViewController.view.frame = CGRectMake(0, 0, self.tableViewContainer.frame.size.width, self.tableViewContainer.frame.size.height);
+    [self.tableViewContainer addSubview:self.historyTableViewController.tableView];
 }
 
 - (IBAction)likeButtonClicked:(id)sender
@@ -80,12 +91,6 @@
 {
     NSString* url = [NSString stringWithFormat: @"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=%@", @"584774055"];
     [[UIApplication sharedApplication] openURL: [NSURL URLWithString: url]];
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
 }
 
 - (void)didReceiveMemoryWarning

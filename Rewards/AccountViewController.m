@@ -7,7 +7,7 @@
 //
 
 #import "AccountViewController.h"
-
+#import "GameUtils.h"
 
 @interface AccountViewController ()
 
@@ -50,12 +50,18 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [Flurry logEvent:@"page_view_tab_account"];
     PFUser *user = [PFUser currentUser];
     NSString *deviceUUID = [user objectForKey:@"uuid"];
-    if ([deviceUUID isEqualToString:[user username]]) {
+    if ([deviceUUID isEqualToString:user.username]) {
         SignUpLogInViewController *signUpLogInViewController = [[[SignUpLogInViewController alloc] init] autorelease];
         [self.accountNavigationController pushViewController:signUpLogInViewController animated:YES];
         signUpLogInViewController.view.frame = self.view.frame;
+    } else {
+        if ([GameUtils instance].hasUserUpdatedForTransaction) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshHistoryList" object:nil];
+            [GameUtils instance].hasUserUpdatedForTransaction = NO;
+        }
     }
 }
 

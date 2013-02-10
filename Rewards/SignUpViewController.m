@@ -8,6 +8,7 @@
 
 #import "SignUpViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "Flurry.h"
 
 @interface SignUpViewController ()
 
@@ -116,6 +117,11 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [Flurry logEvent:@"page_view_signup"];
 }
 
 - (void)dealloc {
