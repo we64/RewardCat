@@ -27,9 +27,9 @@
     if (!self) {
         return nil;
     }
-    self.title = @"Rewards";
-    self.selectedImage = [UIImage imageNamed:@"couponon"];
-    self.unselectedImage = [UIImage imageNamed:@"couponoff"];
+    self.title = @"Loyalty";
+    self.selectedImage = [UIImage imageNamed:@"stampon"];
+    self.unselectedImage = [UIImage imageNamed:@"stampoff"];
     
     self.rewardsNavigationController = [[[CustomNavigationController alloc] init] autorelease];
     self.rewardsNavigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;

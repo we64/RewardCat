@@ -9,12 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "RewardCatTabBarController.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
 @property (strong, nonatomic) RewardCatTabBarController *tabBarController;
 
+@property (nonatomic, retain) UIAlertView *noNetworkAlertView;
 @property (nonatomic) BOOL connected;
 
 @end

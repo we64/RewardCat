@@ -8,14 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
-#import "HistoryTableViewController.h"
 
-@interface LoggedInAccountViewController : UIViewController <MFMailComposeViewControllerDelegate>
+@interface LoggedInAccountViewController : UIViewController <MFMailComposeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, retain) IBOutlet UIView *tableViewContainer;
+@property (nonatomic, retain) IBOutlet UITableView *accountTableView;
+@property (nonatomic, assign) UINavigationController *accountNavigationController;
 
-- (IBAction)supportButtonClicked:(id)sender;
-- (IBAction)rateButtonClicked:(id)sender;
-- (IBAction)likeButtonClicked:(id)sender;
+- (void)supportButtonClicked;
+- (void)rateButtonClicked;
+- (void)likeButtonClicked;
+- (void)historyButtonClicked;
 
 @end

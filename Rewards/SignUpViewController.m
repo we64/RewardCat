@@ -9,6 +9,7 @@
 #import "SignUpViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "Flurry.h"
+#import "GameUtils.h"
 
 @interface SignUpViewController ()
 
@@ -26,7 +27,6 @@
 @synthesize birthday;
 
 - (void)viewDidLoad {
-    
     [super viewDidLoad];
     
     self.title = @"Sign Up";

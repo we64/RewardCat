@@ -11,6 +11,12 @@
 #import "GameUtils.h"
 #import "LocationManager.h"
 
+@interface PointRewardsTableViewCell ()
+
+@property (nonatomic) CGFloat descriptionWidth;
+
+@end
+
 @implementation PointRewardsTableViewCell
 
 @synthesize textLabels;
@@ -47,7 +53,7 @@
         NSDictionary *description = [item objectForKey:@"description"];
         PFFile *itemImageFile = [item objectForKey:@"image"];
         PFFile *imageFile = [self.imageFiles objectAtIndex:i];
-        PFObject *vendor = [[GameUtils instance] getVendor:((PFObject *)[item objectForKey:@"vendor"]).objectId];
+        PFObject *vendor = [GameUtils.instance getVendor:((PFObject *)[item objectForKey:@"vendor"]).objectId];
 
         UIImageView *imageContainerView = [self.imageContainerViews objectAtIndex:i];
         UIImageView *imageView_ = [self.imageViews objectAtIndex:i];
@@ -57,41 +63,43 @@
         UILabel *pointsLabel = [self.pointsLabels objectAtIndex:i];
         UILabel *distanceLabel = [self.distanceLabels objectAtIndex:i];
         
+        if (!self.descriptionWidth) {
+            self.descriptionWidth = detailTextLabel_.frame.size.width;
+        }
+        
         imageContainerView.hidden = NO;
         textLabel_.hidden = NO;
         starView.hidden = NO;
         pointsLabel.hidden = NO;
         distanceLabel.hidden = NO;
+        detailTextLabel_.hidden = NO;
         
         if ([LocationManager allowLocationService]) {
             distanceLabel.hidden = NO;
-            
-            double distnace = [[PFGeoPoint geoPointWithLocation:[LocationManager sharedSingleton].locationManager.location]
+            double distance = [[PFGeoPoint geoPointWithLocation:[LocationManager sharedSingleton].currentLocation]
                                distanceInMilesTo:[item objectForKey:@"location"]];
             distanceLabel.text = [[[GameUtils instance].distanceFormatter
-                                        stringFromNumber:[NSNumber numberWithDouble:distnace]] stringByAppendingString:@" mi"];
+                                        stringFromNumber:[NSNumber numberWithDouble:distance]] stringByAppendingString:@" mi"];
         } else {
             distanceLabel.hidden = YES;
         }
-        
+
+        imageView_.hidden = YES;
         if (itemImageFile != (id)[NSNull null] && ![imageFile.url isEqual:itemImageFile.url]) {
             imageFile = itemImageFile;
             imageView_.image = nil;
-            if (imageFile.isDataAvailable) {
-                UIImage *image = [UIImage imageWithData:[imageFile getData]];
-                imageView_.image = image;
-            } else {
+            int indexInTable_ = [[self.indicesInTable objectAtIndex:i] intValue];
+            [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
                 int indexInTable = [[self.indicesInTable objectAtIndex:i] intValue];
-                int indexInTable_ = indexInTable;
-                [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-                    int indexInTable = [[self.indicesInTable objectAtIndex:i] intValue];
-                    UIImage *image = [UIImage imageWithData:[imageFile getData]];
-                    if (indexInTable_ == indexInTable) {
-                        imageView_.image = image;
-                    }
-                }];
-            }
+                UIImage *image = [UIImage imageWithData:data];
+                if (indexInTable_ == indexInTable) {
+                    imageView_.image = image;
+                    imageView_.hidden = NO;
+                }
+
+            }];
         }
+
         textLabel_.text = [vendor objectForKey:@"name"];
         CGFloat oldBottomLine = detailTextLabel_.frame.origin.y + detailTextLabel_.frame.size.height;
         detailTextLabel_.text = [description objectForKey:@"description"];
@@ -101,7 +109,7 @@
         
         detailTextLabel_.frame = CGRectMake(detailTextLabel_.frame.origin.x,
                                             newOriginY,
-                                            detailTextLabel_.frame.size.width,
+                                            self.descriptionWidth,
                                             detailTextLabel_.frame.size.height);
         
         if ([[item objectForKey:@"target"] intValue] > [[user objectForKey:@"rewardcatPoints"] intValue]) {

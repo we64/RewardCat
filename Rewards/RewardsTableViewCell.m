@@ -22,7 +22,6 @@
 @synthesize distanceLabel;
 @synthesize imageView;
 @synthesize redeemButton;
-@synthesize detailsButton;
 @synthesize progressView;
 @synthesize progressParentView;
 @synthesize item;
@@ -30,15 +29,8 @@
 @synthesize imageFile;
 @synthesize indexInTable;
 @synthesize imageContainerView;
-@synthesize highLightBackgroundView;
 @synthesize arrow;
-@synthesize stampMark;
-
-- (void)highlight {
-    self.highLightBackgroundView.alpha = 1.0;
-    self.highLightBackgroundView.hidden = NO;
-    [UIView animateWithDuration:2 animations:^{self.highLightBackgroundView.alpha = 0;}];
-}
+@synthesize descriptionWidth;
 
 - (void)setUpViews {
     self.imageView.clipsToBounds = YES;
@@ -47,7 +39,14 @@
 }
 
 - (void)setDetailtextLabelTextAndAdjustCellHeight:(NSString *)newText {
+    if (self.descriptionWidth <= 0) {
+        self.descriptionWidth = self.detailTextLabel.frame.size.width;
+    }
     CGFloat oldHeight = self.detailTextLabel.frame.size.height;
+    self.detailTextLabel.frame = CGRectMake(self.detailTextLabel.frame.origin.x,
+                                            self.detailTextLabel.frame.origin.y,
+                                            self.descriptionWidth,
+                                            self.detailTextLabel.frame.size.height);
     self.detailTextLabel.text = newText;
     self.detailTextLabel.numberOfLines = 0;
     [self.detailTextLabel sizeToFit];
@@ -70,7 +69,7 @@
 
     self.item = item_;
     PFUser *user = [PFUser currentUser];
-    PFObject *vendor = [[GameUtils instance] getVendor:((PFObject *)[self.item objectForKey:@"vendor"]).objectId];
+    PFObject *vendor = [GameUtils.instance getVendor:((PFObject *)[self.item objectForKey:@"vendor"]).objectId];
     NSMutableDictionary *progressMap = [user objectForKey:@"progressMap"];
     
     int target = [[self.item objectForKey:@"target"] intValue];
@@ -84,68 +83,51 @@
     if (itemImageFile != (id)[NSNull null] && ![self.imageFile.url isEqual:itemImageFile.url]) {
         self.imageFile = itemImageFile;
         self.imageView.image = nil;
-        if (self.imageFile.isDataAvailable) {
-            UIImage *image = [UIImage imageWithData:[imageFile getData]];
-            self.imageView.image = image;
-        } else {
-            int indexInTable_ = self.indexInTable;
-            [self.imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-                UIImage *image = [UIImage imageWithData:[imageFile getData]];
-                if (indexInTable_ == self.indexInTable) {
-                    self.imageView.image = image;
-                }
-            }];
-        }
+        int indexInTable_ = self.indexInTable;
+        [self.imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+            UIImage *image = [UIImage imageWithData:data];
+            if (indexInTable_ == self.indexInTable) {
+                self.imageView.image = image;
+            }
+        }];
     }
     
     self.textLabel.text = [vendor objectForKey:@"name"];
     if ([LocationManager allowLocationService]) {
         self.distanceLabel.hidden = NO;
         
-        double distnace = [[PFGeoPoint geoPointWithLocation:[LocationManager sharedSingleton].locationManager.location]
+        double distance = [[PFGeoPoint geoPointWithLocation:[LocationManager sharedSingleton].currentLocation]
                            distanceInMilesTo:[self.item objectForKey:@"location"]];
         self.distanceLabel.text = [[[GameUtils instance].distanceFormatter
-                                    stringFromNumber:[NSNumber numberWithDouble:distnace]] stringByAppendingString:@" mi"];
+                                    stringFromNumber:[NSNumber numberWithDouble:distance]] stringByAppendingString:@" mi"];
     } else {
         self.distanceLabel.hidden = YES;
     }
     [self setDetailtextLabelTextAndAdjustCellHeight:[description objectForKey:@"description"]];
 
-    if (target < 1) {
-        self.progressParentView.hidden = YES;
-        self.salesButton.hidden = NO;
-        self.stampMark.hidden = YES;
-    } else {
-        self.progressParentView.hidden = NO;
-        self.salesButton.hidden = YES;
-        NSString *progressText = [NSString stringWithFormat:@"%d / %d", progress, target];
-        [self.redeemButton setTitle:progressText forState:UIControlStateNormal];
-        self.redeemButton.userInteractionEnabled = NO;
-        self.stampMark.hidden = NO;
-        
-        if (progress < 0) {
-            progress = 0;
-        } else if (progress > target) {
-            progress = target;
-        }
-        
-        self.redeemButton.titleLabel.textAlignment = UITextAlignmentCenter;
-        self.progressView.frame = CGRectMake(self.progressView.frame.origin.x,
-                                             self.progressView.frame.origin.y,
-                                             MIN(redeemButton.frame.size.width * (float)progress / (float)target, redeemButton.frame.size.width),
-                                             self.progressView.frame.size.height);
-        self.selectionStyle = UITableViewCellSelectionStyleNone;
+    self.progressParentView.hidden = NO;
+    NSString *progressText = [NSString stringWithFormat:@"%d / %d", progress, target];
+    [self.redeemButton setTitle:progressText forState:UIControlStateNormal];
+    self.redeemButton.userInteractionEnabled = NO;
+    
+    if (progress < 0) {
+        progress = 0;
+    } else if (progress > target) {
+        progress = target;
     }
-}
-
-- (IBAction)detailsButtonClicked:(id)sender {
-    DetailViewController *detailViewController = [[[DetailViewController alloc] initWithReward:self.item] autorelease];
-    [self.rewardsTableViewController.navigationController pushViewController:detailViewController animated:YES];
+    
+    self.redeemButton.titleLabel.textAlignment = UITextAlignmentCenter;
+    self.progressView.frame = CGRectMake(self.progressView.frame.origin.x,
+                                         self.progressView.frame.origin.y,
+                                         MIN(redeemButton.frame.size.width * (float)progress / (float)target, redeemButton.frame.size.width),
+                                         self.progressView.frame.size.height);
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     if (selected) {
-        [self detailsButtonClicked:nil];
+        DetailViewController *detailViewController = [[[DetailViewController alloc] initWithReward:self.item] autorelease];
+        [self.rewardsTableViewController.navigationController pushViewController:detailViewController animated:YES];
     }
 }
 
@@ -167,14 +149,12 @@
     [distanceLabel release], distanceLabel = nil;
     [imageView release], imageView = nil;
     [redeemButton release], redeemButton = nil;
-    [detailsButton release], detailsButton = nil;
     [progressView release], progressView = nil;
     [progressParentView release], progressParentView = nil;
     [item release], item = nil;
-    rewardsTableViewController = nil;
     [imageFile release], imageFile = nil;
     [imageContainerView release], imageContainerView = nil;
-    [highLightBackgroundView release], highLightBackgroundView = nil;
+    rewardsTableViewController = nil;
     [arrow release], arrow = nil;
     [super dealloc];
 }

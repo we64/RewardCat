@@ -27,7 +27,7 @@
 @synthesize beforeLoggedInUser;
 
 - (id)init {
-    [super init];
+    self = [super init];
     if (!self) {
         return self;
     }
@@ -35,10 +35,12 @@
     [self.navigationItem setHidesBackButton:YES];
     
     [self setDelegate:self];
-    [self setFacebookPermissions:[NSArray arrayWithObjects:@"user_birthday", @"publish_stream", @"user_about_me", @"email", @"user_location", nil]];
+    [self setFacebookPermissions:[GameUtils instance].facebookPermissions];
     [self setFields:PFLogInFieldsUsernameAndPassword | PFLogInFieldsPasswordForgotten | PFLogInFieldsFacebook];
 
     // this is hack to get Facebook/Twitter user login to work
+    // if an user is registered
+    // it should be impossible to have their username to be the same as uuid
     PFUser *user = [PFUser currentUser];
     if ([user.username isEqualToString:[user objectForKey:@"uuid"]]) {
         self.beforeLoggedInUser = user;
@@ -50,8 +52,13 @@
                                     target:self
                                     action:@selector(signUpButtonClicked:)] autorelease];
     self.navigationItem.rightBarButtonItem = signUpButton;
-
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showSignedInAccountPage) name:@"showSignedInAccountPage" object:nil];
     return self;
+}
+
+- (void)showSignedInAccountPage {
+    [[self navigationController] popToRootViewControllerAnimated:YES];
 }
 
 - (IBAction)signUpButtonClicked:(id)sender {
@@ -92,72 +99,12 @@
     if ([PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
         
         [Flurry logEvent:@"action_button_click_facebook_signup"];
-        [self mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"facebook"];
+        [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"facebook" previousUser:self.beforeLoggedInUser];
     } else {
         
         [Flurry logEvent:@"action_button_click_login"];
-        [self mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"login"];
+        [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"login" previousUser:self.beforeLoggedInUser];
     }
-}
-
-- (void)mergeDefaultAccountWithFacebookOrSignedUp:(PFUser *)user actionType:(NSString *)type {
-
-    // merge progress
-    NSDictionary *mergedProgress = [self mergeProgress:[user objectForKey:@"progressMap"] with:[self.beforeLoggedInUser objectForKey:@"progressMap"]];
-    
-    // merge points
-    int totalPoints = [[self.beforeLoggedInUser objectForKey:@"rewardcatPoints"] intValue] + [[user objectForKey:@"rewardcatPoints"] intValue];
-
-    // Need to delete device user after logging in and need to correct transaction userObjectId to the new logged in user
-    NSArray *keys = [NSArray arrayWithObjects:@"userObjectId", @"username", @"progressMap", @"rewardcatPoints", @"uuid", @"type", nil];
-    NSArray *objects = [NSArray arrayWithObjects:self.beforeLoggedInUser.objectId,
-                        self.beforeLoggedInUser.username,
-                        mergedProgress,
-                        [NSNumber numberWithInt:totalPoints],
-                        [self.beforeLoggedInUser objectForKey:@"uuid"],
-                        type,
-                        nil];
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:objects
-                                                           forKeys:keys];
-    [PFCloud callFunctionInBackground:@"MergeDeleteUserAndUpdateTransaction" withParameters:dictionary block:^(id result, NSError *error) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshHistoryList" object:nil];
-        if (error) {
-            NSLog(@"Device user deletion failed");
-            [[[[UIAlertView alloc] initWithTitle:@"Log In Failed"
-                                         message:@"Sorry, seems like we have a problem with login, please try again later."
-                                        delegate:nil
-                               cancelButtonTitle:@"Ok"
-                               otherButtonTitles:nil] autorelease] show];
-        } else {
-            [GameUtils refreshCurrentUser];
-            NSLog(@"Device user deletion successful");
-            [[self navigationController] popToRootViewControllerAnimated:YES];
-        }
-    }];
-}
-
-- (NSDictionary *)mergeProgress:(NSDictionary *)account with:(NSDictionary *)onDevice {
-    NSMutableDictionary * result = [NSMutableDictionary dictionaryWithDictionary:account];
-    
-    [onDevice enumerateKeysAndObjectsUsingBlock: ^(id key, id obj, BOOL *stop) {
-        if ([account objectForKey:key] != nil) {
-            // account has this key, merge
-            NSMutableDictionary *newVal = [NSMutableDictionary dictionaryWithDictionary:[account objectForKey:key]];
-            
-            int newCount = [[newVal objectForKey:@"Count"] intValue] + [[obj objectForKey:@"Count"] intValue];
-            [newVal setObject:[NSNumber numberWithInt:newCount] forKey:@"Count"];
-            
-            int newLastScan = MAX([[obj objectForKey:@"LastScanTimeStamp"] intValue], [[newVal objectForKey:@"LastScanTimeStamp"] intValue]);
-            [newVal setObject:[NSNumber numberWithInt:newLastScan] forKey:@"LastScanTimeStamp"];
-            
-            [result setObject:newVal forKey:key];
-        } else {
-            // account does not have this key, simply add
-            [result setObject:obj forKey:key];
-        }
-    }];
-    
-    return (NSDictionary *) [[result mutableCopy] autorelease];
 }
 
 // Sent to the delegate when the log in attempt fails.
@@ -207,7 +154,7 @@
     
     [Flurry logEvent:@"action_button_click_sign_up_successful"];
     NSLog(@"User signed up, send back to delegate...");
-    [self mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"signup"];
+    [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"signup" previousUser:self.beforeLoggedInUser];
 }
 
 // Sent to the delegate when the sign up attempt fails.
@@ -272,7 +219,7 @@
     self.logInView.usernameField.layer.opacity = 1;
     self.logInView.passwordField.layer.opacity = 1;
     
-    NSString *signUpMessage = @"Signup to get 10 Coins - that's enough to start redeeming for rewards!";
+    NSString *signUpMessage = @"Sign up to get 10 Coins - that's enough to start redeeming for rewards!";
     NSString *facebookLogin = @"Sign in with Facebook:";
     self.logInView.externalLogInLabel.text = [NSString stringWithFormat: @"%@\n\n\n%@", signUpMessage, facebookLogin];
     self.logInView.externalLogInLabel.font = [UIFont boldSystemFontOfSize:12.0f];
@@ -289,6 +236,7 @@
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [fieldsBackground release], fieldsBackground = nil;
     [background release], background = nil;
     [beforeLoggedInUser release], beforeLoggedInUser = nil;

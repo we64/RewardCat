@@ -30,8 +30,6 @@
     self.tableView.backgroundColor = [UIColor clearColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.separatorColor = [UIColor clearColor];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadObjects) name:@"refreshHistoryList" object:nil];
     
     return self;
 }
@@ -42,6 +40,10 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    if ([GameUtils instance].hasUserUpdatedForTransaction) {
+        [GameUtils instance].hasUserUpdatedForTransaction = NO;
+        [self loadObjects];
+    }
 }
 
 - (void)dealloc {
@@ -87,12 +89,15 @@
     }
 
     NSString *message;
-    NSString *vendorName = [[[GameUtils instance] getVendor:((PFObject *)[object objectForKey:@"vendor"]).objectId] objectForKey:@"name"];
+    NSString *vendorName = [[GameUtils.instance getVendor:((PFObject *)[object objectForKey:@"vendor"]).objectId] objectForKey:@"name"];
     if ([[object objectForKey:@"activityType"] isEqualToString:@"Scanned Reward"]) {
         message = [NSString stringWithFormat:@"Scanned for \"%@\" at %@", [object objectForKey:@"rewardDescription"], vendorName];
     } else if ([[object objectForKey:@"activityType"] isEqualToString:@"Redeemed PointReward"] ||
                [[object objectForKey:@"activityType"] isEqualToString:@"Redeemed Reward"]) {
         message = [NSString stringWithFormat:@"Redeemed for \"%@\" at %@", [object objectForKey:@"rewardDescription"], vendorName];
+    } else if ([[object objectForKey:@"activityType"] isEqualToString:@"Facebook Invite Friends"]) {
+        message = [NSString stringWithFormat:@"Thanks for inviting %@ friends! Go to the Coins tab to start redeeming your rewards!",
+                   [object objectForKey:@"rewardcatPointsDelta"]];
     } else {
         message = [NSString stringWithFormat:@"Thanks for signing up! Go to the Coins tab to start redeeming your rewards!"];
     }
@@ -117,7 +122,15 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [self tableView:(UITableView *)tableView cellForRowAtIndexPath:indexPath].frame.size.height;
+    return 80;
+}
+
+- (float)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 0.01f;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    return [[UIView new] autorelease];
 }
 
 @end

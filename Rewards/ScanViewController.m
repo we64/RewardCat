@@ -24,8 +24,7 @@
 @synthesize scanBox;
 @synthesize tabBarController;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (!self) {
         return self;
@@ -34,21 +33,28 @@
     self.selectedImage = [UIImage imageNamed:@"qron"];
     self.unselectedImage = [UIImage imageNamed:@"qroff"];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(turnOffCamera) name:@"disableCamera" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(turnOnCamera) name:@"enableCamera" object:nil];
+    
     return self;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [Flurry logEvent:@"page_view_tab_scan"];
-    if (![self userLoggedIn]) {
-        [self login];
-    }
+- (void)turnOffCamera {
+    [self.reader.readerView stop];
+}
 
+- (void)turnOnCamera {
     [self setUpCamera];
     [self.reader.readerView start];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [Flurry logEvent:@"page_view_tab_scan"];
+    [self turnOnCamera];
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
-    [self.reader.readerView stop];
+    [self turnOffCamera];
 }
 
 - (void)dealloc {
@@ -115,12 +121,26 @@
                                                coin:[[((NSDictionary *)result) objectForKey:@"rewardcatPointsDelta"] intValue]
                                          vendorName:[[[GameUtils instance].vendorDictionary objectForKey:[result objectForKey:@"vendorId"]] objectForKey:@"name"]];
                 } else {
-                    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Invalid Scan"
-                                                                     message:[[error userInfo] objectForKey:@"error"]
-                                                                    delegate:nil
-                                                           cancelButtonTitle:@"OK"
-                                                           otherButtonTitles:nil] autorelease];
-                    [alert show];
+                    // scan unsuccessful, show error message
+                    // if it is due to scanning too soon, show Invalid Scan
+                    NSString *errorString = [[error userInfo] objectForKey:@"error"];
+                    NSRange isContains = [errorString rangeOfString:@"For security reasons" options:NSCaseInsensitiveSearch];
+                    if(isContains.location != NSNotFound) {
+                        UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Invalid Scan"
+                                                                         message:[[error userInfo] objectForKey:@"error"]
+                                                                        delegate:nil
+                                                               cancelButtonTitle:@"OK"
+                                                               otherButtonTitles:nil] autorelease];
+                        [alert show];
+                    } else {
+                        // TODO: Ask Garry to write some message here
+                        UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Invalid Scan"
+                                                                         message:[[error userInfo] objectForKey:@"error"]
+                                                                        delegate:nil
+                                                               cancelButtonTitle:@"OK"
+                                                               otherButtonTitles:nil] autorelease];
+                        [alert show];
+                    }
                 }
             }];
         } else {
@@ -134,72 +154,6 @@
         }
         break;
     }
-}
-
-//- (NSString *)deviceUUID {
-//    UIDevice *device = [UIDevice currentDevice];
-//    NSString *deviceUUID = nil;
-//    if ([device respondsToSelector:@selector(identifierForVendor)]) {
-//        deviceUUID = device.identifierForVendor.UUIDString;
-//    }
-//    if (deviceUUID == nil || [deviceUUID isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
-//        deviceUUID = device.uniqueIdentifier;
-//    }
-//    return deviceUUID;
-//}
-
-- (void)signup {
-    self.tabBarController.selectedIndex = 4;
-    PFUser *user = [PFUser user];
-    user.username = [GameUtils uuid];
-    user.password = @"password";
-    [user setObject:[GameUtils uuid] forKey:@"uuid"];
-    [user setObject:[NSMutableDictionary dictionary] forKey:@"progressMap"];
-    [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (!error) {
-            [GameUtils refreshCurrentUser];
-        } else {
-            //TODO: Handle Error
-            NSLog(@"%@", error);
-        }
-    }];
-}
-
-- (void)login {
-    PFInstallation *installation = [PFInstallation currentInstallation];
-    [installation saveInBackground];
-    if ([self userLoggedIn]) {
-        [GameUtils refreshCurrentUser];
-    } else {
-        [PFUser logInWithUsernameInBackground:[GameUtils uuid] password:@"password" block:^(PFUser *user, NSError *error) {
-            if (!error) {
-                [GameUtils refreshCurrentUser];
-            } else {
-                [self signup];
-            }
-        }];
-    }
-}
-
-- (BOOL)userLoggedIn {
-    PFUser *currentUser = [PFUser currentUser];
-    if (currentUser) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end

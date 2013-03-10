@@ -15,26 +15,26 @@
 
 @interface RewardsTableViewController () <UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic) int indexToHighlight;
 @property (nonatomic, retain) UIBarButtonItem *toggleButton;
 @property (nonatomic) BOOL myRewards;
+//@property (nonatomic, retain) NSMutableDictionary *cellHeights;
 
 @end
 
 @implementation RewardsTableViewController
 
-@synthesize indexToHighlight;
 @synthesize toggleButton;
+//@synthesize cellHeights;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
     if (!self) {
         return self;
     }
+//    self.cellHeights = [NSMutableDictionary dictionary];
     self.title = @"Rewards";
     self.className = @"Reward";
-    self.objectsPerPage = 15;
-    self.indexToHighlight = -1;
+    self.objectsPerPage = 20;
     self.loadingViewEnabled = YES;
     self.myRewards = NO;
     self.toggleButton = [[UIBarButtonItem alloc] initWithTitle:@"My Rewards"
@@ -53,6 +53,7 @@
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+//    [cellHeights release], cellHeights = nil;
     [toggleButton release], toggleButton = nil;
     [super dealloc];
 }
@@ -73,6 +74,11 @@
         [self loadObjects];
         [GameUtils instance].hasUserUpdatedForReward = NO;
     }
+}
+
+- (void)loadNextPage {
+    [GameUtils showProcessing];
+    [super loadNextPage];
 }
 
 - (void)loadObjects {
@@ -106,6 +112,7 @@
     }
     
     [query whereKey:@"expireDate" greaterThanOrEqualTo:[GameUtils getToday]];
+    [query whereKey:@"target" greaterThan:[NSNumber numberWithInt:0]];
     if ([LocationManager allowLocationService]) {
         [query whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLocation:[LocationManager sharedSingleton].locationManager.location]];
     } else {
@@ -135,7 +142,7 @@
     }
     
     static NSString *CellIdentifier = @"RewardsTableViewCell";
-    
+
     RewardsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
@@ -145,13 +152,6 @@
     if (checkingForHeight) {
         [cell setUpWithItemForHeight:object];
     } else {
-        if (indexPath.row == self.indexToHighlight) {
-            self.indexToHighlight = -1;
-            [cell highlight];
-        } else {
-            cell.highLightBackgroundView.alpha = 0;
-        }
-        
         cell.indexInTable = indexPath.row;
         cell.rewardsTableViewController = self;
         [cell setUpWithItem:object];
@@ -172,7 +172,20 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    if (indexPath.row >= self.objects.count) {
+        return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+    }
+
     return [self tableView:(UITableView *)tableView cellForRowAtIndexPath:indexPath checkingForHeight:YES].frame.size.height;
+}
+
+- (float)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 0.01f;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    return [[UIView new] autorelease];
 }
 
 @end

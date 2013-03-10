@@ -19,6 +19,8 @@
 @property (nonatomic) int objectsPerCell;
 @property (nonatomic, retain) UIBarButtonItem *sortToggleButton;
 @property (nonatomic) BOOL byDistance;
+@property (nonatomic) CGFloat cellHeight;
+@property (nonatomic) CGFloat headerHeight;
 
 @end
 
@@ -27,6 +29,8 @@
 @synthesize objectsPerCell;
 @synthesize sortToggleButton;
 @synthesize byDistance;
+@synthesize cellHeight;
+@synthesize headerHeight;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
@@ -35,7 +39,7 @@
     }
     self.title = @"Coins";
     self.className = @"PointReward";
-    self.objectsPerPage = 16;
+    self.objectsPerPage = 20;
 
     // set toggle button correctly
     if ([LocationManager allowLocationService]) {
@@ -52,13 +56,21 @@
                                                             action:@selector(sortToggle)] autorelease];
     }
 
-    static NSString *CellIdentifier = @"PointRewardsTableViewCell";
-    NSArray *nib = [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
+    NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"PointRewardsTableViewCell" owner:self options:nil];
     PointRewardsTableViewCell *cell = [nib objectAtIndex:0];
     self.objectsPerCell = cell.detailsButtons.count;
+    self.cellHeight = cell.frame.size.height;
+    
+    
+    NSArray *headerNib = [[NSBundle mainBundle] loadNibNamed:@"PointsTableViewCell" owner:self options:nil];
+    PointsTableViewCell *header = [headerNib objectAtIndex:0];
+    self.headerHeight = header.frame.size.height;
+    
     self.tableView.separatorColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.25];
     
     self.tableView.backgroundColor = [UIColor blackColor];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadObjects) name:@"refreshCoinsPage" object:nil];
     
     return self;
 }
@@ -103,6 +115,11 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [sortToggleButton release], sortToggleButton = nil;
     [super dealloc];
+}
+
+- (void)loadNextPage {
+    [GameUtils showProcessing];
+    [super loadNextPage];
 }
 
 - (void)loadObjects {
@@ -200,7 +217,11 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [self tableView:(UITableView *)tableView cellForRowAtIndexPath:indexPath].frame.size.height;
+    if (indexPath.section == 0 && indexPath.row < [self numberOfObjectRows]) {
+        return self.cellHeight;
+    } else {
+        return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+    }
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -218,7 +239,7 @@
     
     NSNumber *pointsNumber = [[PFUser currentUser] objectForKey:@"rewardcatPoints"];
     if (pointsNumber) {
-        cell.pointsLabel.text = [[[PFUser currentUser] objectForKey:@"rewardcatPoints"] stringValue];
+        cell.pointsLabel.text = [pointsNumber stringValue];
     } else {
         cell.pointsLabel.text = @"0";
     }
@@ -227,7 +248,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return [self tableView:tableView viewForHeaderInSection:section].frame.size.height;
+    return self.headerHeight;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -246,6 +267,14 @@
     } else {
         [super tableView:tableView didDeselectRowAtIndexPath:indexPath];
     }
+}
+
+- (float)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 0.01f;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    return [[UIView new] autorelease];
 }
 
 @end

@@ -189,7 +189,7 @@
         [cell setInfoLabelTextAndAdjustCellHeight:[contactInfoDictionary objectForKey:@"info"]];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.icon.image = [UIImage imageNamed:[contactInfoDictionary objectForKey:@"icon"]];
-        PFObject *vendor = [[GameUtils instance] getVendor:((PFObject *)[self.reward objectForKey:@"vendor"]).objectId];
+        PFObject *vendor = [GameUtils.instance getVendor:((PFObject *)[self.reward objectForKey:@"vendor"]).objectId];
         
         if (!checkingForHeight) {
             cell.action = [NSURL URLWithString:[contactInfoDictionary objectForKey:@"action"]];
@@ -244,25 +244,33 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    // log DetailView Impressions
+    PFObject *logger = [PFObject objectWithClassName:@"Log"];
+    [logger setObject:[PFUser currentUser] forKey:@"user"];
+    
     // get vendor information if not exist
     if (self.contactInfo == nil) {
-        PFObject *vendor = [[GameUtils instance] getVendor:((PFObject *)[self.reward objectForKey:@"vendor"]).objectId];
+        PFObject *vendor = [GameUtils.instance getVendor:((PFObject *)[self.reward objectForKey:@"vendor"]).objectId];
         self.contactInfo = [vendor objectForKey:@"contactInfo"];
         PFGeoPoint *point = (PFGeoPoint *)[vendor objectForKey:@"location"];
-        self.location = [[CLLocation alloc] initWithLatitude:point.latitude longitude:point.longitude];
+        self.location = [[[CLLocation alloc] initWithLatitude:point.latitude longitude:point.longitude] autorelease];
     }
 
     NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                [[[GameUtils instance] getVendor:((PFObject *)[self.reward objectForKey:@"vendor"]).objectId] objectForKey:@"name"], @"vendorName",
+                                [[GameUtils.instance getVendor:((PFObject *)[self.reward objectForKey:@"vendor"]).objectId] objectForKey:@"name"], @"vendorName",
                                 [[self.reward objectForKey:@"description"] objectForKey:@"longDescription"], @"rewardDesc",
                                 self.reward.className, @"rewardType", nil];
     // set redeem state
     if ([self.reward.className isEqualToString:@"Reward"]) {
         self.countDownStartTime = [[[GameUtils instance].rewardRedeemStartTime objectForKey:self.reward.objectId] doubleValue];
         [Flurry logEvent:@"page_view_details_rewards" withParameters:dictionary];
+        [logger setObject:self.reward forKey:@"reward"];
     } else if ([self.reward.className isEqualToString:@"PointReward"]) {
         self.countDownStartTime = [[[GameUtils instance].pointRewardRedeemStartTime objectForKey:self.reward.objectId] doubleValue];
         [Flurry logEvent:@"page_view_details_coins" withParameters:dictionary];
+        [logger setObject:self.reward forKey:@"pointReward"];
+    } else {
+        [logger setObject:self.reward forKey:@"discount"];
     }
 
     if (self.countDownStartTime > 0) {
@@ -270,6 +278,9 @@
     } else {
         self.redeem = NO;
     }
+    
+    [logger setObject:[NSNumber numberWithBool:self.redeem] forKey:@"redeemFlag"];
+    [logger saveEventually];
 }
 
 - (void) dealloc {

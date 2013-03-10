@@ -62,13 +62,23 @@
     
     self.reward = reward_;
     self.redeem = redeem_;
-    PFObject *vendor = [[GameUtils instance] getVendor:((PFObject *)[self.reward objectForKey:@"vendor"]).objectId];
+    PFObject *vendor = [GameUtils.instance getVendor:((PFObject *)[self.reward objectForKey:@"vendor"]).objectId];
     
     PFFile *imageFile = [self.reward objectForKey:@"image"];
-    [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-        UIImage *image = [UIImage imageWithData:[imageFile getData]];
-        self.icon.image = image;
-    }];
+    if (imageFile && imageFile != (id)[NSNull null]) {
+        [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+            UIImage *image = [UIImage imageWithData:data];
+            self.icon.image = image;
+        }];
+    } else {
+        if ([self.reward.className isEqualToString:@"Reward"]) {
+            self.icon.image = [UIImage imageNamed:@"thumbnailStamp.png"];
+        } else if ([self.reward.className isEqualToString:@"PointReward"]) {
+            self.icon.image = [UIImage imageNamed:@"thumbnailCoin.png"];
+        } else if ([self.reward.className isEqualToString:@"Discount"]) {
+            self.icon.image = [UIImage imageNamed:@"thumbnailSale.png"];
+        }
+    }
     self.businessNameLabel.text = [vendor objectForKey:@"name"];
     
     if (self.redeem) {
@@ -109,7 +119,7 @@
             [self.redeemButton setTitle:progressText forState:UIControlStateNormal];
             self.redeemButton.userInteractionEnabled = NO;
         } else {
-            [self.redeemButton setTitle:@"Redeem Now!" forState:UIControlStateNormal];
+            [self.redeemButton setTitle:@"Get It Now!" forState:UIControlStateNormal];
             self.redeemButton.userInteractionEnabled = YES;
             [self.redeemButton setBackgroundImage:[UIImage imageNamed:@"barbigclick"] forState:UIControlStateHighlighted];
         }
@@ -122,6 +132,9 @@
     } else {
         self.progressParentView.hidden = YES;
         self.salesButton.hidden = NO;
+        [self.salesButton setBackgroundImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@tagbig.png", [self.reward objectForKey:@"tagColor"]]]
+                                    forState:UIControlStateNormal];
+        [self.salesButton setTitle:[[self.reward objectForKey:@"description"] objectForKey:@"discountTag"] forState:UIControlStateNormal];
     }
 }
 

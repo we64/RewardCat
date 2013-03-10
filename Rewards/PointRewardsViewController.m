@@ -38,7 +38,7 @@
     self.pointRewardsNavigationController.view.frame = self.view.frame;
     [self.view addSubview:self.pointRewardsNavigationController.view];
     
-    self.pointRewardsTableViewController = [[PointRewardsTableViewController alloc] init];
+    self.pointRewardsTableViewController = [[[PointRewardsTableViewController alloc] init] autorelease];
     self.pointRewardsTableViewController.view.frame = self.view.frame;
     [self.pointRewardsNavigationController pushViewController:self.pointRewardsTableViewController animated:YES];
     

@@ -12,14 +12,15 @@
 
 @synthesize locationManager;
 @synthesize locationTimer;
+@synthesize currentLocation;
 
 - (id)init {
     self = [super init];
     
     if(self) {
-        self.locationManager = [[CLLocationManager alloc] init];
-        [self.locationManager setDelegate:self];
-        [self.locationManager setPurpose:@"Find rewards near you by allowing RewardCat to access your location."];
+        self.locationManager = [[[CLLocationManager alloc] init] autorelease];
+        self.locationManager.delegate = self;
+        self.locationManager.purpose = @"Find rewards near you by allowing RewardCat to access your location.";
     }
 
     [self.locationManager setDistanceFilter:kCLLocationAccuracyHundredMeters];
@@ -47,6 +48,7 @@
 - (void)stopUpdatingLocation {
     [self.locationManager stopUpdatingLocation];
     [self.locationTimer invalidate];
+    self.currentLocation = self.locationManager.location;;
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
@@ -75,6 +77,7 @@
     [locationTimer invalidate];
     [locationManager release], locationManager = nil;
     [locationTimer release], locationTimer = nil;
+    [currentLocation release], currentLocation = nil;
     [super dealloc];
 }
 

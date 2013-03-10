@@ -36,6 +36,7 @@
     LoggedInAccountViewController *loggedInAccountViewController = [[[LoggedInAccountViewController alloc] init] autorelease];
     [self.accountNavigationController pushViewController:loggedInAccountViewController animated:YES];
     loggedInAccountViewController.view.frame = self.view.frame;
+    loggedInAccountViewController.accountNavigationController = self.accountNavigationController;
     
     [self.view addSubview:self.accountNavigationController.view];
     self.accountNavigationController.view.frame = self.view.frame;
@@ -57,11 +58,6 @@
         SignUpLogInViewController *signUpLogInViewController = [[[SignUpLogInViewController alloc] init] autorelease];
         [self.accountNavigationController pushViewController:signUpLogInViewController animated:YES];
         signUpLogInViewController.view.frame = self.view.frame;
-    } else {
-        if ([GameUtils instance].hasUserUpdatedForTransaction) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshHistoryList" object:nil];
-            [GameUtils instance].hasUserUpdatedForTransaction = NO;
-        }
     }
 }
 

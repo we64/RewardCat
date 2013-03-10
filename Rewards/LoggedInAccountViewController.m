@@ -7,16 +7,22 @@
 //
 
 #import "LoggedInAccountViewController.h"
+#import "AccountTableViewCell.h"
+#import "HistoryViewController.h"
 
 @interface LoggedInAccountViewController ()
 
-@property (nonatomic, retain) HistoryTableViewController *historyTableViewController;
+//@property (nonatomic, retain) HistoryTableViewController *historyTableViewController;
+@property (nonatomic) CGFloat cellHeight;
 
 @end
 
 @implementation LoggedInAccountViewController
 
-@synthesize historyTableViewController;
+@synthesize accountTableView;
+@synthesize cellHeight;
+//@synthesize historyTableViewController;
+@synthesize accountNavigationController;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -26,29 +32,55 @@
     }
     self.title = @"Account";
     
+    static NSString *CellIdentifier = @"AccountTableViewCell";
+    
+    NSArray *nib = [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
+    AccountTableViewCell *cell = [nib objectAtIndex:0];
+    
+    self.cellHeight = cell.frame.size.height;
+    
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.historyTableViewController = [[[HistoryTableViewController alloc] init] autorelease];
-    self.historyTableViewController.view.frame = CGRectMake(0, 0, self.tableViewContainer.frame.size.width, self.tableViewContainer.frame.size.height);
-    [self.tableViewContainer addSubview:self.historyTableViewController.tableView];
+//    self.historyTableViewController = [[[HistoryTableViewController alloc] init] autorelease];
 }
 
-- (IBAction)likeButtonClicked:(id)sender
-{
+- (void)dealloc {
+//    [historyTableViewController release], historyTableViewController = nil;
+    [accountTableView release], accountTableView = nil;
+    [super dealloc];
+}
+
+- (void)historyButtonClicked {
+    //    [self.view addSubview:self.historyTableViewController.view];
+    HistoryViewController *historyViewController = [[[HistoryViewController alloc] init] autorelease];
+    historyViewController.view.frame = self.view.frame;
+    [self.accountNavigationController pushViewController:historyViewController animated:YES];
+    
+    //[self.rewardsTableViewController.navigationController pushViewController:detailViewController animated:YES];
+}
+
+- (void)likeButtonClicked {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"fb://profile/102527166573589"]];
 }
 
-- (IBAction)supportButtonClicked:(id)sender
-{
+- (void)supportButtonClicked {
     if ([MFMailComposeViewController canSendMail]) {
         MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
         mailer.mailComposeDelegate = self;
         mailer.modalPresentationStyle = UIModalPresentationPageSheet;
         NSArray *toRecipients = [NSArray arrayWithObjects:@"support@rewardcat.com", nil];
         [mailer setToRecipients:toRecipients];
+        
+        NSMutableString *mailBody = [NSMutableString string];
+        int iOSVersion = [[UIDevice currentDevice].systemVersion intValue];
+        [mailBody appendString:@"<BR><BR><BR>\n"];
+        [mailBody appendString:@"<div>The following information are used to help us to better serve your needs:</div>\n"];
+        [mailBody appendString:[NSString stringWithFormat:@"<div>username: %@</div>\n", [PFUser currentUser].username]];
+        [mailBody appendString:[NSString stringWithFormat:@"<div>iOS Version: %d</div>\n", iOSVersion]];
+        [mailer setMessageBody:mailBody isHTML:YES];
         [self presentModalViewController:mailer animated:YES];
         [mailer release];
     }
@@ -63,8 +95,7 @@
     }
 }
 
-- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
-{
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
     switch (result) {
         case MFMailComposeResultCancelled:
             NSLog(@"Mail cancelled: you cancelled the operation and no email message was queued.");
@@ -87,16 +118,49 @@
     [self dismissModalViewControllerAnimated:YES];
 }
 
-- (IBAction)rateButtonClicked:(id)sender
-{
+- (void)rateButtonClicked {
     NSString* url = [NSString stringWithFormat: @"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=%@", @"584774055"];
     [[UIApplication sharedApplication] openURL: [NSURL URLWithString: url]];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section != 0) {
+        return nil;
+    }
+    
+    static NSString *CellIdentifier = @"AccountTableViewCell";
+    
+    AccountTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
+        cell = [nib objectAtIndex:0];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    
+    AccountTableCellPosition position;
+    if (indexPath.row == 0) {
+        position = TableTop;
+    } else if (indexPath.row == [self tableView:tableView numberOfRowsInSection:indexPath.section] - 1) {
+        position = TableBottom;
+    } else {
+        position = TableMiddle;
+    }
+    
+    [cell setUpWithType:indexPath.row position:position parent:self];
+    
+    return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return self.cellHeight;
+}
+
+- (int)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (section == 0) {
+        return AccountTableCellTypeCount;
+    }
+    
+    return 0;
 }
 
 @end

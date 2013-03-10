@@ -12,6 +12,7 @@
 
 @property (nonatomic, retain) CLLocationManager *locationManager;
 @property (nonatomic, retain) NSTimer *locationTimer;
+@property (nonatomic, retain) CLLocation *currentLocation;
 
 + (LocationManager *)sharedSingleton;
 + (BOOL)allowLocationService;

@@ -201,21 +201,20 @@ Parse.Cloud.define('MergeDeleteUserAndUpdateTransaction', function(request, resp
 
 	// give out sign up or Facebook login point bonus
 	if (actionType === "signup") {
+
 		request.user.set("rewardcatPoints", rewardcatPoints + bonusPoints);
 		transaction.set("activityType", "Sign Up");
 		transaction.set("rewardcatPointsDelta", bonusPoints);
 		transaction.save();
 	} else if (actionType === "facebook") {
-		
-		transaction.set("activityType", "Sign In with Facebook");
-		transaction.set("rewardcatPointsDelta", bonusPoints);
-		transaction.save();
-		// if user login via Facebook within 10 minutes of the account creation time
-		// then it is the first time user using the app, give them bonus as well
+
 		var createdAtDate = new Date(request.user.createdAt);
 		var currentDate = new Date();
-		if ((currentDate.getTime() - createdAtDate.getTime()) <= 600000) {
+		if ((currentDate.getTime() - createdAtDate.getTime()) <= 120000) {
 			request.user.set("rewardcatPoints", rewardcatPoints + bonusPoints);
+			transaction.set("activityType", "Sign In with Facebook");
+			transaction.set("rewardcatPointsDelta", bonusPoints);
+			transaction.save();
 		} else {
 			request.user.set("rewardcatPoints", rewardcatPoints);
 		}
@@ -259,6 +258,7 @@ Parse.Cloud.define('MergeDeleteUserAndUpdateTransaction', function(request, resp
 											error: function(error) {
 												// An error occurred while saving one of the objects.
 												console.log("Error: " + error.code + " " + error.message);
+												response.error('Oops something went wrong with deleting old default user.');
 											}
 										});
 									} else {
@@ -268,6 +268,7 @@ Parse.Cloud.define('MergeDeleteUserAndUpdateTransaction', function(request, resp
 								},
 								error: function(error) {
 									console.log("Looking for old transactions error: " + error.code + " " + error.message);
+									response.error('Oops something went wrong with deleting old default user.');
 								}
 							});
 						},
