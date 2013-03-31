@@ -21,6 +21,7 @@
 @property (nonatomic) BOOL byDistance;
 @property (nonatomic) CGFloat cellHeight;
 @property (nonatomic) CGFloat headerHeight;
+@property (nonatomic) BOOL shouldRefresh;
 
 @end
 
@@ -31,15 +32,18 @@
 @synthesize byDistance;
 @synthesize cellHeight;
 @synthesize headerHeight;
+@synthesize shouldRefresh;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
     if (!self) {
         return self;
     }
-    self.title = @"Coins";
+    self.title = @"Coin Rewards";
     self.className = @"PointReward";
     self.objectsPerPage = 20;
+    self.loadingViewEnabled = NO;
+    self.shouldRefresh = NO;
 
     // set toggle button correctly
     if ([LocationManager allowLocationService]) {
@@ -70,8 +74,9 @@
     
     self.tableView.backgroundColor = [UIColor blackColor];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadObjects) name:@"refreshCoinsPage" object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tableShouldRefresh) name:@"currentLocationRefreshed" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tableShouldRefresh) name:@"currentUserRefreshed" object:nil];
+
     return self;
 }
 
@@ -85,11 +90,13 @@
     if (self.byDistance) {
         self.byDistance = NO;
         [sortToggleButton setTitle:@"By Distance"];
+        self.shouldRefresh = YES;
         [self loadObjects];
     } else {
         if ([LocationManager allowLocationService]) {
             self.byDistance = YES;
             [sortToggleButton setTitle:@"By Cost"];
+            self.shouldRefresh = YES;
             [self loadObjects];
         } else {
             // show alert
@@ -103,11 +110,21 @@
     }
 }
 
+- (void)tableShouldRefresh {
+    if (!self.shouldRefresh) {
+        self.shouldRefresh = YES;
+        
+        // if screen is visible, then reload objects immediately
+        if (self.isViewLoaded && self.view.window) {
+            [self loadObjects];
+        }
+    }
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    if ([GameUtils instance].hasUserUpdatedForCoin) {
+    if (self.shouldRefresh) {
         [self loadObjects];
-        [GameUtils instance].hasUserUpdatedForCoin = NO;
     }
 }
 
@@ -123,20 +140,33 @@
 }
 
 - (void)loadObjects {
-    [GameUtils showProcessing];
+    if (self.shouldRefresh) {
+        [GameUtils showProcessing];
+    }
     [super loadObjects];
 }
 
 - (void)objectsDidLoad:(NSError *)error {
     [super objectsDidLoad:error];
     [GameUtils hideProgressing];
+    self.shouldRefresh = NO;
 }
 
 #pragma mark - Table view data source
 
 - (PFQuery *)queryForTable {
     PFQuery *query = [PFQuery queryWithClassName:self.className];
-    query.cachePolicy = kPFCachePolicyCacheElseNetwork;
+    
+    // If Pull To Refresh is enabled, query against the network by default.
+    if (self.pullToRefreshEnabled) {
+        query.cachePolicy = kPFCachePolicyNetworkOnly;
+    }
+    
+    // If no objects are loaded in memory, we look to the cache first to fill the table
+    // and then subsequently do a query against the network.
+    if (self.objects.count == 0) {
+        query.cachePolicy = kPFCachePolicyCacheThenNetwork;
+    }
     query.maxCacheAge = 60 * 60 * 24;  // One day, in seconds.
 
     [query whereKey:@"expireDate" greaterThanOrEqualTo:[GameUtils getToday]];
@@ -206,6 +236,8 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForNextPageAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSLog(@"next page load more path %d", indexPath.row);
     static NSString *CellIdentifier = @"LoadMoreTableViewCell";
     
     LoadMoreTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -217,10 +249,14 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0 && indexPath.row < [self numberOfObjectRows]) {
-        return self.cellHeight;
-    } else {
+
+    if (indexPath.row > [self numberOfObjectRows]) {
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+    } else if (indexPath.row == [self numberOfObjectRows]) {
+        // hack to get next page cell the correct height on 4.3 at least
+        return 50.0f;
+    } else {
+        return self.cellHeight;
     }
 }
 
@@ -267,14 +303,6 @@
     } else {
         [super tableView:tableView didDeselectRowAtIndexPath:indexPath];
     }
-}
-
-- (float)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 0.01f;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    return [[UIView new] autorelease];
 }
 
 @end

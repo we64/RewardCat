@@ -9,6 +9,7 @@
 #import "RewardsViewController.h"
 #import "RewardsTableViewController.h"
 #import "CustomNavigationController.h"
+#import "GameUtils.h"
 
 @interface RewardsViewController ()
 

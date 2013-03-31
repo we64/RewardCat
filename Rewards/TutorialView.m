@@ -77,7 +77,6 @@
 
 - (IBAction)finishClicked {
     [self removeFromSuperview];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshCoinsPage" object:nil];
 }
 
 - (IBAction)signInWithFacebook:(id)sender {
@@ -91,7 +90,7 @@
             }
         } else {
             NSLog(@"User with facebook logged in!");
-            [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"facebook" previousUser:oldUser];
+            [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"facebook" previousUser:oldUser showDialog:NO];
         }
     }];
 }

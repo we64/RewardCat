@@ -18,6 +18,7 @@
 #import "LocationManager.h"
 #import "AdsUtils.h"
 #import "Reachability.h"
+#import <FacebookSDK/FacebookSDK.h>
 
 #define kAlertViewOne 1
 
@@ -48,7 +49,7 @@
     // Flurry Dev
     //[Flurry startSession:@"7J7DYNJS748WZG9R5VW7"];
     
-    [PFFacebookUtils initializeWithApplicationId:@"497689073585333"];
+    [PFFacebookUtils initializeFacebook];
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     [Flurry setSessionReportsOnPauseEnabled:YES];
     
@@ -387,8 +388,8 @@ void uncaughtExceptionHandler(NSException *exception)
             // associated with facebook account
             // check valid session or not
             NSString *requestPath = @"me/?fields=id,name,location,gender,birthday,email";
-            PF_FBRequest *request = [PF_FBRequest requestForGraphPath:requestPath];
-            [request startWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
+            FBRequest *request = [FBRequest requestForGraphPath:requestPath];
+            [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                 // handle response
                 if (!error) {
                     // check to see if facebook data has been saved successfully yet
@@ -404,17 +405,17 @@ void uncaughtExceptionHandler(NSException *exception)
                         NSString *email = userData[@"email"];
                         NSString *birthday = userData[@"birthday"];
                         
-                        // convert birthday into NSDate
-                        NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
-                        [dateFormatter setDateFormat:@"MM/dd/yyyy"];
-                        NSDate *birthdayDT = [dateFormatter dateFromString:birthday];
-                        
-                        [currentUser setEmail:email];
-                        [currentUser setObject:name forKey:@"name"];
-                        [currentUser setObject:location forKey:@"location"];
-                        [currentUser setObject:gender forKey:@"gender"];
-                        [currentUser setObject:birthdayDT forKey:@"birthday"];
-                        [currentUser setObject:facebookId forKey:@"facebookId"];
+                        if (email) [currentUser setEmail:email];
+                        if (name) [currentUser setObject:name forKey:@"name"];
+                        if (location) [currentUser setObject:location forKey:@"location"];
+                        if (gender) [currentUser setObject:gender forKey:@"gender"];
+                        if (birthday) {
+                            NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+                            [dateFormatter setDateFormat:@"MM/dd/yyyy"];
+                            NSDate *birthdayDT = [dateFormatter dateFromString:birthday];
+                            [currentUser setObject:birthdayDT forKey:@"birthday"];
+                        }
+                        if (facebookId) [currentUser setObject:facebookId forKey:@"facebookId"];
                         [currentUser saveInBackground];
                     }
                 } else if ([[[[error userInfo] objectForKey:@"error"] objectForKey:@"type"]

@@ -29,6 +29,7 @@
 @property (nonatomic) int indexInTable;
 
 @property (nonatomic) CGFloat descriptionWidth;
+@property (nonatomic) CGFloat titleNameWidth;
 
 - (void)setUpWithItem:(PFObject *)item;
 - (void)setUpWithItemForHeight:(PFObject *)item_;

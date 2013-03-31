@@ -31,6 +31,7 @@
 @synthesize imageContainerView;
 @synthesize arrow;
 @synthesize descriptionWidth;
+@synthesize titleNameWidth;
 
 - (void)setUpViews {
     self.imageView.clipsToBounds = YES;
@@ -38,30 +39,44 @@
     self.imageContainerView.backgroundColor = [UIColor clearColor];
 }
 
-- (void)setDetailtextLabelTextAndAdjustCellHeight:(NSString *)newText {
+- (void)setDetailtextLabelTextAndAdjustCellHeight:(NSString *)descriptionText vendorNameText:(NSString *)vendorNameText {
     if (self.descriptionWidth <= 0) {
         self.descriptionWidth = self.detailTextLabel.frame.size.width;
     }
-    CGFloat oldHeight = self.detailTextLabel.frame.size.height;
+    if (self.titleNameWidth <= 0) {
+        self.titleNameWidth = self.textLabel.frame.size.width;
+    }
+
+    self.textLabel.frame = CGRectMake(self.textLabel.frame.origin.x,
+                                      self.textLabel.frame.origin.y,
+                                      self.titleNameWidth,
+                                      self.textLabel.frame.size.height);
+    self.textLabel.text = vendorNameText;
+    self.textLabel.numberOfLines = 0;
+    [self.textLabel sizeToFit];
+    CGFloat newTitleHeight = self.textLabel.frame.size.height;
+
     self.detailTextLabel.frame = CGRectMake(self.detailTextLabel.frame.origin.x,
-                                            self.detailTextLabel.frame.origin.y,
+                                            newTitleHeight + self.textLabel.frame.origin.y,
                                             self.descriptionWidth,
                                             self.detailTextLabel.frame.size.height);
-    self.detailTextLabel.text = newText;
+    self.detailTextLabel.text = descriptionText;
     self.detailTextLabel.numberOfLines = 0;
     [self.detailTextLabel sizeToFit];
-    CGFloat newHeight = self.detailTextLabel.frame.size.height;
-    CGFloat heightDifference = newHeight - oldHeight;
+    CGFloat newDescriptionHeight = self.detailTextLabel.frame.size.height;
+
+    // padding of 8 is to make sure the description is not right on top of the process bar, or else it would look weird    
     self.frame = CGRectMake(self.frame.origin.x,
                             self.frame.origin.y,
                             self.frame.size.width,
-                            MAX(self.frame.size.height + heightDifference, 80));
+                            MAX(newTitleHeight + newDescriptionHeight + 32.0f + 8.0f, 80));
 }
 
 - (void)setUpWithItemForHeight:(PFObject *)item_ {
     self.item = item_;
     NSDictionary *description = [self.item objectForKey:@"description"];
-    [self setDetailtextLabelTextAndAdjustCellHeight:[description objectForKey:@"description"]];
+    PFObject *vendor = [GameUtils.instance getVendor:((PFObject *)[self.item objectForKey:@"vendor"]).objectId];
+    [self setDetailtextLabelTextAndAdjustCellHeight:[description objectForKey:@"description"] vendorNameText:[vendor objectForKey:@"name"]];
 }
 
 - (void)setUpWithItem:(PFObject *)item_ {
@@ -80,7 +95,7 @@
     
     NSDictionary *description = [self.item objectForKey:@"description"];
     PFFile *itemImageFile = [self.item objectForKey:@"image"];
-    if (itemImageFile != (id)[NSNull null] && ![self.imageFile.url isEqual:itemImageFile.url]) {
+    if (itemImageFile != (id)[NSNull null] && ![self.imageFile.url isEqualToString:itemImageFile.url]) {
         self.imageFile = itemImageFile;
         self.imageView.image = nil;
         int indexInTable_ = self.indexInTable;
@@ -92,7 +107,6 @@
         }];
     }
     
-    self.textLabel.text = [vendor objectForKey:@"name"];
     if ([LocationManager allowLocationService]) {
         self.distanceLabel.hidden = NO;
         
@@ -103,7 +117,7 @@
     } else {
         self.distanceLabel.hidden = YES;
     }
-    [self setDetailtextLabelTextAndAdjustCellHeight:[description objectForKey:@"description"]];
+    [self setDetailtextLabelTextAndAdjustCellHeight:[description objectForKey:@"description"] vendorNameText:[vendor objectForKey:@"name"]];
 
     self.progressParentView.hidden = NO;
     NSString *progressText = [NSString stringWithFormat:@"%d / %d", progress, target];

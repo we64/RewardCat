@@ -10,7 +10,9 @@
 #import "DetailHeaderCell.h"
 #import "DetailInfoCell.h"
 #import "DetailDescriptionCell.h"
+#import "DetailFacebookCell.h"
 #import "GameUtils.h"
+#import "DetailShareCell.h"
 #import "Flurry.h"
 #import <CoreLocation/CoreLocation.h>
 
@@ -22,6 +24,7 @@
 @property (nonatomic) BOOL redeem;
 @property (nonatomic, retain) NSArray *contactInfo;
 @property (nonatomic, retain) CLLocation *location;
+@property (nonatomic, retain) MFMessageComposeViewController *textMsgController;
 
 @end
 
@@ -35,6 +38,7 @@
 @synthesize redeemTime;
 @synthesize contactInfo;
 @synthesize location;
+@synthesize textMsgController;
 
 - (id)initWithReward:(PFObject *)reward_ {
     self = [super init];
@@ -46,6 +50,8 @@
     self.redeemTime = [[self.reward objectForKey:@"redeemTimeLength"] intValue];
     self.title = @"Detail";
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendShareTextMessage) name:@"sendShareTextMessage" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(facebookInviteOnDetailClicked) name:@"facebookInviteOnDetailClicked" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(redeemTimerExpired:) name:@"redeemTimerExpired" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(redeemReward:) name:@"startRedeemReward" object:nil];
     
@@ -79,7 +85,7 @@
                                 self.reward.className, @"rewardType", nil];    
     [GameUtils showProcessing];
     [PFCloud callFunctionInBackground:@"redeemReward" withParameters:dictionary block:^(id result, NSError *error) {
-        
+
         [GameUtils hideProgressing];
         if (!error) {
             [GameUtils refreshCurrentUser];
@@ -90,9 +96,9 @@
              @"Testing", @"message",
               @"120272904656135", @"place",
              nil] autorelease];
-            PF_FBRequest *req = [[PF_FBRequest alloc] initWithSession:[PFFacebookUtils session] graphPath:@"me/feed" parameters:postParams HTTPMethod:@"POST"];
+            FBRequest *req = [[FBRequest alloc] initWithSession:[PFFacebookUtils session] graphPath:@"me/feed" parameters:postParams HTTPMethod:@"POST"];
             
-            [req startWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
+            [req startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                 NSLog(@"%@", result);
             }];*/
         } else {
@@ -128,7 +134,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section <= 0) {
-        return self.contactInfo.count + 3;
+        return self.contactInfo.count + 4;
     }
     return 0;
 }
@@ -171,6 +177,40 @@
         
         return cell;
     }
+    
+    if (indexPath.row == 2 && [self.reward.className isEqualToString:@"PointReward"]) {
+        static NSString *CellIdentifier = @"DetailFacebookCell";
+        
+        DetailFacebookCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil) {
+            NSArray *nib = [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
+            cell = [nib objectAtIndex:0];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        }
+        
+        NSString *displayMessage = @"Invite friends to get this sooner!";
+        int rewardCoinCost = [[self.reward objectForKey:@"target"] intValue];
+        int totalCoinForUser = [[[PFUser currentUser] objectForKey:@"rewardcatPoints"] intValue];
+        if ((rewardCoinCost - totalCoinForUser) <= 5 && (rewardCoinCost - totalCoinForUser) > 0) {
+            displayMessage = [NSString stringWithFormat:@"Invite %d friends to get this now!", rewardCoinCost - totalCoinForUser];
+        } else if (totalCoinForUser >= rewardCoinCost) {
+            displayMessage = @"Invite more friends to get more coins!";
+        }
+        [cell setMessageDetailText:displayMessage];
+        
+        return cell;
+    } else if (indexPath.row == 2 && [MFMessageComposeViewController canSendText]) {
+        static NSString *CellIdentifier = @"DetailShareCell";
+
+        DetailShareCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil) {
+            NSArray *nib = [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
+            cell = [nib objectAtIndex:0];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        }
+        
+        return cell;
+    }
 
     // for loading info cells
     static NSString *CellIdentifier = @"DetailInfoCell";
@@ -181,9 +221,9 @@
     }
     int numberOfRowsInSection = [self tableView:tableView numberOfRowsInSection:indexPath.section];
 
-    if (indexPath.row >= 2 && indexPath.row < numberOfRowsInSection - 1) {
+    if (indexPath.row >= 3 && indexPath.row < numberOfRowsInSection - 1) {
 
-        int contactInfoIndex = indexPath.row - 2;
+        int contactInfoIndex = indexPath.row - 3;
         NSDictionary *contactInfoDictionary = [self.contactInfo objectAtIndex:contactInfoIndex];
         cell.title.text = [contactInfoDictionary objectForKey:@"title"];
         [cell setInfoLabelTextAndAdjustCellHeight:[contactInfoDictionary objectForKey:@"info"]];
@@ -201,7 +241,7 @@
         }
     } else {
         // expireDate section
-        cell.title.text = @"Expire Date:";
+        cell.title.text = @"Expires:";
         [cell setInfoLabelTextAndAdjustCellHeight:[[GameUtils instance].expireDateFormatter stringFromDate:[self.reward objectForKey:@"expireDate"]]];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.userInteractionEnabled = NO;
@@ -283,6 +323,77 @@
     [logger saveEventually];
 }
 
+- (void)facebookInviteOnDetailClicked {
+    PFObject *logger = [PFObject objectWithClassName:@"Log"];
+    [logger setObject:[PFUser currentUser] forKey:@"user"];
+    if ([self.reward.className isEqualToString:@"Reward"]) {
+        [logger setObject:self.reward forKey:@"reward"];
+    } else if ([self.reward.className isEqualToString:@"PointReward"]) {
+        [logger setObject:self.reward forKey:@"pointReward"];
+    } else {
+        [logger setObject:self.reward forKey:@"discount"];
+    }
+    [logger setObject:@"Clicked Facebook invite button on detail screen" forKey:@"activityDescription"];
+    [logger saveEventually];
+}
+
+- (void)sendShareTextMessage {
+    PFObject *logger = [PFObject objectWithClassName:@"Log"];
+    [logger setObject:[PFUser currentUser] forKey:@"user"];
+    if ([self.reward.className isEqualToString:@"Reward"]) {
+        [logger setObject:self.reward forKey:@"reward"];
+    } else if ([self.reward.className isEqualToString:@"PointReward"]) {
+        [logger setObject:self.reward forKey:@"pointReward"];
+    } else {
+        [logger setObject:self.reward forKey:@"discount"];
+    }
+    [logger setObject:@"Clicked to send text message" forKey:@"activityDescription"];
+    [logger saveEventually];
+    
+    if([MFMessageComposeViewController canSendText]) {
+        self.textMsgController = [[[MFMessageComposeViewController alloc] init] autorelease];
+        self.textMsgController.body = @"Stay in the loop with rewards, free stuff, and discounts. Get RewardCat: http://appstore.com/rewardcat";
+        self.textMsgController.messageComposeDelegate = self;
+        [[GameUtils instance].tabBarController presentModalViewController:self.textMsgController animated:YES];
+    }
+}
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+    
+    PFObject *logger = [PFObject objectWithClassName:@"Log"];
+    [logger setObject:[PFUser currentUser] forKey:@"user"];
+    if ([self.reward.className isEqualToString:@"Reward"]) {
+        [logger setObject:self.reward forKey:@"reward"];
+    } else if ([self.reward.className isEqualToString:@"PointReward"]) {
+        [logger setObject:self.reward forKey:@"pointReward"];
+    } else {
+        [logger setObject:self.reward forKey:@"discount"];
+    }
+
+    switch (result) {
+        case MessageComposeResultCancelled:
+            NSLog(@"Cancelled");
+            [logger setObject:@"Text message cancelled" forKey:@"activityDescription"];
+            break;
+        case MessageComposeResultFailed:
+            NSLog(@"Failed");
+            [logger setObject:@"Text message sending failed" forKey:@"activityDescription"];
+            break;
+        case MessageComposeResultSent:
+            NSLog(@"Send");
+            
+            [logger setObject:@"Text message sent successfully" forKey:@"activityDescription"];
+            break;
+        default:
+            break;
+    }
+    
+    [logger saveEventually];
+    [[GameUtils instance].tabBarController dismissModalViewControllerAnimated:YES];
+    [controller resignFirstResponder];
+    [self becomeFirstResponder];
+}
+
 - (void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [countDownTimer invalidate];
@@ -291,6 +402,7 @@
     [detailTableView release], detailTableView = nil;
     [reward release], reward = nil;
     [contactInfo release], contactInfo = nil;
+    [textMsgController release], textMsgController = nil;
     [super dealloc];
 }
 

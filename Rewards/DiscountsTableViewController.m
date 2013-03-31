@@ -13,12 +13,20 @@
 #import "GameUtils.h"
 #import "LoadMoreTableViewCell.h"
 #import "AdsUtils.h"
+#import <QuartzCore/QuartzCore.h>
+#import "CategoryViewController.h"
 
 @interface DiscountsTableViewController () <UITableViewDelegate, UITableViewDataSource>
+
+@property (nonatomic, retain) CategoryViewController *categoryViewController;
+@property (nonatomic) BOOL shouldRefresh;
 
 @end
 
 @implementation DiscountsTableViewController
+
+@synthesize categoryViewController;
+@synthesize shouldRefresh;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
@@ -29,11 +37,53 @@
     self.className = @"Discount";
     self.objectsPerPage = 20;
     self.loadingViewEnabled = YES;
-    
+    self.shouldRefresh = NO;
+
     self.tableView.separatorColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.25];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateAds) name:@"adsUpdated" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentLocationRefreshed) name:@"currentLocationRefreshed" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadObjectsByCategory) name:@"dismissCategoryView" object:nil];
 
     return self;
+}
+
+- (void)loadObjectsByCategory {
+    if ([GameUtils instance].currentCategory &&
+        ![(NSNumber *)[[GameUtils instance].currentCategory objectForKey:@"showAll"] intValue]) {
+        self.title = [[GameUtils instance].currentCategory objectForKey:@"name"];
+    } else {
+        self.title = @"Discounts";
+    }
+
+    self.shouldRefresh = YES;
+    [self loadObjects];
+}
+
+- (void)currentLocationRefreshed {
+    self.shouldRefresh = YES;
+
+    // if screen is visible, then reload objects immediately
+    if (self.isViewLoaded && self.view.window) {
+        [self loadObjects];
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    // if screen is visible, then reload objects immediately
+    if (self.shouldRefresh) {
+        [self loadObjects];
+    }
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Categories"
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(showCategories)] autorelease];
+    [self.navigationItem setHidesBackButton:YES animated:YES];
 }
 
 - (void)loadNextPage {
@@ -42,17 +92,30 @@
 }
 
 - (void)loadObjects {
-    [GameUtils showProcessing];
+    if (self.shouldRefresh) {
+        [GameUtils showProcessing];
+    }
     [super loadObjects];
 }
 
 - (void)objectsDidLoad:(NSError *)error {
     [super objectsDidLoad:error];
     [GameUtils hideProgressing];
+    self.shouldRefresh = NO;
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+- (void)showCategories {
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.4;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    transition.type = kCATransitionMoveIn;
+    transition.subtype = kCATransitionFromTop;
+    transition.delegate = self;
+    [self.navigationController.view.layer addAnimation:transition forKey:nil];
+    self.navigationController.navigationBarHidden = NO;
+
+    self.categoryViewController = [[[CategoryViewController alloc] initWithNibName:@"CategoryViewController" bundle:nil] autorelease];
+    [self.navigationController pushViewController:self.categoryViewController animated:NO];
 }
 
 - (void)updateAds {
@@ -60,7 +123,6 @@
         return;
     }
     if ([AdsUtils instance].allAds.count) {
-        // TODO: we always randomly crash on this line
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationRight];
     }
 }
@@ -69,11 +131,28 @@
 
 - (PFQuery *)queryForTable {
     PFQuery *query = [PFQuery queryWithClassName:self.className];
-    query.cachePolicy = kPFCachePolicyCacheElseNetwork;
+    PFQuery *subQuery = [PFQuery queryWithClassName:@"Vendor"];
+    
+    // If Pull To Refresh is enabled, query against the network by default.
+    if (self.pullToRefreshEnabled) {
+        query.cachePolicy = kPFCachePolicyNetworkOnly;
+    }
+    
+    // If no objects are loaded in memory, we look to the cache first to fill the table
+    // and then subsequently do a query against the network.
+    if (self.objects.count == 0) {
+        query.cachePolicy = kPFCachePolicyCacheThenNetwork;
+    }
     query.maxCacheAge = 60 * 60 * 24;  // One day, in seconds.
 
     [query whereKey:@"expireDate" greaterThanOrEqualTo:[GameUtils getToday]];
     [query whereKey:@"discountType" equalTo:[NSNumber numberWithInt:0]];
+    if ([GameUtils instance].currentCategory &&
+        ![(NSNumber *)[[GameUtils instance].currentCategory objectForKey:@"showAll"] intValue]) {
+        [subQuery whereKey:@"category" equalTo:[GameUtils instance].currentCategory];
+        [query whereKey:@"vendor" matchesQuery:subQuery];
+    }
+    
     if ([LocationManager allowLocationService]) {
         [query whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLocation:[LocationManager sharedSingleton].locationManager.location]];
     } else {
@@ -156,8 +235,8 @@
             return 0;
         }
     }
-    section--;
-    return [super tableView:tableView numberOfRowsInSection:section];
+    int numOfRows = [super tableView:tableView numberOfRowsInSection:section];
+    return numOfRows;
 }
 
 - (int)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -165,19 +244,30 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [self tableView:(UITableView *)tableView cellForRowAtIndexPath:indexPath checkingForHeight:YES].frame.size.height;
-}
-
-- (float)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 0.01f;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    return [[UIView new] autorelease];
+    if (indexPath.row >= self.objects.count && indexPath.section > 0) {
+        // load more cell height
+        return 50.0f;
+    } else if (indexPath.row >= self.objects.count && indexPath.section <= 0) {
+        // if only ads shows up, make sure it is 80 in size
+        return 80.0f;
+    }
+    
+    NSString *descriptionText = [[[self.objects objectAtIndex:[indexPath row]] objectForKey:@"description"] objectForKey:@"description"];
+    
+    // the default width of the label is 184
+    CGSize constraint = CGSizeMake(184.0f, 20000.0f);
+    CGSize descriptionSize = [descriptionText sizeWithFont:[UIFont boldSystemFontOfSize:16.0f] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+    
+    // the default height of the cell is 80
+    // the default height of the rest is 55
+    CGFloat height = MAX(descriptionSize.height + 55.0f, 80.0f);
+    
+    return height;
 }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [categoryViewController release], categoryViewController = nil;
     [super dealloc];
 }
 

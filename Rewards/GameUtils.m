@@ -13,6 +13,9 @@
 #import "TutorialView.h"
 #import <Parse/Parse.h>
 #import "UIDevice+IdentifierAddition.h"
+#import <FacebookSDK/FacebookSDK.h>
+#import <QuartzCore/QuartzCore.h>
+#import <AudioToolbox/AudioServices.h>
 
 static GameUtils *gameUtilsInstance;
 
@@ -23,6 +26,7 @@ static GameUtils *gameUtilsInstance;
 @property (nonatomic, retain) ProcessingView *processingView;
 @property (nonatomic, retain) DooberView *dooberView;
 @property (nonatomic) BOOL processing;
+@property (nonatomic, retain) CAEmitterLayer *coinExplosionParticleEmitter;
 
 @end
 
@@ -38,12 +42,12 @@ static GameUtils *gameUtilsInstance;
 @synthesize processingView;
 @synthesize processing;
 @synthesize dooberView;
-@synthesize hasUserUpdatedForReward;
-@synthesize hasUserUpdatedForCoin;
 @synthesize hasUserUpdatedForTransaction;
 @synthesize tabBarController;
 @synthesize facebookPermissions;
 @synthesize firstTimeUser;
+@synthesize currentCategory;
+@synthesize coinExplosionParticleEmitter;
 
 + (GameUtils *)instance {
     if (!gameUtilsInstance) {
@@ -59,11 +63,17 @@ static GameUtils *gameUtilsInstance;
         gameUtilsInstance.expireDateFormatter.dateFormat = @"EEE, MMM dd, yyyy";
         gameUtilsInstance.facebookPermissions = [NSArray arrayWithObjects:@"user_birthday", @"publish_stream", @"email", @"user_location", nil];
         gameUtilsInstance.firstTimeUser = NO;
+        PFQuery *query = [PFQuery queryWithClassName:@"Category"];
+        [query whereKey:@"showAll" equalTo:[NSNumber numberWithBool:YES]];
+        [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            gameUtilsInstance.currentCategory = object;
+        }];
     }
     return gameUtilsInstance;
 }
 
 - (void)dealloc {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [expireDateFormatter release], expireDateFormatter = nil;
     [distanceFormatter release], distanceFormatter = nil;
     [rewardRedeemStartTime release], rewardRedeemStartTime = nil;
@@ -72,6 +82,8 @@ static GameUtils *gameUtilsInstance;
     [processingView release], processingView = nil;
     [dooberView release], dooberView = nil;
     [facebookPermissions release], facebookPermissions = nil;
+    [currentCategory release], currentCategory = nil;
+    [coinExplosionParticleEmitter release], coinExplosionParticleEmitter = nil;
     [super dealloc];
 }
 
@@ -88,7 +100,7 @@ static GameUtils *gameUtilsInstance;
     return vendor;
 }
 
-- (void)mergeDefaultAccountWithFacebookOrSignedUp:(PFUser *)user actionType:(NSString *)type previousUser:(PFUser *)previousUser {
+- (void)mergeDefaultAccountWithFacebookOrSignedUp:(PFUser *)user actionType:(NSString *)type previousUser:(PFUser *)previousUser showDialog:(BOOL)showDialog {
     
     // merge progress
     NSDictionary *mergedProgress = [self mergeProgress:[user objectForKey:@"progressMap"] with:[previousUser objectForKey:@"progressMap"]];
@@ -119,7 +131,11 @@ static GameUtils *gameUtilsInstance;
         } else {
             [GameUtils refreshCurrentUser];
             NSLog(@"Device user deletion successful");
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"showSignedInAccountPage" object:nil];
+            if (showDialog) {
+                [GameUtils showFacebookDialogHelper];
+            } else {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"showSignedInAccountPage" object:nil];
+            }
         }
     }];
 }
@@ -155,79 +171,107 @@ static GameUtils *gameUtilsInstance;
 }
 
 + (void)showFacebookDialog {
-    if (![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-        [PFFacebookUtils linkUser:[PFUser currentUser]
-                      permissions:[GameUtils instance].facebookPermissions target:self
-                         selector:@selector(showFacebookDialogHelper)];
+    PFUser *user = [PFUser currentUser];
+    if (![PFFacebookUtils isLinkedWithUser:user]) {
+        if ([user.username isEqualToString:[user objectForKey:@"uuid"]]) {
+            // the user is using default account still, create proper facebook and merge
+            [PFFacebookUtils logInWithPermissions:[GameUtils instance].facebookPermissions block:^(PFUser *newUser, NSError *error) {
+                if (!newUser) {
+                    // TODO: show better message
+                    NSLog(@"Facebook account login/create error");
+                } else {
+                    [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:newUser
+                                                                         actionType:@"facebook"
+                                                                       previousUser:user showDialog:YES];
+                }
+            }];
+        } else {
+            // user is a registered user, link the account to facebook
+            [PFFacebookUtils linkUser:[PFUser currentUser]
+                          permissions:[GameUtils instance].facebookPermissions target:self
+                             selector:@selector(showFacebookDialogHelper)];
+        }
     } else {
         [GameUtils showFacebookDialogHelper];
     }
 }
 
 + (void)showFacebookDialogHelper {
-    NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Stay in the loop. Get rewards and discounts with RewardCat!", @"message", nil];
-    PFFacebookUtils.facebook.accessToken = [PFFacebookUtils session].accessToken;
-    PFFacebookUtils.facebook.expirationDate = [PFFacebookUtils session].expirationDate;
-    [PFFacebookUtils.facebook dialog:@"apprequests" andParams:params andDelegate:[GameUtils instance]];
+    NSMutableDictionary *invitedFriends = [[PFUser currentUser] objectForKey:@"invitedFBFriends"];
+    NSString *excluded_ids = [[invitedFriends allKeys] componentsJoinedByString:@","];
+    
+    NSMutableDictionary *params = [[[NSMutableDictionary alloc] initWithObjectsAndKeys:excluded_ids, @"exclude_ids", nil] autorelease];
+
+    [FBWebDialogs
+     presentRequestsDialogModallyWithSession:[PFFacebookUtils session]
+     message:@"Stay in the loop. Get rewards and discounts with RewardCat!"
+     title:@"Get RewardCat"
+     parameters:params
+     handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+         if (error) {
+             // Case A: Error launching the dialog or sending request.
+             NSLog(@"Error sending request.");
+         } else {
+             if (result == FBWebDialogResultDialogNotCompleted) {
+                 // Case B: User clicked the "x" icon
+                 NSLog(@"User canceled request.");
+             } else {
+                 // Case C: Dialog shown and the user clicks Cancel or Send
+                 NSDictionary *params = [GameUtils parseURLParams:[resultURL query]];
+                 if ([params objectForKey:@"request"]) {
+                     int requestCount = 0;
+                     NSMutableDictionary *invitedFBFriends = [[PFUser currentUser] objectForKey:@"invitedFBFriends"];
+                     if (!invitedFBFriends) {
+                         invitedFBFriends = [NSMutableDictionary dictionary];
+                     }
+                     
+                     // count the number of valid requests
+                     for (NSString *key in params.allKeys) {
+                         if ([[key substringToIndex:2] isEqualToString:@"to"]) {
+                             NSString *fbuid = [params objectForKey:key];
+                             if (![invitedFBFriends objectForKey:fbuid]) {
+                                 requestCount++;
+                                 [invitedFBFriends setObject:[NSNumber numberWithBool:YES] forKey:fbuid];
+                             }
+                         }
+                     }
+                     if (requestCount > 0) {
+                         // valid request count is greater than 1
+                         // save to user
+                         [[PFUser currentUser] setObject:invitedFBFriends forKey:@"invitedFBFriends"];
+                         [[PFUser currentUser] incrementKey:@"rewardcatPoints" byAmount:[NSNumber numberWithInt:requestCount]];
+                         PFObject *transaction = [PFObject objectWithClassName:@"Transaction"];
+                         [transaction setObject:@"Facebook Invite Friends" forKey:@"activityType"];
+                         [transaction setObject:[NSNumber numberWithInt:requestCount] forKey:@"rewardcatPointsDelta"];
+                         [transaction setObject:[PFUser currentUser] forKey:@"user"];
+                         NSArray *objectsToBeSaved = [NSArray arrayWithObjects:transaction, [PFUser currentUser], nil];
+                         [PFObject saveAllInBackground:objectsToBeSaved block:^(BOOL succeeded, NSError *error) {
+                             // TODO: Write better pop up messages
+                             if (succeeded) {
+                                 [GameUtils refreshCurrentUser];
+                                 UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Congradulations"
+                                                                                  message:[NSString stringWithFormat:@"You have earned %d coin!", requestCount]
+                                                                                 delegate:nil
+                                                                        cancelButtonTitle:@"Awesome"
+                                                                        otherButtonTitles:nil] autorelease];
+                                 [alert show];
+                             } else {
+                                 UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Sorry"
+                                                                                  message:[NSString stringWithFormat:@"There seem to be an error sending the requests, please try again later."]
+                                                                                 delegate:[GameUtils instance]
+                                                                        cancelButtonTitle:@"OK"
+                                                                        otherButtonTitles:nil] autorelease];
+                                 [alert show];
+                             }
+                         }];
+                     }
+                 }
+             }
+         }
+     }];
 }
 
-- (void)dialogCompleteWithUrl:(NSURL *)url {
-    // Call back after invites are sent
-    // try to get the number of valid invites
-    // a friend can only be invited once
-
-    NSDictionary *params = [self parseURLParams:[url query]];
-    if ([params objectForKey:@"request"]) {
-        int requestCount = 0;
-        NSMutableDictionary *invitedFBFriends = [[PFUser currentUser] objectForKey:@"invitedFBFriends"];
-        if (!invitedFBFriends) {
-            invitedFBFriends = [NSMutableDictionary dictionary];
-        }
-        
-        // count the number of valid requests
-        for (NSString *key in params.allKeys) {
-            if ([[key substringToIndex:2] isEqualToString:@"to"]) {
-                NSString *fbuid = [params objectForKey:key];
-                if (![invitedFBFriends objectForKey:fbuid]) {
-                    requestCount++;
-                    [invitedFBFriends setObject:[NSNumber numberWithBool:YES] forKey:fbuid];
-                }
-            }
-        }
-        if (requestCount > 0) {
-            // valid request count is greater than 1
-            // save to user
-            [[PFUser currentUser] setObject:invitedFBFriends forKey:@"invitedFBFriends"];
-            [[PFUser currentUser] incrementKey:@"rewardcatPoints" byAmount:[NSNumber numberWithInt:requestCount]];
-            PFObject *transaction = [PFObject objectWithClassName:@"Transaction"];
-            [transaction setObject:@"Facebook Invite Friends" forKey:@"activityType"];
-            [transaction setObject:[NSNumber numberWithInt:requestCount] forKey:@"rewardcatPointsDelta"];
-            [transaction setObject:[PFUser currentUser] forKey:@"user"];
-            NSArray *objectsToBeSaved = [NSArray arrayWithObjects:transaction, [PFUser currentUser], nil];
-            [PFObject saveAllInBackground:objectsToBeSaved block:^(BOOL succeeded, NSError *error) {
-                // TODO: Write better pop up messages
-                if (succeeded) {
-                    [GameUtils refreshCurrentUser];
-                    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Congradulations"
-                                                                     message:[NSString stringWithFormat:@"You have earned %d coin!", requestCount]
-                                                                    delegate:nil
-                                                           cancelButtonTitle:@"Awesome"
-                                                           otherButtonTitles:nil] autorelease];
-                    [alert show];
-                } else {
-                    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Sorry"
-                                                                     message:[NSString stringWithFormat:@"You have earned %d coin!", requestCount]
-                                                                    delegate:[GameUtils instance]
-                                                           cancelButtonTitle:@"Bad"
-                                                           otherButtonTitles:nil] autorelease];
-                    [alert show];
-                }
-            }];
-        }
-    }
-}
-
-- (NSDictionary*)parseURLParams:(NSString *)query {
++ (NSDictionary*)parseURLParams:(NSString *)query {
 	NSArray *pairs = [query componentsSeparatedByString:@"&"];
 	NSMutableDictionary *params = [[[NSMutableDictionary alloc] init] autorelease];
 	for (NSString *pair in pairs) {
@@ -260,8 +304,6 @@ static GameUtils *gameUtilsInstance;
     [[PFUser currentUser] refreshInBackgroundWithBlock:^(PFObject *object, NSError *error){
         if (!error) {
             NSLog(@"Current user refresh successful");
-            [GameUtils instance].hasUserUpdatedForReward = YES;
-            [GameUtils instance].hasUserUpdatedForCoin = YES;
             [GameUtils instance].hasUserUpdatedForTransaction = YES;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"currentUserRefreshed" object:nil];
         } else {
@@ -277,10 +319,7 @@ static GameUtils *gameUtilsInstance;
 }
 
 + (void)showTutorialWithFacebook:(BOOL)showFacebookPage {
-    UIWindow* window = [UIApplication sharedApplication].keyWindow;
-    if (!window) {
-        window = [[UIApplication sharedApplication].windows objectAtIndex:0];
-    }
+    UIWindow* window = [GameUtils topLevelView];
     NSArray* nibViews = [[NSBundle mainBundle] loadNibNamed:@"TutorialView"
                                                       owner:self
                                                     options:nil];
@@ -297,10 +336,7 @@ static GameUtils *gameUtilsInstance;
 
 + (void)showProcessingDisplay {
     if ([GameUtils instance].processing) {
-        UIWindow* window = [UIApplication sharedApplication].keyWindow;
-        if (!window) {
-            window = [[UIApplication sharedApplication].windows objectAtIndex:0];
-        }
+        UIWindow* window = [GameUtils topLevelView];
         if (![GameUtils instance].processingView) {
             NSArray* nibViews = [[NSBundle mainBundle] loadNibNamed:@"ProcessingView"
                                                               owner:self
@@ -317,13 +353,10 @@ static GameUtils *gameUtilsInstance;
 
 + (void)showProcessing {
     if (![GameUtils instance].processing) {
-        UIWindow* window = [UIApplication sharedApplication].keyWindow;
-        if (!window) {
-            window = [[UIApplication sharedApplication].windows objectAtIndex:0];
-        }
+        UIWindow* window = [GameUtils topLevelView];
         window.userInteractionEnabled = NO;
         [GameUtils instance].processing = YES;
-        [[GameUtils class] performSelector:@selector(showProcessingDisplay) withObject:nil afterDelay:2];
+        [[GameUtils class] performSelector:@selector(showProcessingDisplay) withObject:nil afterDelay:0.5];
     }
 }
 
@@ -339,11 +372,16 @@ static GameUtils *gameUtilsInstance;
     }
 }
 
-+ (void)showDoobersWithStamp:(int)stamp coin:(int)coin vendorName:(NSString *)vendorName {
++ (UIWindow *)topLevelView {
     UIWindow* window = [UIApplication sharedApplication].keyWindow;
     if (!window) {
         window = [[UIApplication sharedApplication].windows objectAtIndex:0];
     }
+    return window;
+}
+
++ (void)showDoobersWithStamp:(int)stamp coin:(int)coin vendorName:(NSString *)vendorName {
+    UIWindow* window = [GameUtils topLevelView];
     if (![GameUtils instance].dooberView) {
         NSArray* nibViews = [[NSBundle mainBundle] loadNibNamed:@"DooberView"
                                                           owner:self
@@ -353,6 +391,8 @@ static GameUtils *gameUtilsInstance;
     }
     [window bringSubviewToFront:[GameUtils instance].dooberView];
     [[GameUtils instance].dooberView showWithStamp:stamp coin:coin vendorName:vendorName];
+    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+    [GameUtils explodeCoins];
 }
 
 + (NSString *)timeStringWithGmtTimeInt:(NSTimeInterval)time {
@@ -365,6 +405,64 @@ static GameUtils *gameUtilsInstance;
 
 + (NSString *)uuid {
     return [[UIDevice currentDevice] uniqueDeviceIdentifier];
+}
+
+- (void)stopExplodeCoins {
+    self.coinExplosionParticleEmitter.birthRate = 0;
+}
+
+- (void)removeExplodeCoins {
+    [self.coinExplosionParticleEmitter removeFromSuperlayer];
+    self.coinExplosionParticleEmitter = nil;
+}
+
++ (CAEmitterCell *)standardParticleWithImage:(NSString *)imageName andScale:(CGFloat)scale {
+    CAEmitterCell *particle = [CAEmitterCell emitterCell];
+    
+    particle.scale = scale;
+    particle.scaleRange = 0.5 * scale;
+    particle.velocity = 400;
+    particle.birthRate = 200;
+    particle.lifetime = 5;
+    particle.velocityRange = 400;
+    particle.emissionRange = 6.28;
+    particle.yAcceleration = 400;
+    particle.spinRange = 20;
+    particle.contents = (id)[[UIImage imageNamed:imageName] CGImage];
+    
+    return particle;
+}
+
++ (void)explodeCoins {
+    if (!NSClassFromString(@"CAEmitterLayer") || !NSClassFromString(@"CAEmitterCell")) {
+        return;
+    }
+    
+    [[GameUtils instance] stopExplodeCoins];
+    [[GameUtils instance] removeExplodeCoins];
+    
+    [NSObject cancelPreviousPerformRequestsWithTarget:[GameUtils instance] selector:@selector(stopExplodeCoins) object:nil];
+    [NSObject cancelPreviousPerformRequestsWithTarget:[GameUtils instance] selector:@selector(removeExplodeCoins) object:nil];
+    
+    [GameUtils instance].coinExplosionParticleEmitter = [CAEmitterLayer layer];
+    [GameUtils instance].coinExplosionParticleEmitter.seed = [[NSDate date] timeIntervalSince1970];
+    [GameUtils instance].coinExplosionParticleEmitter.backgroundColor = [[UIColor redColor] CGColor];
+    [GameUtils instance].coinExplosionParticleEmitter.position = [GameUtils instance].tabBarController.view.center;
+    [GameUtils instance].coinExplosionParticleEmitter.emitterShape = kCAEmitterLayerPoint;
+    [GameUtils instance].coinExplosionParticleEmitter.renderMode = kCAEmitterLayerUnordered;
+    
+    [GameUtils instance].coinExplosionParticleEmitter.emitterCells = [NSArray arrayWithObjects:
+                                                                      [GameUtils standardParticleWithImage:@"coin@2x" andScale:0.33],
+                                                                      [GameUtils standardParticleWithImage:@"stamp@2x" andScale:0.33],
+                                                                      [GameUtils standardParticleWithImage:@"saletagIcon@2x" andScale:0.5],
+                                                                      nil];
+    
+    if (![[GameUtils instance].tabBarController.view.layer.sublayers containsObject:[GameUtils instance].coinExplosionParticleEmitter]) {
+        [[GameUtils instance].tabBarController.view.layer addSublayer:[GameUtils instance].coinExplosionParticleEmitter];
+    }
+    
+    [[GameUtils instance] performSelector:@selector(stopExplodeCoins) withObject:nil afterDelay:0.001];
+    [[GameUtils instance] performSelector:@selector(removeExplodeCoins) withObject:nil afterDelay:10];
 }
 
 @end

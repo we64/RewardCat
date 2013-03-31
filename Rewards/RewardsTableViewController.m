@@ -17,32 +17,35 @@
 
 @property (nonatomic, retain) UIBarButtonItem *toggleButton;
 @property (nonatomic) BOOL myRewards;
-//@property (nonatomic, retain) NSMutableDictionary *cellHeights;
+@property (nonatomic) BOOL shouldRefresh;
 
 @end
 
 @implementation RewardsTableViewController
 
 @synthesize toggleButton;
-//@synthesize cellHeights;
+@synthesize shouldRefresh;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
     if (!self) {
         return self;
     }
-//    self.cellHeights = [NSMutableDictionary dictionary];
-    self.title = @"Rewards";
+    self.title = @"Loyalty Rewards";
     self.className = @"Reward";
     self.objectsPerPage = 20;
     self.loadingViewEnabled = YES;
     self.myRewards = NO;
+    self.shouldRefresh = NO;
     self.toggleButton = [[UIBarButtonItem alloc] initWithTitle:@"My Rewards"
                                                          style:UIBarButtonItemStylePlain
                                                         target:self
                                                         action:@selector(showMyRewards)];
 
     self.tableView.separatorColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.25];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tableShouldRefresh) name:@"currentLocationRefreshed" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tableShouldRefresh) name:@"currentUserRefreshed" object:nil];
+
     return self;
 }
 
@@ -53,7 +56,6 @@
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-//    [cellHeights release], cellHeights = nil;
     [toggleButton release], toggleButton = nil;
     [super dealloc];
 }
@@ -65,14 +67,25 @@
     } else {
         [self.toggleButton setTitle:@"My Rewards"];
     }
+    self.shouldRefresh = YES;
     [self loadObjects];
+}
+
+- (void)tableShouldRefresh {
+    if (!self.shouldRefresh) {
+        self.shouldRefresh = YES;
+        
+        // if screen is visible, then reload objects immediately
+        if (self.isViewLoaded && self.view.window) {
+            [self loadObjects];
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    if ([GameUtils instance].hasUserUpdatedForReward) {
+    if (self.shouldRefresh) {
         [self loadObjects];
-        [GameUtils instance].hasUserUpdatedForReward = NO;
     }
 }
 
@@ -82,20 +95,33 @@
 }
 
 - (void)loadObjects {
-    [GameUtils showProcessing];
+    if (self.shouldRefresh) {
+        [GameUtils showProcessing];
+    }
     [super loadObjects];
 }
 
 - (void)objectsDidLoad:(NSError *)error {
     [super objectsDidLoad:error];
     [GameUtils hideProgressing];
+    self.shouldRefresh = NO;
 }
 
 #pragma mark - Table view data source
 
 - (PFQuery *)queryForTable {
     PFQuery *query = [PFQuery queryWithClassName:self.className];
-    query.cachePolicy = kPFCachePolicyCacheElseNetwork;
+    
+    // If Pull To Refresh is enabled, query against the network by default.
+    if (self.pullToRefreshEnabled) {
+        query.cachePolicy = kPFCachePolicyNetworkOnly;
+    }
+    
+    // If no objects are loaded in memory, we look to the cache first to fill the table
+    // and then subsequently do a query against the network.
+    if (self.objects.count == 0) {
+        query.cachePolicy = kPFCachePolicyCacheThenNetwork;
+    }
     query.maxCacheAge = 60 * 60 * 24;  // One day, in seconds.
 
     if (self.myRewards) {
@@ -126,34 +152,24 @@
     return [super tableView:tableView numberOfRowsInSection:section];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [self tableView:tableView cellForRowAtIndexPath:indexPath checkingForHeight:NO];
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
+    return [self tableView:tableView cellForRowAtIndexPath:indexPath object:object checkingForHeight:NO];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath checkingForHeight:(BOOL)checkingForHeight {
-    
-    if (indexPath.section == 0 && indexPath.row >= self.objects.count) {
-        return [super tableView:tableView cellForRowAtIndexPath:indexPath];
-    }
-    
-    PFObject *object = [self.objects objectAtIndex:indexPath.row];
-    if (![object respondsToSelector:@selector(className)] || ![object.className isEqualToString:@"Reward"]) {
-        return [super tableView:tableView cellForRowAtIndexPath:indexPath];
-    }
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object checkingForHeight:(BOOL)checkingForHeight {
     
     static NSString *CellIdentifier = @"RewardsTableViewCell";
-
     RewardsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
         cell = [nib objectAtIndex:0];
     }
-    
+
+    cell.indexInTable = indexPath.row;
+    cell.rewardsTableViewController = self;
     if (checkingForHeight) {
         [cell setUpWithItemForHeight:object];
     } else {
-        cell.indexInTable = indexPath.row;
-        cell.rewardsTableViewController = self;
         [cell setUpWithItem:object];
     }
 
@@ -172,20 +188,26 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-
     if (indexPath.row >= self.objects.count) {
-        return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+        // load more cell height
+        return 50.0f;
     }
 
-    return [self tableView:(UITableView *)tableView cellForRowAtIndexPath:indexPath checkingForHeight:YES].frame.size.height;
-}
+    NSString *descriptionText = [[[self.objects objectAtIndex:[indexPath row]] objectForKey:@"description"] objectForKey:@"description"];
+    PFObject *vendor = [GameUtils.instance getVendor:((PFObject *)[[self.objects objectAtIndex:[indexPath row]] objectForKey:@"vendor"]).objectId];
+    NSString *vendorName = [vendor objectForKey:@"name"];
 
-- (float)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 0.01f;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    return [[UIView new] autorelease];
+    // the default width of the label is 184
+    CGSize constraint = CGSizeMake(184.0f, 20000.0f);
+    CGSize descriptionSize = [descriptionText sizeWithFont:[UIFont systemFontOfSize:12.0f] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+    CGSize vendorNameSize = [vendorName sizeWithFont:[UIFont boldSystemFontOfSize:16.0f] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+    
+    // the default height of the cell is 80
+    // the default height of the process bar with margin is 27
+    // padding of 8 is to make sure the description is not right on top of the process bar, or else it would look weird
+    CGFloat height = MAX(descriptionSize.height + vendorNameSize.height + 27.0f + 8.0f, 80.0f);
+    
+    return height;
 }
 
 @end

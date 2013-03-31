@@ -99,11 +99,11 @@
     if ([PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
         
         [Flurry logEvent:@"action_button_click_facebook_signup"];
-        [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"facebook" previousUser:self.beforeLoggedInUser];
+        [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"facebook" previousUser:self.beforeLoggedInUser showDialog:NO];
     } else {
         
         [Flurry logEvent:@"action_button_click_login"];
-        [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"login" previousUser:self.beforeLoggedInUser];
+        [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"login" previousUser:self.beforeLoggedInUser showDialog:NO];
     }
 }
 
@@ -154,7 +154,7 @@
     
     [Flurry logEvent:@"action_button_click_sign_up_successful"];
     NSLog(@"User signed up, send back to delegate...");
-    [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"signup" previousUser:self.beforeLoggedInUser];
+    [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"signup" previousUser:self.beforeLoggedInUser showDialog:NO];
 }
 
 // Sent to the delegate when the sign up attempt fails.

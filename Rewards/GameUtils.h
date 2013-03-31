@@ -10,7 +10,7 @@
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 
-@interface GameUtils : NSObject <UIAlertViewDelegate, PF_FBDialogDelegate, PF_FBRequestDelegate>
+@interface GameUtils : NSObject <UIAlertViewDelegate>
 
 @property (nonatomic, retain) NSMutableDictionary *rewardRedeemStartTime;
 @property (nonatomic, retain) NSMutableDictionary *pointRewardRedeemStartTime;
@@ -18,15 +18,15 @@
 @property (nonatomic, retain) NSNumberFormatter *distanceFormatter;
 @property (nonatomic, retain) NSDateFormatter *expireDateFormatter;
 @property (nonatomic, retain) NSArray *facebookPermissions;
-@property (nonatomic) BOOL hasUserUpdatedForReward;
-@property (nonatomic) BOOL hasUserUpdatedForCoin;
+@property (nonatomic, retain) PFObject *currentCategory;
 @property (nonatomic) BOOL hasUserUpdatedForTransaction;
 @property (nonatomic, assign) RewardCatTabBarController *tabBarController;
 @property (nonatomic) BOOL firstTimeUser;
 
 - (PFObject *)getVendor:(NSString *)vendorObjectId;
-- (void)mergeDefaultAccountWithFacebookOrSignedUp:(PFUser *)user actionType:(NSString *)type previousUser:(PFUser *)previousUser;
+- (void)mergeDefaultAccountWithFacebookOrSignedUp:(PFUser *)user actionType:(NSString *)type previousUser:(PFUser *)previousUser showDialog:(BOOL)showDialog;
 
++ (NSDictionary*)parseURLParams:(NSString *)query;
 + (GameUtils *)instance;
 + (void)showRedeemConfirmationWithTime:(NSTimeInterval)time delegate:(id<UIAlertViewDelegate>)delegate;
 + (void)refreshCurrentUser;
@@ -39,5 +39,7 @@
 + (void)showTutorial;
 + (void)showFacebookDialog;
 + (void)showTutorialWithFacebook:(BOOL)showFacebookPage;
++ (UIWindow *)topLevelView;
++ (void)explodeCoins;
 
 @end

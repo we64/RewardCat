@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
+#import <MessageUI/MessageUI.h>
 
-@interface DetailViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@interface DetailViewController : UIViewController <MFMessageComposeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, retain) IBOutlet UITableView *detailTableView;
 

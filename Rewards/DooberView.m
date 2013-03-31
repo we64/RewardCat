@@ -45,10 +45,10 @@
     [self layoutSubviews];
     self.alpha = 1.0;
     self.hidden = NO;
-    self.center = CGPointMake(self.superview.center.x, self.superview.center.y + 120);
-    [UIView animateWithDuration:5 animations:^{
+    self.center = self.superview.center;
+    [UIView animateWithDuration:10 animations:^{
         self.alpha = 0;
-        self.center = CGPointMake(self.center.x, self.superview.center.y - 120);
+        self.center = CGPointMake(self.center.x, self.superview.center.y - 240);
     } completion:^(BOOL finished){
         self.hidden = YES;
     }];

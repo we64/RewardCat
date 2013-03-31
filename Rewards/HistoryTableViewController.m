@@ -65,7 +65,18 @@
 
 - (PFQuery *)queryForTable {
     PFQuery *query = [PFQuery queryWithClassName:self.className];
-    query.cachePolicy = kPFCachePolicyNetworkOnly;
+    
+    // If Pull To Refresh is enabled, query against the network by default.
+    if (self.pullToRefreshEnabled) {
+        query.cachePolicy = kPFCachePolicyNetworkOnly;
+    }
+    
+    // If no objects are loaded in memory, we look to the cache first to fill the table
+    // and then subsequently do a query against the network.
+    if (self.objects.count == 0) {
+        query.cachePolicy = kPFCachePolicyCacheThenNetwork;
+    }
+    
     if ([PFUser currentUser]) {
         [query whereKey:@"user" equalTo:[PFUser currentUser]];
         [query orderByDescending:@"createdAt"];

@@ -12,7 +12,6 @@
 
 @interface LoggedInAccountViewController ()
 
-//@property (nonatomic, retain) HistoryTableViewController *historyTableViewController;
 @property (nonatomic) CGFloat cellHeight;
 
 @end
@@ -21,7 +20,6 @@
 
 @synthesize accountTableView;
 @synthesize cellHeight;
-//@synthesize historyTableViewController;
 @synthesize accountNavigationController;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -44,22 +42,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-//    self.historyTableViewController = [[[HistoryTableViewController alloc] init] autorelease];
 }
 
 - (void)dealloc {
-//    [historyTableViewController release], historyTableViewController = nil;
     [accountTableView release], accountTableView = nil;
     [super dealloc];
 }
 
 - (void)historyButtonClicked {
-    //    [self.view addSubview:self.historyTableViewController.view];
     HistoryViewController *historyViewController = [[[HistoryViewController alloc] init] autorelease];
     historyViewController.view.frame = self.view.frame;
     [self.accountNavigationController pushViewController:historyViewController animated:YES];
-    
-    //[self.rewardsTableViewController.navigationController pushViewController:detailViewController animated:YES];
 }
 
 - (void)likeButtonClicked {

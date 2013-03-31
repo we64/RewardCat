@@ -6,8 +6,10 @@ Parse.Cloud.define('IncrementProgress', function(request, response) {
 	var validScan = 0;
 	var currentDate = new Date();
 	// 3 hours valid window
-	var validScanWindow = new Date(currentDate.getTime() - 10800000);
-	//var validScanWindow = new Date(currentDate.getTime() - 1);
+	//var validScanWindow = new Date(currentDate.getTime() - 10800000);
+	var validScanWindow = new Date(currentDate.getTime() - 1);
+
+	console.log("User: " + request.user.id);
 
 	// check to see if user has this reward
 	if (progressMap.hasOwnProperty(rewardID)) {

@@ -9,6 +9,7 @@
 #import "AccountTableViewCell.h"
 #import "GameUtils.h"
 #import "AppDelegate.h"
+#import <Parse/Parse.h>
 
 @interface AccountTableViewCell ()
 
@@ -63,6 +64,10 @@
             break;
         case Invite:
             [GameUtils showFacebookDialog];
+            PFObject *logger = [PFObject objectWithClassName:@"Log"];
+            [logger setObject:[PFUser currentUser] forKey:@"user"];
+            [logger setObject:@"Clicked Facebook invite button on account tab" forKey:@"activityDescription"];
+            [logger saveEventually];
             break;
         default:
             self.titleLabel.text = @"";
@@ -91,7 +96,7 @@
             self.titleLabel.text = @"Contact Support";
             break;
         case Rate:
-            self.titleLabel.text = @"Rate Us 5 Stars";
+            self.titleLabel.text = @"Rate Us on App Store";
             break;
         case History:
             self.titleLabel.text = @"View Transaction History";
