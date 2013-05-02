@@ -9,6 +9,7 @@
 #import "DiscountsViewController.h"
 #import "CustomNavigationController.h"
 #import "DiscountsTableViewController.h"
+#import "Logger.h"
 
 @interface DiscountsViewController ()
 
@@ -42,15 +43,21 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (self.isViewLoaded && self.view.window) {
+        // this is visible
+        [Logger.instance logPageImpression:@"Discount"];
+    }
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [Flurry logEvent:@"page_view_tab_discounts"];
 }
 
 - (void)dealloc {

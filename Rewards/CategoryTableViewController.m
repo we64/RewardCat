@@ -21,7 +21,7 @@
     if (!self) {
         return self;
     }
-    self.className = @"Category";
+    self.parseClassName = @"Category";
     self.objectsPerPage = 15;
     self.loadingViewEnabled = YES;
     self.pullToRefreshEnabled = NO;
@@ -30,7 +30,7 @@
 }
 
 - (PFQuery *)queryForTable {
-    PFQuery *query = [PFQuery queryWithClassName:self.className];
+    PFQuery *query = [PFQuery queryWithClassName:self.parseClassName];
 
     // If Pull To Refresh is enabled, query against the network by default.
     if (self.pullToRefreshEnabled) {

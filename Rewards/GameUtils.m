@@ -16,6 +16,10 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import <QuartzCore/QuartzCore.h>
 #import <AudioToolbox/AudioServices.h>
+#import "Logger.h"
+
+#define kAlertViewRedeem 1
+#define kAlertViewNewUpdate 2
 
 static GameUtils *gameUtilsInstance;
 
@@ -48,6 +52,7 @@ static GameUtils *gameUtilsInstance;
 @synthesize firstTimeUser;
 @synthesize currentCategory;
 @synthesize coinExplosionParticleEmitter;
+@synthesize nextGoToPointsRewardId;
 
 + (GameUtils *)instance {
     if (!gameUtilsInstance) {
@@ -84,6 +89,7 @@ static GameUtils *gameUtilsInstance;
     [facebookPermissions release], facebookPermissions = nil;
     [currentCategory release], currentCategory = nil;
     [coinExplosionParticleEmitter release], coinExplosionParticleEmitter = nil;
+    [nextGoToPointsRewardId release], nextGoToPointsRewardId = nil;
     [super dealloc];
 }
 
@@ -165,9 +171,19 @@ static GameUtils *gameUtilsInstance;
 }
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    [GameUtils instance].showingRedeemConfirmation = NO;
-    [self.redeemConfirmationDelegate alertView:alertView didDismissWithButtonIndex:buttonIndex];
-    ((AppDelegate *)[[UIApplication sharedApplication] delegate]).tabBarController.view.userInteractionEnabled = YES;
+    if (alertView.tag == kAlertViewRedeem && buttonIndex != [alertView cancelButtonIndex]) {
+        [GameUtils instance].showingRedeemConfirmation = NO;
+        [self.redeemConfirmationDelegate alertView:alertView didDismissWithButtonIndex:buttonIndex];
+        ((AppDelegate *)[[UIApplication sharedApplication] delegate]).tabBarController.view.userInteractionEnabled = YES;
+    } else if (alertView.tag == kAlertViewNewUpdate && buttonIndex != [alertView cancelButtonIndex]) {
+        [Logger.instance logButtonClick:@"Clicked upgrade to new version to App Store" pageName:nil];
+        [GameUtils goToAppStore];
+    }
+}
+
++ (void)goToAppStore {
+    NSString* url = [NSString stringWithFormat: @"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=%@", @"584774055"];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: url]];
 }
 
 + (void)showFacebookDialog {
@@ -271,6 +287,13 @@ static GameUtils *gameUtilsInstance;
      }];
 }
 
++ (void)hideDooberView {
+    // hide dooberView if exists
+    if ([GameUtils instance].dooberView && ![GameUtils instance].dooberView.hidden) {
+        [GameUtils instance].dooberView.hidden = YES;
+    }
+}
+
 + (NSDictionary*)parseURLParams:(NSString *)query {
 	NSArray *pairs = [query componentsSeparatedByString:@"&"];
 	NSMutableDictionary *params = [[[NSMutableDictionary alloc] init] autorelease];
@@ -282,20 +305,27 @@ static GameUtils *gameUtilsInstance;
     return params;
 }
 
-+ (void)showRedeemConfirmationWithTime:(NSTimeInterval)time delegate:(id<UIAlertViewDelegate>)delegate {
++ (void)showRedeemConfirmationWithTime:(NSTimeInterval)redeemTimeLength delegate:(id<UIAlertViewDelegate>)delegate {
     if ([GameUtils instance].showingRedeemConfirmation) {
         return;
     }
     [GameUtils instance].redeemConfirmationDelegate = delegate;
     ((AppDelegate *)[[UIApplication sharedApplication] delegate]).tabBarController.view.userInteractionEnabled = NO;
-    NSTimeInterval redeemTimeLength = time;
-    int minutes = (int)floor(redeemTimeLength / 60) % 60;
-    NSString *redeemTimeLengthText = [NSString stringWithFormat:@"%d", minutes];
+    int minutes = (int)floor(redeemTimeLength / 60);
+    int seconds = (int)redeemTimeLength % 60;
+
+    NSString *redeemTimeLengthText;
+    if (seconds > 0) {
+        redeemTimeLengthText = [NSString stringWithFormat:@"%d minutes and %d seconds", minutes, seconds];
+    } else {
+        redeemTimeLengthText = [NSString stringWithFormat:@"%d minutes", minutes];
+    }
     UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Are you sure you want to get this reward now?"
-                                                     message:[NSString stringWithFormat:@"You will have %@ minutes to show the cashier this page.", redeemTimeLengthText]
+                                                     message:[NSString stringWithFormat:@"You will have %@ to show the cashier this page to complete this redemption.", redeemTimeLengthText]
                                                     delegate:[GameUtils instance]
                                            cancelButtonTitle:@"Cancel"
                                            otherButtonTitles:@"OK", nil] autorelease];
+    alert.tag = kAlertViewRedeem;
     [alert show];
     [GameUtils instance].showingRedeemConfirmation = YES;
 }
@@ -380,7 +410,8 @@ static GameUtils *gameUtilsInstance;
     return window;
 }
 
-+ (void)showDoobersWithStamp:(int)stamp coin:(int)coin vendorName:(NSString *)vendorName {
++ (void)showDoobersWithStamp:(int)stamp coin:(int)coin vendorName:(NSString *)vendorName inviteMessage:(NSString *)inviteMessage pointReward:(PFObject *)pointReward instructionMessage:(NSString *)instructionMessage {
+
     UIWindow* window = [GameUtils topLevelView];
     if (![GameUtils instance].dooberView) {
         NSArray* nibViews = [[NSBundle mainBundle] loadNibNamed:@"DooberView"
@@ -390,9 +421,14 @@ static GameUtils *gameUtilsInstance;
         [window addSubview:[GameUtils instance].dooberView];
     }
     [window bringSubviewToFront:[GameUtils instance].dooberView];
-    [[GameUtils instance].dooberView showWithStamp:stamp coin:coin vendorName:vendorName];
+    [[GameUtils instance].dooberView showWithStamp:stamp coin:coin vendorName:vendorName inviteMessage:inviteMessage pointReward:pointReward instructionMessage:instructionMessage];
     AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
     [GameUtils explodeCoins];
+    [GameUtils instance].dooberView.animationContainerView.transform = CGAffineTransformMakeScale(0.01, 0.01);
+    [UIView animateWithDuration:0.75 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        [GameUtils instance].dooberView.animationContainerView.transform = CGAffineTransformIdentity;
+    } completion:^(BOOL finished){
+    }];
 }
 
 + (NSString *)timeStringWithGmtTimeInt:(NSTimeInterval)time {
@@ -414,6 +450,37 @@ static GameUtils *gameUtilsInstance;
 - (void)removeExplodeCoins {
     [self.coinExplosionParticleEmitter removeFromSuperlayer];
     self.coinExplosionParticleEmitter = nil;
+}
+
++ (void)checkIfNewVersionAvailable {
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDate *lastCheckUpdateRefreshDate = [defaults objectForKey:@"lastCheckUpdateRefreshDate"];
+
+    if (!lastCheckUpdateRefreshDate || [lastCheckUpdateRefreshDate compare:[NSDate date]] == NSOrderedAscending) {
+        PFQuery *query = [PFQuery queryWithClassName:@"Version"];
+        query.limit = 1;
+        [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            NSNumber *currentVersion = (NSNumber *)[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+            NSNumber *newVersion = (NSNumber *)[object objectForKey:@"versionNumber"];
+            if ([currentVersion doubleValue] < [newVersion doubleValue]) {
+                NSString *message = [[object objectForKey:@"updateMessage"] objectForKey:@"message"];
+                UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Update Available"
+                                                                 message:message
+                                                                delegate:[GameUtils instance]
+                                                       cancelButtonTitle:@"Remind Me Later"
+                                                       otherButtonTitles:@"Update Now", nil] autorelease];
+                alert.tag = kAlertViewNewUpdate;
+                [Logger.instance logEvent:@"Upgrade dialog shown"];
+                [alert show];
+            }
+
+            // only check if update is available, every 2 days
+            // this is for reducing unnecessary bandwidth usage
+            [defaults setObject:[[NSDate date] dateByAddingTimeInterval:60*60*24*2] forKey:@"lastCheckUpdateRefreshDate"];
+            [defaults synchronize];
+        }];
+    }
 }
 
 + (CAEmitterCell *)standardParticleWithImage:(NSString *)imageName andScale:(CGFloat)scale {
@@ -457,11 +524,11 @@ static GameUtils *gameUtilsInstance;
                                                                       [GameUtils standardParticleWithImage:@"saletagIcon@2x" andScale:0.5],
                                                                       nil];
     
-    if (![[GameUtils instance].tabBarController.view.layer.sublayers containsObject:[GameUtils instance].coinExplosionParticleEmitter]) {
-        [[GameUtils instance].tabBarController.view.layer addSublayer:[GameUtils instance].coinExplosionParticleEmitter];
+    if (![[GameUtils instance].dooberView.layer.sublayers containsObject:[GameUtils instance].coinExplosionParticleEmitter]) {
+        [[GameUtils instance].dooberView.layer addSublayer:[GameUtils instance].coinExplosionParticleEmitter];
     }
     
-    [[GameUtils instance] performSelector:@selector(stopExplodeCoins) withObject:nil afterDelay:0.001];
+    [[GameUtils instance] performSelector:@selector(stopExplodeCoins) withObject:nil afterDelay:0.01];
     [[GameUtils instance] performSelector:@selector(removeExplodeCoins) withObject:nil afterDelay:10];
 }
 

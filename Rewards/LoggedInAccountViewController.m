@@ -9,6 +9,7 @@
 #import "LoggedInAccountViewController.h"
 #import "AccountTableViewCell.h"
 #import "HistoryViewController.h"
+#import "GameUtils.h"
 
 @interface LoggedInAccountViewController ()
 
@@ -112,8 +113,7 @@
 }
 
 - (void)rateButtonClicked {
-    NSString* url = [NSString stringWithFormat: @"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=%@", @"584774055"];
-    [[UIApplication sharedApplication] openURL: [NSURL URLWithString: url]];
+    [GameUtils goToAppStore];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

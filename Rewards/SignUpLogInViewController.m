@@ -10,7 +10,7 @@
 #import "SignUpViewController.h"
 #import "GameUtils.h"
 #import <QuartzCore/QuartzCore.h>
-#import "Flurry.h"
+#import "Logger.h"
 
 @interface SignUpLogInViewController ()
 
@@ -63,8 +63,6 @@
 
 - (IBAction)signUpButtonClicked:(id)sender {
     // Create the sign up view controller
-    [Flurry logEvent:@"action_button_click_show_signup_page"];
-
     SignUpViewController *signUpViewController = [[[SignUpViewController alloc] init] autorelease];
     [signUpViewController setDelegate:self];
     [signUpViewController setFields:PFSignUpFieldsUsernameAndPassword | PFSignUpFieldsEmail | PFSignUpFieldsSignUpButton | PFSignUpFieldsAdditional];
@@ -77,7 +75,7 @@
 // Sent to the delegate to determine whether the log in request should be submitted to the server.
 - (BOOL)logInViewController:(PFLogInViewController *)logInController shouldBeginLogInWithUsername:(NSString *)username password:(NSString *)password {
     if (username && password && username.length && password.length) {
-        [Flurry logEvent:@"action_button_click_login_submitted_successfully"];
+        [[Logger instance] logEvent:@"action_button_click_login_submitted_successfully"];
         return YES;
     }
     
@@ -86,8 +84,8 @@
                                 delegate:nil
                        cancelButtonTitle:@"Ok"
                        otherButtonTitles:nil] autorelease] show];
-    
-    [Flurry logEvent:@"action_button_click_login_failed_missing_information"];
+
+    [[Logger instance] logEvent:@"action_button_click_login_failed_missing_information"];
 
     return NO;
 }
@@ -97,12 +95,12 @@
     
     // Check if user is linked to Facebook
     if ([PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-        
-        [Flurry logEvent:@"action_button_click_facebook_signup"];
+
+        [[Logger instance] logEvent:@"action_button_click_facebook_signup"];
         [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"facebook" previousUser:self.beforeLoggedInUser showDialog:NO];
     } else {
-        
-        [Flurry logEvent:@"action_button_click_login"];
+
+        [[Logger instance] logEvent:@"action_button_click_login"];
         [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"login" previousUser:self.beforeLoggedInUser showDialog:NO];
     }
 }
@@ -110,7 +108,7 @@
 // Sent to the delegate when the log in attempt fails.
 - (void)logInViewController:(PFLogInViewController *)logInController didFailToLogInWithError:(NSError *)error {
     NSLog(@"Log in failed...");
-    [Flurry logEvent:@"action_button_click_login_facebook_failed_with_error" withParameters:error.userInfo];
+    [[Logger instance] logErrorEvent:@"action_button_click_login_facebook_failed_with_error" error:error.userInfo];
 }
 
 // Sent to the delegate when the log in screen is dismissed.
@@ -140,10 +138,9 @@
                                     delegate:nil
                            cancelButtonTitle:@"Ok"
                            otherButtonTitles:nil] autorelease] show];
-
-        [Flurry logEvent:@"action_button_click_sign_up_failed_missing_information"];
+        [[Logger instance] logEvent:@"action_button_click_sign_up_failed_missing_information"];
     } else {
-        [Flurry logEvent:@"action_button_click_sign_up_submitted_successfully"];
+        [[Logger instance] logEvent:@"action_button_click_sign_up_submitted_successfully"];
     }
     
     return informationComplete;
@@ -151,16 +148,14 @@
 
 // Sent to the delegate when a PFUser is signed up.
 - (void)signUpViewController:(PFSignUpViewController *)signUpController didSignUpUser:(PFUser *)user {
-    
-    [Flurry logEvent:@"action_button_click_sign_up_successful"];
+    [[Logger instance] logEvent:@"action_button_click_sign_up_successful"];
     NSLog(@"User signed up, send back to delegate...");
     [[GameUtils instance] mergeDefaultAccountWithFacebookOrSignedUp:user actionType:@"signup" previousUser:self.beforeLoggedInUser showDialog:NO];
 }
 
 // Sent to the delegate when the sign up attempt fails.
 - (void)signUpViewController:(PFSignUpViewController *)signUpController didFailToSignUpWithError:(NSError *)error {
-    
-    [Flurry logEvent:@"action_button_click_sign_up_failed_with_error" withParameters:error.userInfo];
+    [[Logger instance] logErrorEvent:@"action_button_click_sign_up_failed_with_error" error:error.userInfo];
     NSLog(@"Failed to sign up...");
 }
 

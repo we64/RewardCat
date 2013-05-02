@@ -11,6 +11,7 @@
 #import "ZBarReaderView.h"
 #import "ZBarReaderViewController.h"
 #import "GameUtils.h"
+#import "Logger.h"
 
 @interface ScanViewController ()
 
@@ -46,15 +47,18 @@
 - (void)turnOnCamera {
     [self setUpCamera];
     [self.reader.readerView start];
+    [Logger.instance logPageImpression:@"Scan"];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [Flurry logEvent:@"page_view_tab_scan"];
+    [super viewWillAppear:animated];
     [self turnOnCamera];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [self turnOffCamera];
+    [GameUtils hideDooberView];
+    [super viewWillDisappear:animated];
 }
 
 - (void)dealloc {
@@ -106,23 +110,29 @@
         NSLog(@"%@", sym.data);
         NSArray *qrData = [sym.data componentsSeparatedByString:@"?r="];
         if ([[[qrData objectAtIndex:0] lowercaseString] isEqualToString:@"http://www.rewardcat.com"] && qrData.count >= 2) {
-            [Flurry logEvent:@"action_scan_valid_qr_code"];
-            [Flurry logEvent:@"action_scan_valid_qr_code_duration" timed:YES];
+            [[Logger instance] logEvent:@"action_start_scan_valid_qr_code"];
 
             NSString *rewardId = [qrData objectAtIndex:1];
             NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:rewardId, @"rewardID", nil];
             [GameUtils showProcessing];
             [PFCloud callFunctionInBackground:@"IncrementProgress" withParameters:dictionary block:^(id result, NSError *error) {
                 [GameUtils hideProgressing];
-                [Flurry endTimedEvent:@"action_scan_valid_qr_code_duration" withParameters:nil];
+
                 if (!error) {
                     [GameUtils refreshCurrentUser];
-                    [GameUtils showDoobersWithStamp:[[((NSDictionary *)result) objectForKey:@"rewardDelta"] intValue]
-                                               coin:[[((NSDictionary *)result) objectForKey:@"rewardcatPointsDelta"] intValue]
-                                         vendorName:[[[GameUtils instance].vendorDictionary objectForKey:[result objectForKey:@"vendorId"]] objectForKey:@"name"]];
+                    [[Logger instance] logEvent:@"action_end_scan_valid_qr_code_successfully"];
+                    PFObject *pointRewardToShow = (PFObject *)[result objectForKey:@"pointRewardToShow"];
+                    [pointRewardToShow setObject:[result objectForKey:@"pointRewardToShowObjectId"] forKey:@"objectId"];
+                    [GameUtils showDoobersWithStamp:[[result objectForKey:@"rewardDelta"] intValue]
+                                               coin:[[result objectForKey:@"rewardcatPointsDelta"] intValue]
+                                         vendorName:[[[GameUtils instance].vendorDictionary objectForKey:[result objectForKey:@"vendorId"]] objectForKey:@"name"]
+                                      inviteMessage:[result objectForKey:@"inviteMessage"]
+                                        pointReward:pointRewardToShow
+                                 instructionMessage:[result objectForKey:@"instructionMessage"]];
                 } else {
                     // scan unsuccessful, show error message
                     // if it is due to scanning too soon, show Invalid Scan
+                    [[Logger instance] logEvent:@"action_end_scan_valid_qr_code_error"];
                     NSString *errorString = [[error userInfo] objectForKey:@"error"];
                     NSRange isContains = [errorString rangeOfString:@"For security reasons" options:NSCaseInsensitiveSearch];
                     if(isContains.location != NSNotFound) {
@@ -144,7 +154,7 @@
                 }
             }];
         } else {
-            [Flurry logEvent:@"error_action_scan_invalid_qr_code"];
+            [[Logger instance] logEvent:@"action_scan_invalid_qr_code"];
             UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Invalid QR code"
                                                              message:@"This is not a valid Reward Cat QR code."
                                                             delegate:nil

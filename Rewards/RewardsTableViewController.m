@@ -32,7 +32,7 @@
         return self;
     }
     self.title = @"Loyalty Rewards";
-    self.className = @"Reward";
+    self.parseClassName = @"Reward";
     self.objectsPerPage = 20;
     self.loadingViewEnabled = YES;
     self.myRewards = NO;
@@ -110,7 +110,7 @@
 #pragma mark - Table view data source
 
 - (PFQuery *)queryForTable {
-    PFQuery *query = [PFQuery queryWithClassName:self.className];
+    PFQuery *query = [PFQuery queryWithClassName:self.parseClassName];
     
     // If Pull To Refresh is enabled, query against the network by default.
     if (self.pullToRefreshEnabled) {
@@ -184,13 +184,15 @@
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
         cell = [nib objectAtIndex:0];
     }
+    
+    [self loadNextPage];
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row >= self.objects.count) {
         // load more cell height
-        return 50.0f;
+        return 35.0f;
     }
 
     NSString *descriptionText = [[[self.objects objectAtIndex:[indexPath row]] objectForKey:@"description"] objectForKey:@"description"];

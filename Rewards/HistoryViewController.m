@@ -8,6 +8,7 @@
 
 #import "HistoryViewController.h"
 #import "HistoryTableViewController.h"
+#import "Logger.h"
 
 @interface HistoryViewController ()
 
@@ -34,8 +35,15 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (self.isViewLoaded && self.view.window) {
+        // this is visible
+        [Logger.instance logPageImpression:@"History"];
+    }
+}
+
+- (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
 }

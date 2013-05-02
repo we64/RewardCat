@@ -1,7 +1,7 @@
 import json
 import dateutil.parser
 from pprint import pprint
-json_data = open('/Users/changliu/Downloads/backup_mar_30_2013/Vendor.json')
+json_data = open('/Users/changliu/Downloads/parse_raw_source/Vendor.json')
 
 data = json.load(json_data)
 json_data.close()

@@ -44,7 +44,6 @@
 		B01226F716B6047A0059B5D2 /* caton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B01226F316B604790059B5D2 /* caton@2x.png */; };
 		B0150717165030EE007FABC2 /* PointRewardsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B0150716165030EE007FABC2 /* PointRewardsTableViewCell.m */; };
 		B015071A165048D8007FABC2 /* PointRewardsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0150719165048D8007FABC2 /* PointRewardsTableViewCell.xib */; };
-		B01507261650B290007FABC2 /* libFlurry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B01507251650B290007FABC2 /* libFlurry.a */; };
 		B015072D1658A96D007FABC2 /* bar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B015072B1658A96A007FABC2 /* bar@2x.png */; };
 		B015072E1658A96D007FABC2 /* bar.png in Resources */ = {isa = PBXBuildFile; fileRef = B015072C1658A96B007FABC2 /* bar.png */; };
 		B01B589E16D09277002686B6 /* stampoff.png in Resources */ = {isa = PBXBuildFile; fileRef = B01B589616D0922E002686B6 /* stampoff.png */; };
@@ -170,6 +169,15 @@
 		B0C6CD9616D1689B006B074F /* DiscountsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C6CD9416D1689B006B074F /* DiscountsViewController.xib */; };
 		B0C6CD9A16D1706F006B074F /* DiscountsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C6CD9816D1706E006B074F /* DiscountsTableViewController.m */; };
 		B0C8CF07164FA39500D0753C /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C8CF06164FA39500D0753C /* Reachability.m */; };
+		B0D09B491710E79D00900FBE /* Logger.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D09B481710E79D00900FBE /* Logger.m */; };
+		B0D09B4C171A754900900FBE /* scanDialogBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D09B4A171A754900900FBE /* scanDialogBackground.png */; };
+		B0D09B4D171A754900900FBE /* scanDialogBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D09B4B171A754900900FBE /* scanDialogBackground@2x.png */; };
+		B0D09B52171B6EB100900FBE /* facebook-2000.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D09B4E171B6EB100900FBE /* facebook-2000.png */; };
+		B0D09B53171B6EB100900FBE /* facebook-2000@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D09B4F171B6EB100900FBE /* facebook-2000@2x.png */; };
+		B0D09B54171B6EB100900FBE /* xbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D09B50171B6EB100900FBE /* xbutton.png */; };
+		B0D09B55171B6EB100900FBE /* xbutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D09B51171B6EB100900FBE /* xbutton@2x.png */; };
+		B0D09B58171BA25F00900FBE /* whitebutton.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D09B56171BA25E00900FBE /* whitebutton.png */; };
+		B0D09B59171BA25F00900FBE /* whitebutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D09B57171BA25F00900FBE /* whitebutton@2x.png */; };
 		B0D88ABC16ABE57F00A81E6D /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D88ABB16ABE57F00A81E6D /* LocationManager.m */; };
 		B0D88AC016ACA96400A81E6D /* pointrewardsbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D88ABE16ACA96400A81E6D /* pointrewardsbutton.png */; };
 		B0D88AC116ACA96400A81E6D /* pointrewardsbutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D88ABF16ACA96400A81E6D /* pointrewardsbutton@2x.png */; };
@@ -280,8 +288,6 @@
 		B0150715165030EE007FABC2 /* PointRewardsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointRewardsTableViewCell.h; sourceTree = "<group>"; };
 		B0150716165030EE007FABC2 /* PointRewardsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PointRewardsTableViewCell.m; sourceTree = "<group>"; };
 		B0150719165048D8007FABC2 /* PointRewardsTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PointRewardsTableViewCell.xib; sourceTree = "<group>"; };
-		B01507241650B290007FABC2 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
-		B01507251650B290007FABC2 /* libFlurry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry.a; sourceTree = "<group>"; };
 		B015072B1658A96A007FABC2 /* bar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bar@2x.png"; sourceTree = "<group>"; };
 		B015072C1658A96B007FABC2 /* bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bar.png; sourceTree = "<group>"; };
 		B01B589616D0922E002686B6 /* stampoff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stampoff.png; sourceTree = "<group>"; };
@@ -429,6 +435,16 @@
 		B0C6CD9816D1706E006B074F /* DiscountsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscountsTableViewController.m; sourceTree = "<group>"; };
 		B0C8CF05164FA39500D0753C /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		B0C8CF06164FA39500D0753C /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		B0D09B471710E79D00900FBE /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logger.h; sourceTree = "<group>"; };
+		B0D09B481710E79D00900FBE /* Logger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logger.m; sourceTree = "<group>"; };
+		B0D09B4A171A754900900FBE /* scanDialogBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = scanDialogBackground.png; sourceTree = "<group>"; };
+		B0D09B4B171A754900900FBE /* scanDialogBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scanDialogBackground@2x.png"; sourceTree = "<group>"; };
+		B0D09B4E171B6EB100900FBE /* facebook-2000.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook-2000.png"; sourceTree = "<group>"; };
+		B0D09B4F171B6EB100900FBE /* facebook-2000@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook-2000@2x.png"; sourceTree = "<group>"; };
+		B0D09B50171B6EB100900FBE /* xbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xbutton.png; sourceTree = "<group>"; };
+		B0D09B51171B6EB100900FBE /* xbutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xbutton@2x.png"; sourceTree = "<group>"; };
+		B0D09B56171BA25E00900FBE /* whitebutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whitebutton.png; sourceTree = "<group>"; };
+		B0D09B57171BA25F00900FBE /* whitebutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "whitebutton@2x.png"; sourceTree = "<group>"; };
 		B0D88ABA16ABE57F00A81E6D /* LocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationManager.h; sourceTree = "<group>"; };
 		B0D88ABB16ABE57F00A81E6D /* LocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManager.m; sourceTree = "<group>"; };
 		B0D88ABE16ACA96400A81E6D /* pointrewardsbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pointrewardsbutton.png; sourceTree = "<group>"; };
@@ -562,22 +578,12 @@
 				B0DC90721619048B00F20C78 /* UIKit.framework in Frameworks */,
 				B0DC90741619048B00F20C78 /* Foundation.framework in Frameworks */,
 				B0DC910F16191A2000F20C78 /* libzbar.a in Frameworks */,
-				B01507261650B290007FABC2 /* libFlurry.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		B01507231650B290007FABC2 /* Flurry */ = {
-			isa = PBXGroup;
-			children = (
-				B01507241650B290007FABC2 /* Flurry.h */,
-				B01507251650B290007FABC2 /* libFlurry.a */,
-			);
-			path = Flurry;
-			sourceTree = SOURCE_ROOT;
-		};
 		B0469A0E166CB02D001A96B9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -587,6 +593,8 @@
 				B0D88ABB16ABE57F00A81E6D /* LocationManager.m */,
 				B07C846B16DA987C0072C576 /* AdsUtils.h */,
 				B07C846C16DA987C0072C576 /* AdsUtils.m */,
+				B0D09B471710E79D00900FBE /* Logger.h */,
+				B0D09B481710E79D00900FBE /* Logger.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -731,7 +739,6 @@
 				B053D60116F50D1E00E883CE /* Supporting Files */,
 				B0DC90701619048B00F20C78 /* Frameworks */,
 				B0DC906E1619048B00F20C78 /* Products */,
-				B01507231650B290007FABC2 /* Flurry */,
 				B0DC90F116191A2000F20C78 /* ZBarSDK */,
 			);
 			sourceTree = "<group>";
@@ -842,6 +849,14 @@
 		B0DC90BB1619056F00F20C78 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				B0D09B56171BA25E00900FBE /* whitebutton.png */,
+				B0D09B57171BA25F00900FBE /* whitebutton@2x.png */,
+				B0D09B4E171B6EB100900FBE /* facebook-2000.png */,
+				B0D09B4F171B6EB100900FBE /* facebook-2000@2x.png */,
+				B0D09B50171B6EB100900FBE /* xbutton.png */,
+				B0D09B51171B6EB100900FBE /* xbutton@2x.png */,
+				B0D09B4A171A754900900FBE /* scanDialogBackground.png */,
+				B0D09B4B171A754900900FBE /* scanDialogBackground@2x.png */,
 				B01CF73116FEDE100037BF35 /* check.png */,
 				B01CF73216FEDE100037BF35 /* check@2x.png */,
 				B0E5BF5516EDD78C008EEA66 /* share@2x.png */,
@@ -1269,6 +1284,14 @@
 				B029B5E916FE487E00C9E962 /* CategoryTableViewCell.xib in Resources */,
 				B01CF73316FEDE100037BF35 /* check.png in Resources */,
 				B01CF73416FEDE100037BF35 /* check@2x.png in Resources */,
+				B0D09B4C171A754900900FBE /* scanDialogBackground.png in Resources */,
+				B0D09B4D171A754900900FBE /* scanDialogBackground@2x.png in Resources */,
+				B0D09B52171B6EB100900FBE /* facebook-2000.png in Resources */,
+				B0D09B53171B6EB100900FBE /* facebook-2000@2x.png in Resources */,
+				B0D09B54171B6EB100900FBE /* xbutton.png in Resources */,
+				B0D09B55171B6EB100900FBE /* xbutton@2x.png in Resources */,
+				B0D09B58171BA25F00900FBE /* whitebutton.png in Resources */,
+				B0D09B59171BA25F00900FBE /* whitebutton@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1322,6 +1345,7 @@
 				B029B5E016FD7D7800C9E962 /* CategoryViewController.m in Sources */,
 				B029B5E416FD802A00C9E962 /* CategoryTableViewController.m in Sources */,
 				B029B5E716FE479A00C9E962 /* CategoryTableViewCell.m in Sources */,
+				B0D09B491710E79D00900FBE /* Logger.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1399,7 +1423,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ZBarSDK\"",
-					"\"$(SRCROOT)/Flurry\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -1489,7 +1512,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ZBarSDK\"",
-					"\"$(SRCROOT)/Flurry\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -1520,7 +1542,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ZBarSDK\"",
-					"\"$(SRCROOT)/Flurry\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (

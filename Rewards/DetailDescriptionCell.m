@@ -33,12 +33,6 @@
                             MAX(self.frame.size.height + heightDifference, 0));
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
-}
-
 - (void)dealloc {
     [detail release], detail = nil;
     [super dealloc];

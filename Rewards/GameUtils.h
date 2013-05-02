@@ -22,6 +22,7 @@
 @property (nonatomic) BOOL hasUserUpdatedForTransaction;
 @property (nonatomic, assign) RewardCatTabBarController *tabBarController;
 @property (nonatomic) BOOL firstTimeUser;
+@property (nonatomic, retain) NSString *nextGoToPointsRewardId;
 
 - (PFObject *)getVendor:(NSString *)vendorObjectId;
 - (void)mergeDefaultAccountWithFacebookOrSignedUp:(PFUser *)user actionType:(NSString *)type previousUser:(PFUser *)previousUser showDialog:(BOOL)showDialog;
@@ -35,11 +36,14 @@
 + (NSString *)uuid;
 + (void)showProcessing;
 + (void)hideProgressing;
-+ (void)showDoobersWithStamp:(int)stamp coin:(int)coin vendorName:(NSString *)vendorName;
++ (void)showDoobersWithStamp:(int)stamp coin:(int)coin vendorName:(NSString *)vendorName inviteMessage:(NSString *)inviteMessage pointReward:(PFObject *)pointReward instructionMessage:(NSString *)instructionMessage;
 + (void)showTutorial;
 + (void)showFacebookDialog;
 + (void)showTutorialWithFacebook:(BOOL)showFacebookPage;
 + (UIWindow *)topLevelView;
 + (void)explodeCoins;
++ (void)checkIfNewVersionAvailable;
++ (void)goToAppStore;
++ (void)hideDooberView;
 
 @end

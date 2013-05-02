@@ -8,7 +8,7 @@
 
 #import "CategoryViewController.h"
 #import "CategoryTableViewController.h"
-#import <QuartzCore/QuartzCore.h>
+#import "Logger.h"
 
 @interface CategoryViewController ()
 
@@ -34,6 +34,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissCategories) name:@"dismissCategoryView" object:nil];
     
     return self;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (self.isViewLoaded && self.view.window) {
+        // this is visible
+        [Logger.instance logPageImpression:@"Category"];
+    }
 }
 
 - (void)viewDidLoad {

@@ -8,6 +8,7 @@
 
 #import "DetailHeaderCell.h"
 #import "GameUtils.h"
+#import "Logger.h"
 
 @interface DetailHeaderCell()
 
@@ -71,11 +72,11 @@
             self.icon.image = image;
         }];
     } else {
-        if ([self.reward.className isEqualToString:@"Reward"]) {
+        if ([self.reward.parseClassName isEqualToString:@"Reward"]) {
             self.icon.image = [UIImage imageNamed:@"thumbnailStamp.png"];
-        } else if ([self.reward.className isEqualToString:@"PointReward"]) {
+        } else if ([self.reward.parseClassName isEqualToString:@"PointReward"]) {
             self.icon.image = [UIImage imageNamed:@"thumbnailCoin.png"];
-        } else if ([self.reward.className isEqualToString:@"Discount"]) {
+        } else if ([self.reward.parseClassName isEqualToString:@"Discount"]) {
             self.icon.image = [UIImage imageNamed:@"thumbnailSale.png"];
         }
     }
@@ -98,11 +99,11 @@
         self.salesButton.hidden = YES;
 
         int progress = 0;
-        if ([[self.reward className] isEqualToString:@"Reward"]) {
+        if ([self.reward.parseClassName isEqualToString:@"Reward"]) {
             if ([progressMap objectForKey:self.reward.objectId] != nil) {
                 progress = MIN([[[progressMap objectForKey:reward.objectId] objectForKey:@"Count"] intValue], target);
             }
-        } else if ([self.reward.className isEqualToString:@"PointReward"]) {
+        } else if ([self.reward.parseClassName isEqualToString:@"PointReward"]) {
             progress = MIN([[user objectForKey:@"rewardcatPoints"] intValue], target);
         }
         
@@ -138,15 +139,10 @@
     }
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
-}
-
 - (IBAction)redeemButtonClicked:(id)sender {
     NSTimeInterval redeemTimeLength = [[self.reward objectForKey:@"redeemTimeLength"] doubleValue];
     [GameUtils showRedeemConfirmationWithTime:redeemTimeLength delegate:self];
+    [[Logger instance] logButtonClick:@"Redeem button" object:self.reward];
 }
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
@@ -156,6 +152,7 @@
         NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
                                     self.reward.objectId, @"rewardID", nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"startRedeemReward" object:nil userInfo:dictionary];
+        [[Logger instance] logDetailImpression:self.reward redeemFlag:YES];
     }
 }
 

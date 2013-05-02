@@ -13,8 +13,8 @@
 #import "DetailFacebookCell.h"
 #import "GameUtils.h"
 #import "DetailShareCell.h"
-#import "Flurry.h"
 #import <CoreLocation/CoreLocation.h>
+#import "Logger.h"
 
 @interface DetailViewController ()
 
@@ -64,9 +64,9 @@
         return;
     }
     [self.countDownTimer invalidate];
-    if ([self.reward.className isEqualToString:@"Reward"]) {
+    if ([self.reward.parseClassName isEqualToString:@"Reward"]) {
         [[GameUtils instance].rewardRedeemStartTime removeObjectForKey:self.reward.objectId];
-    } else if ([self.reward.className isEqualToString:@"PointReward"]) {
+    } else if ([self.reward.parseClassName isEqualToString:@"PointReward"]) {
         [[GameUtils instance].pointRewardRedeemStartTime removeObjectForKey:self.reward.objectId];
     }
 }
@@ -77,12 +77,11 @@
         return;
     }
     self.redeem = YES;
-    [Flurry logEvent:[@"action_redeem_" stringByAppendingString:self.reward.className]];
 
     NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
                                 self.reward.objectId, @"rewardID",
                                 [self.reward objectForKey:@"target"], @"target",
-                                self.reward.className, @"rewardType", nil];    
+                                self.reward.parseClassName, @"rewardType", nil];
     [GameUtils showProcessing];
     [PFCloud callFunctionInBackground:@"redeemReward" withParameters:dictionary block:^(id result, NSError *error) {
 
@@ -115,9 +114,9 @@
 - (void)startRedeemCountDown {
     if (self.countDownStartTime <= 0) {
         self.countDownStartTime = [[NSDate date] timeIntervalSince1970];
-        if ([self.reward.className isEqualToString:@"Reward"]) {
+        if ([self.reward.parseClassName isEqualToString:@"Reward"]) {
             [[GameUtils instance].rewardRedeemStartTime setValue:[NSNumber numberWithDouble:self.countDownStartTime] forKey:self.reward.objectId];
-        } else if ([self.reward.className isEqualToString:@"PointReward"]) {
+        } else if ([self.reward.parseClassName isEqualToString:@"PointReward"]) {
             [[GameUtils instance].pointRewardRedeemStartTime setValue:[NSNumber numberWithDouble:self.countDownStartTime] forKey:self.reward.objectId];
         }
     }
@@ -178,7 +177,7 @@
         return cell;
     }
     
-    if (indexPath.row == 2 && [self.reward.className isEqualToString:@"PointReward"]) {
+    if (indexPath.row == 2 && [self.reward.parseClassName isEqualToString:@"PointReward"]) {
         static NSString *CellIdentifier = @"DetailFacebookCell";
         
         DetailFacebookCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -252,7 +251,7 @@
     } else {
         cell.topBorder.image = [UIImage imageNamed:@"rowtop.png"];
     }
-    
+
     if (indexPath.row == numberOfRowsInSection - 1) {
         cell.bottomBorder.image = [UIImage imageNamed:@"tablebottom.png"];
     } else {
@@ -284,10 +283,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    // log DetailView Impressions
-    PFObject *logger = [PFObject objectWithClassName:@"Log"];
-    [logger setObject:[PFUser currentUser] forKey:@"user"];
-    
     // get vendor information if not exist
     if (self.contactInfo == nil) {
         PFObject *vendor = [GameUtils.instance getVendor:((PFObject *)[self.reward objectForKey:@"vendor"]).objectId];
@@ -296,21 +291,11 @@
         self.location = [[[CLLocation alloc] initWithLatitude:point.latitude longitude:point.longitude] autorelease];
     }
 
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                [[GameUtils.instance getVendor:((PFObject *)[self.reward objectForKey:@"vendor"]).objectId] objectForKey:@"name"], @"vendorName",
-                                [[self.reward objectForKey:@"description"] objectForKey:@"longDescription"], @"rewardDesc",
-                                self.reward.className, @"rewardType", nil];
     // set redeem state
-    if ([self.reward.className isEqualToString:@"Reward"]) {
+    if ([self.reward.parseClassName isEqualToString:@"Reward"]) {
         self.countDownStartTime = [[[GameUtils instance].rewardRedeemStartTime objectForKey:self.reward.objectId] doubleValue];
-        [Flurry logEvent:@"page_view_details_rewards" withParameters:dictionary];
-        [logger setObject:self.reward forKey:@"reward"];
-    } else if ([self.reward.className isEqualToString:@"PointReward"]) {
+    } else if ([self.reward.parseClassName isEqualToString:@"PointReward"]) {
         self.countDownStartTime = [[[GameUtils instance].pointRewardRedeemStartTime objectForKey:self.reward.objectId] doubleValue];
-        [Flurry logEvent:@"page_view_details_coins" withParameters:dictionary];
-        [logger setObject:self.reward forKey:@"pointReward"];
-    } else {
-        [logger setObject:self.reward forKey:@"discount"];
     }
 
     if (self.countDownStartTime > 0) {
@@ -318,77 +303,43 @@
     } else {
         self.redeem = NO;
     }
-    
-    [logger setObject:[NSNumber numberWithBool:self.redeem] forKey:@"redeemFlag"];
-    [logger saveEventually];
+
+    [[Logger instance] logDetailImpression:self.reward redeemFlag:self.redeem];
 }
 
 - (void)facebookInviteOnDetailClicked {
-    PFObject *logger = [PFObject objectWithClassName:@"Log"];
-    [logger setObject:[PFUser currentUser] forKey:@"user"];
-    if ([self.reward.className isEqualToString:@"Reward"]) {
-        [logger setObject:self.reward forKey:@"reward"];
-    } else if ([self.reward.className isEqualToString:@"PointReward"]) {
-        [logger setObject:self.reward forKey:@"pointReward"];
-    } else {
-        [logger setObject:self.reward forKey:@"discount"];
-    }
-    [logger setObject:@"Clicked Facebook invite button on detail screen" forKey:@"activityDescription"];
-    [logger saveEventually];
+    [[Logger instance] logButtonClick:@"Facebook Invite" object:self.reward];
 }
 
 - (void)sendShareTextMessage {
-    PFObject *logger = [PFObject objectWithClassName:@"Log"];
-    [logger setObject:[PFUser currentUser] forKey:@"user"];
-    if ([self.reward.className isEqualToString:@"Reward"]) {
-        [logger setObject:self.reward forKey:@"reward"];
-    } else if ([self.reward.className isEqualToString:@"PointReward"]) {
-        [logger setObject:self.reward forKey:@"pointReward"];
-    } else {
-        [logger setObject:self.reward forKey:@"discount"];
-    }
-    [logger setObject:@"Clicked to send text message" forKey:@"activityDescription"];
-    [logger saveEventually];
-    
     if([MFMessageComposeViewController canSendText]) {
         self.textMsgController = [[[MFMessageComposeViewController alloc] init] autorelease];
         self.textMsgController.body = @"Stay in the loop with rewards, free stuff, and discounts. Get RewardCat: http://appstore.com/rewardcat";
         self.textMsgController.messageComposeDelegate = self;
         [[GameUtils instance].tabBarController presentModalViewController:self.textMsgController animated:YES];
     }
+    [[Logger instance] logButtonClick:@"Text Share" object:self.reward];
 }
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
-    
-    PFObject *logger = [PFObject objectWithClassName:@"Log"];
-    [logger setObject:[PFUser currentUser] forKey:@"user"];
-    if ([self.reward.className isEqualToString:@"Reward"]) {
-        [logger setObject:self.reward forKey:@"reward"];
-    } else if ([self.reward.className isEqualToString:@"PointReward"]) {
-        [logger setObject:self.reward forKey:@"pointReward"];
-    } else {
-        [logger setObject:self.reward forKey:@"discount"];
-    }
 
     switch (result) {
         case MessageComposeResultCancelled:
             NSLog(@"Cancelled");
-            [logger setObject:@"Text message cancelled" forKey:@"activityDescription"];
+            [[Logger instance] logButtonClick:@"Text message cancelled" object:self.reward];
             break;
         case MessageComposeResultFailed:
             NSLog(@"Failed");
-            [logger setObject:@"Text message sending failed" forKey:@"activityDescription"];
+            [[Logger instance] logButtonClick:@"Text message sending failed" object:self.reward];
             break;
         case MessageComposeResultSent:
             NSLog(@"Send");
-            
-            [logger setObject:@"Text message sent successfully" forKey:@"activityDescription"];
+            [[Logger instance] logButtonClick:@"Text message sent successfully" object:self.reward];
             break;
         default:
             break;
     }
-    
-    [logger saveEventually];
+
     [[GameUtils instance].tabBarController dismissModalViewControllerAnimated:YES];
     [controller resignFirstResponder];
     [self becomeFirstResponder];

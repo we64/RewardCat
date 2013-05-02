@@ -8,6 +8,7 @@
 
 #import "AccountViewController.h"
 #import "GameUtils.h"
+#import "Logger.h"
 
 @interface AccountViewController ()
 
@@ -44,14 +45,19 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (self.isViewLoaded && self.view.window) {
+        // this is visible
+        [Logger.instance logPageImpression:@"Account"];
+    }
+}
+
+- (void)viewDidLoad {
     [super viewDidLoad];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [Flurry logEvent:@"page_view_tab_account"];
+- (void)viewWillAppear:(BOOL)animated {
     PFUser *user = [PFUser currentUser];
     NSString *deviceUUID = [user objectForKey:@"uuid"];
     if ([deviceUUID isEqualToString:user.username]) {

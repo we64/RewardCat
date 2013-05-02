@@ -6,8 +6,8 @@ Parse.Cloud.define('IncrementProgress', function(request, response) {
 	var validScan = 0;
 	var currentDate = new Date();
 	// 3 hours valid window
-	//var validScanWindow = new Date(currentDate.getTime() - 10800000);
-	var validScanWindow = new Date(currentDate.getTime() - 1);
+	var validScanWindow = new Date(currentDate.getTime() - 10800000);
+	//var validScanWindow = new Date(currentDate.getTime() - 1);
 
 	console.log("User: " + request.user.id);
 
@@ -38,12 +38,13 @@ Parse.Cloud.define('IncrementProgress', function(request, response) {
 		var Reward = Parse.Object.extend("Reward");
 		var query = new Parse.Query(Reward);
 		query.get(rewardID, {
-			success: function(object) {
-				rewardCatPoints = object.get("scanPoint");
-				var rewardDescription = object.get("description");
-				var vendor = object.get("vendor");
+			success: function(rewardObject) {
+				rewardCatPoints = rewardObject.get("scanPoint");
+				var rewardDescription = rewardObject.get("description");
+				var vendor = rewardObject.get("vendor");
 				var vendorId = vendor.id;
-				var target = object.get("target")
+				var target = rewardObject.get("target");
+				var geoLocation = rewardObject.get("location");
 
 				if (target == 0) {
 					response.error('Invalid QR code.');
@@ -51,31 +52,67 @@ Parse.Cloud.define('IncrementProgress', function(request, response) {
 
 				request.user.set("progressMap", progressMap);
 				request.user.increment("rewardcatPoints", rewardCatPoints);
-				
-				// save this transaction
-				var Transaction = Parse.Object.extend("Transaction");
-				var transaction = new Transaction();
-				transaction.set("activityType", "Scanned Reward");
-				transaction.set("reward", object);
-				transaction.set("rewardDelta", 1);
-				transaction.set("rewardcatPointsDelta", rewardCatPoints);
-				transaction.set("rewardTotalCountAfterAction", rewardProgress['Count']);
-				transaction.set("rewardDescription", rewardDescription.description);
-				transaction.set("rewardLongDescription", rewardDescription.longDescription);
-				transaction.set("user", request.user);
-				transaction.set("vendor", vendor);
 
-				Parse.Object.saveAll([request.user, transaction], {
-					success: function(list) {
-						console.log("Reward Increment User Progress Saved Successfully.");
-						console.log("Reward Increment Transaction Saved Successfully.");
-						var resultText = '{"rewardDelta" : ' + 1 + ', "rewardcatPointsDelta" : ' + rewardCatPoints + ', "vendorId" : "' + vendorId + '"}';
-						response.success(eval ("(" + resultText + ")"));
+				var PointReward = Parse.Object.extend("PointReward");
+				var queryCloseBy = new Parse.Query(PointReward);
+				queryCloseBy.notEqualTo("vendor", vendor);
+				queryCloseBy.near("location", geoLocation);
+				queryCloseBy.greaterThanOrEqualTo("expireDate", currentDate);
+				queryCloseBy.first({
+					success: function(pointReward) {
+
+						// save this transaction
+						var Transaction = Parse.Object.extend("Transaction");
+						var transaction = new Transaction();
+						transaction.set("activityType", "Scanned Reward");
+						transaction.set("reward", rewardObject);
+						transaction.set("rewardDelta", 1);
+						transaction.set("rewardcatPointsDelta", rewardCatPoints);
+						transaction.set("rewardTotalCountAfterAction", rewardProgress['Count']);
+						transaction.set("rewardDescription", rewardDescription.description);
+						transaction.set("rewardLongDescription", rewardDescription.longDescription);
+						transaction.set("user", request.user);
+						transaction.set("vendor", vendor);
+
+						// determine what to show on the facebook button
+						var pointRewardTarget = pointReward.get("target");
+						var userTotalCoins = request.user.get("rewardcatPoints");
+						var difference = pointRewardTarget - userTotalCoins;
+						var inviteFBMessage = "Invite friends for more Coins!";
+						if (difference > 0 && difference <= 5) {
+							inviteFBMessage = "Invite " + difference + " friends to get this reward now!";
+						}
+
+						Parse.Object.saveAll([request.user, transaction], {
+							success: function(list) {
+								console.log("Reward Increment User Progress Saved Successfully.");
+								console.log("Reward Increment Transaction Saved Successfully.");
+
+								var instructionMsg = "<html><body style=\\\"background-color: transparent;\\\"><center style=\\\"font-family:Helvetica;font-size:13pt;font-weight:bold;padding-bottom:5pt;\\\">Get more FREE stuff with Coins!</center><center style=\\\"font-family:Helvetica;font-size:11pt;\\\">Get a Coin with every Facebook friend invite or loyalty program scan!</center><center style=\\\"font-family:Helvetica;font-size:13pt;padding-top:8pt;\\\">Checkout this free reward...</center></body></html>";
+								if (difference <= 0) {
+									instructionMsg = "<html><body style=\\\"background-color: transparent;\\\"><center style=\\\"font-family:Helvetica;font-size:13pt;font-weight:bold;padding-bottom:5pt;\\\">Get more FREE stuff with Coins!</center><center style=\\\"font-family:Helvetica;font-size:11pt;\\\">Get a Coin with every Facebook friend invite or loyalty program scan!</center><center style=\\\"font-family:Helvetica;font-size:13pt;padding-top:8pt;\\\">Get this reward now...</center></body></html>";
+								}
+								var resultText = '{"rewardDelta" : ' + 1 + ', "rewardcatPointsDelta" : ' + rewardCatPoints +
+									', "vendorId" : "' + vendorId + '", "inviteMessage" : "' + inviteFBMessage +
+									'", "instructionMessage" : "' + instructionMsg + '"}';		
+								var resultJSON = eval ("(" + resultText + ")");
+								var pointRewardToShow = pointReward.toJSON();
+
+								resultJSON["pointRewardToShow"] = pointRewardToShow;
+								resultJSON["pointRewardToShowObjectId"] = pointReward.id;
+
+								response.success(resultJSON);
+							},
+							error: function(error) {
+								console.log("Error: " + error.code + " " + error.message);
+								response.error('Oops something went wrong with User and Transaction save.');
+							},
+						});
 					},
 					error: function(error) {
 						console.log("Error: " + error.code + " " + error.message);
 						response.error('Oops something went wrong with User and Transaction save.');
-					},
+					}
 				});
 			},
 			error: function(error) {

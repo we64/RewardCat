@@ -1,119 +1,85 @@
 "objectId","createdAt","updatedAt","address","phone","website","categoryId","name","latitude","longitude"
-"ZFGl8Q2EWU","02/27/2013 05:36:13","02/27/2013 07:15:27","1170 Willow Ave
-Sunnyvale, CA 94086","408-249-7588","","","Sunny Auto Care","37.367548","-121.996734"
-"lqNj2MI9YZ","02/27/2013 05:11:20","02/27/2013 07:15:31","10841 N Wolfe Rd
-Cupertino, CA 95014","408-446-4664","","","Beauty Studio","37.335705","-122.014341"
-"2AR9wX0TOR","01/31/2013 05:23:26","02/27/2013 07:15:32","1698 S Wolfe Rd. #116
-Sunnyvale, CA 94087","408-738-3300","","","Rong Fu Accountant","37.338073","-122.013811"
-"eP4WLioUEY","01/31/2013 05:23:26","02/27/2013 07:15:35","1049 E El Camino Real
-Sunnyvale, CA 94087","408-774-1917","","","Pro Cuts","37.352606","-122.005192"
-"geeQIPYSZh","01/31/2013 05:23:26","02/27/2013 07:15:35","1113 Tasman Drive
-Sunnyvale, CA 94089","408-745-6002","","","Susan's Donut","37.4036095","-121.9955416"
-"ImENfyDFm7","01/31/2013 05:23:26","02/27/2013 07:15:39","10877 N Wolfe Rd
-Cupertino, CA 95014","408-873-4813","","","Shanghai Restaurant","37.3354142","-122.0150292"
-"zOI7MU31hk","01/31/2013 05:23:26","03/12/2013 09:59:32","1125 Tasman Drive
-Sunnyvale, CA 94089","408-744-0970","","","Grewalz Liquor","37.4035002","-121.9933597"
-"54Q65pu2KK","01/31/2013 05:23:26","02/27/2013 07:15:41","10893 N Wolfe Rd
-Cupertino, CA 95014","408-873-8298","","","Ai Noodle","37.3342966","-122.0143745"
-"bcyXX3p4Uh","01/31/2013 05:23:26","02/27/2013 07:15:43","10851 N Wolfe Rd
-Cupertino, CA 95014","408-253-3998","","","Guandong House","37.3342583","-122.0143762"
-"ouACEsyKPZ","03/04/2013 07:08:14","03/04/2013 07:11:18","43737 Boscell Rd
-Fremont, CA 94538","510-498-8843","","","Flawless Beauty & Slimming","37.50031","-121.97386"
-"Ql7hcFyhBv","03/04/2013 07:25:23","03/04/2013 07:26:38","43755 Boscell Rd
-Fremont, CA 94538","510-668-0898","","","Food Talk Cafe","37.500668","-121.973083"
-"At7RW2ZDye","03/04/2013 07:27:23","03/04/2013 07:28:16","43749 Boscell Rd
-Fremont, CA 94538","510-656-1638","","","Shao Mountain","37.500477","-121.973355"
-"z4uIl2RJEb","03/10/2013 01:37:31","03/10/2013 03:16:49","10837 N Wolfe Rd
-Cupertino, CA 94087","408-244-7632","","","Shibuyasj","37.33569","-122.014341"
-"SfeH00H8NZ","03/10/2013 01:37:32","03/10/2013 03:15:42","2181 El Camino Real
-Santa Clara CA 95050","408-242-1001","","","Master Charles J.Hwang Taekwondo Studio","37.352457","-121.961725"
-"Ztu5g0hLFU","03/10/2013 01:37:33","03/10/2013 03:18:15","165 S Murphy Ave
-Street A
-Sunnyvale CA 94086","408-992-0666","","","Souren Master Shoe Repair","37.376568","-122.030399"
-"JOxAJN1Mn5","03/10/2013 02:00:28","03/10/2013 02:02:19","375 Saratoga Ave
-Ste K
-San Jose, CA 95129","408-296-6441","","","DD Beauty Salon","37.321456","-121.972037"
-"PJPzC7SqNm","03/10/2013 02:03:43","03/10/2013 03:22:24","10745 S DeAnza Blvd
+"z4uIl2RJEb","03/10/2013 01:37:31","04/03/2013 03:35:57","10837 N Wolfe Rd
+Cupertino, CA 94087","408-244-7632","","zn2nLkxdqN","Shibuyasj","37.33569","-122.014341"
+"PJPzC7SqNm","03/10/2013 02:03:43","04/03/2013 03:30:04","10745 S DeAnza Blvd
 Unit B
 Cupertino, CA 95014
 
-","408-873-9988","","","Hair Fashion National","37.312559","-122.032717"
-"3SYwL8eKZL","03/10/2013 02:10:06","03/10/2013 02:11:15","10831 N Wolfe Rd
-Cupertino, CA 95014","408-873-7788","","","Chef Yang's BBQ","37.334237","-122.014377"
-"i802YybcIu","03/10/2013 02:12:38","03/10/2013 02:13:36","10925 N Wolfe Rd
-Cupertino, CA 95014","408-996-3988","","","Chung Hsin Herbs","37.334307","-122.014374"
-"mThXodpwcz","03/10/2013 02:30:30","03/10/2013 02:31:23","10123 N Wolfe Road
+","408-873-9988","","8AZk438nSv","Hair Fashion National","37.312559","-122.032717"
+"3SYwL8eKZL","03/10/2013 02:10:06","04/03/2013 03:24:17","10831 N Wolfe Rd
+Cupertino, CA 95014","408-873-7788","","er40l6k8M0","Chef Yang's BBQ","37.334237","-122.014377"
+"i802YybcIu","03/10/2013 02:12:38","04/03/2013 03:36:56","10925 N Wolfe Rd
+Cupertino, CA 95014","408-996-3988","","dmTUzt6dmM","Chung Hsin Herbs","37.334307","-122.014374"
+"mThXodpwcz","03/10/2013 02:30:30","04/03/2013 03:35:31","10123 N Wolfe Road
 Suite 2052
-Cupertino, CA 95014","408-725-1054","","","Perfume Plus","37.326859","-122.015013"
-"6fpKPg85oZ","03/10/2013 02:33:53","03/10/2013 02:42:39","10123 N Wolfe Road
+Cupertino, CA 95014","408-725-1054","","zn2nLkxdqN","Perfume Plus","37.326859","-122.015013"
+"6fpKPg85oZ","03/10/2013 02:33:53","04/03/2013 03:35:26","10123 N Wolfe Road
 Suite 2052
-Cupertino, CA 95014","408-569-9350","","","Cellmax","37.326859","-122.015013"
-"ra42dKI6Mj","03/10/2013 02:43:12","03/10/2013 03:17:06","10123 N Wolfe Rd
-#2044
-Cupertino CA 95014","408-210-4850","","","Eurbana","37.326859","-122.015013"
-"F7B4FuyJo3","03/10/2013 03:03:16","03/10/2013 03:12:09","10123 N Wolfe Rd
+Cupertino, CA 95014","408-569-9350","","zn2nLkxdqN","Cellmax","37.326859","-122.015013"
+"F7B4FuyJo3","03/10/2013 03:03:16","04/03/2013 03:35:22","10123 N Wolfe Rd
 #2046
-Cupertino CA 95014","408-210-4850","","","Biruni Motorbike ","37.326859","-122.015013"
-"KePt2apWWd","01/31/2013 05:23:26","03/12/2013 09:54:54","1135 Tasman Drive
-Sunnyvale, CA 94089","408-752-0866","http://gobibbq.com","","Gobi Mongolian BBQ","37.4039074","-121.9944546"
-"bddh2nK0sR","01/31/2013 05:23:26","03/12/2013 09:56:12","1062 E El Camino Real
-Sunnyvale, CA 94087","408-557-9975","http://www.ivytrumanautomotive.com","","Ivy Truman Auto","37.35166","-122.003581"
-"OIklO9utc5","01/31/2013 05:23:26","03/12/2013 09:59:26","1137 Tasman Drive
-Sunnyvale, CA 94089","408-541-0188","http://www.hometownhealthspa.com","","Hometown Massage","37.4035168","-121.9937776"
-"V8QKa6rFDV","02/17/2013 01:19:32","03/12/2013 10:02:48","520 Lawrence Expressway #303
-Sunnyvale, CA 94085","408-245-8828","http://www.fusionspaca.com","","Fusion Massage & Spa","37.3828184","-121.9957617"
-"THuvOux5mX","02/27/2013 05:25:03","03/12/2013 10:04:36","10891 N Wolfe Rd
-Cupertino, CA 95014","888-789-8898","http://www.6kisstravel.com/","","6Kiss Travel","37.335884","-122.015518"
-"sQBDny7Sea","02/27/2013 05:26:51","03/12/2013 10:04:51","10122 Bandley Dr
-Cupertino, CA 95014","408-973-0999","http://www.6kisstravel.com/","","6Kiss Travel","37.324458","-122.03381"
-"VK4PNw38gC","03/04/2013 07:22:24","03/12/2013 10:08:46","43779 Boscell Rd
-Fremont, CA 94538","510-249-9569","http://www.fhspaonline.com","","Fremont Health Spa","37.500589","-121.972974"
-"d0NwFMTVKR","03/04/2013 07:28:43","03/12/2013 10:11:17","3427 El Camino Real
-Santa Clara, CA 95051","408-244-7632","http://www.buildasofa.com/","","BuildASofa","37.352629","-121.990212"
-"17tRvXolJf","03/04/2013 07:41:15","03/12/2013 10:12:50","43773 Boscell Rd
-Fremont, CA 94538","510-651-8888","http://snowflaketeahouse.com/","","Snowflake Tea House","37.500608","-121.973001"
-"JgKJjchnPw","03/04/2013 07:41:30","03/12/2013 10:13:45","3431 El Camino Real
-Santa Clara, CA 95051","408-244-4534","http://www.deliversushi.com/","","Truya Sushi Santa Clara","37.352753","-121.990288"
-"4KOfY5emCa","03/04/2013 07:41:38","03/12/2013 10:14:10","3255 S White Rd
-San Jose, CA 95148","408-223-2497","http://www.deliversushi.com/","","Truya Sushi San Jose","37.31542","-121.792584"
-"hdelGhda9p","03/10/2013 01:37:32","03/12/2013 10:16:57","1037 Lakehaven Dr
-Sunnyvale, CA 94089","408-734-2228","http://www.valero.com","","Valero Gas Station","37.396364","-121.997113"
-"7zC4AdQ0HB","03/10/2013 02:05:58","03/12/2013 10:18:51","3170 El Camino Real
+Cupertino CA 95014","408-210-4850","","zn2nLkxdqN","Biruni Motorbike ","37.326859","-122.015013"
+"KePt2apWWd","01/31/2013 05:23:26","04/03/2013 03:26:49","1135 Tasman Drive
+Sunnyvale, CA 94089","408-752-0866","http://gobibbq.com","er40l6k8M0","Gobi Mongolian BBQ","37.4039074","-121.9944546"
+"bddh2nK0sR","01/31/2013 05:23:26","04/03/2013 03:36:19","1062 E El Camino Real
+Sunnyvale, CA 94087","408-557-9975","http://www.ivytrumanautomotive.com","Yhhrcb165j","Ivy Truman Auto","37.35166","-122.003581"
+"OIklO9utc5","01/31/2013 05:23:26","04/03/2013 03:34:18","1137 Tasman Drive
+Sunnyvale, CA 94089","408-541-0188","http://www.hometownhealthspa.com","8AZk438nSv","Hometown Massage","37.4035168","-121.9937776"
+"V8QKa6rFDV","02/17/2013 01:19:32","04/03/2013 03:30:33","520 Lawrence Expressway #303
+Sunnyvale, CA 94085","408-245-8828","http://www.fusionspaca.com","8AZk438nSv","Fusion Massage & Spa","37.3828184","-121.9957617"
+"THuvOux5mX","02/27/2013 05:25:03","04/03/2013 03:37:19","10891 N Wolfe Rd
+Cupertino, CA 95014","888-789-8898","http://www.6kisstravel.com/","dmTUzt6dmM","6Kiss Travel","37.335884","-122.015518"
+"sQBDny7Sea","02/27/2013 05:26:51","04/03/2013 03:37:14","10122 Bandley Dr
+Cupertino, CA 95014","408-973-0999","http://www.6kisstravel.com/","dmTUzt6dmM","6Kiss Travel","37.324458","-122.03381"
+"VK4PNw38gC","03/04/2013 07:22:24","04/03/2013 03:30:20","43779 Boscell Rd
+Fremont, CA 94538","510-249-9569","http://www.fhspaonline.com","8AZk438nSv","Fremont Health Spa","37.500589","-121.972974"
+"d0NwFMTVKR","03/04/2013 07:28:43","04/03/2013 03:36:04","3427 El Camino Real
+Santa Clara, CA 95051","408-244-7632","http://www.buildasofa.com/","zn2nLkxdqN","BuildASofa","37.352629","-121.990212"
+"17tRvXolJf","03/04/2013 07:41:15","04/03/2013 03:24:43","43773 Boscell Rd
+Fremont, CA 94538","510-651-8888","http://snowflaketeahouse.com/","er40l6k8M0","Snowflake Tea House","37.500608","-121.973001"
+"JgKJjchnPw","03/04/2013 07:41:30","04/03/2013 03:24:32","3431 El Camino Real
+Santa Clara, CA 95051","408-244-4534","http://www.deliversushi.com/","er40l6k8M0","Truya Sushi Santa Clara","37.352753","-121.990288"
+"4KOfY5emCa","03/04/2013 07:41:38","04/03/2013 03:24:31","3255 S White Rd
+San Jose, CA 95148","408-223-2497","http://www.deliversushi.com/","er40l6k8M0","Truya Sushi San Jose","37.31542","-121.792584"
+"hdelGhda9p","03/10/2013 01:37:32","04/03/2013 03:33:53","1037 Lakehaven Dr
+Sunnyvale, CA 94089","408-734-2228","http://www.valero.com","Yhhrcb165j","Valero Gas Station","37.396364","-121.997113"
+"7zC4AdQ0HB","03/10/2013 02:05:58","04/03/2013 03:37:08","3170 El Camino Real
 Santa Clara, CA 95051
-","408-246-5009","http://www.stereobaseonline.com/","","Stereo Base","37.35174","-121.983546"
-"xgI6DrIezS","03/10/2013 02:07:22","03/12/2013 10:19:53","5231 Stevens Creek Blvd
-Santa Clara, CA 95051","408-243-0698","http://www.houseofbagel.com/","","House Of Bagels","37.323119","-121.99564"
-"m1AXvVwqom","03/10/2013 02:08:50","03/12/2013 10:20:38","2735 Scott Blvd
-Santa Clara, CA 95050","408-844-9380","http://www.pierresilber.com/","","Pierre Silber","37.369726","-121.959279"
-"qPCYDZL5dB","03/10/2013 02:11:33","03/12/2013 10:21:35","165 S Murphy Ave
-Sunnyvale, CA 94086","650-328-6490","http://www.zvartalterations.com/","","Zvart Alterations ","37.376568","-122.030399"
-"IqH3s4MaBS","03/13/2013 07:47:59","03/13/2013 07:49:30","855 E El Camino Real
-Sunnyvale, CA 94087","408-245-8434","http://www.golfland.com/sunnyvale/","","Golfland USA","37.354803","-122.015288"
-"7Kgt5UCFEJ","03/21/2013 09:48:25","03/21/2013 09:52:58","510 Lawrence Expy
+","408-246-5009","http://www.stereobaseonline.com/","dmTUzt6dmM","Stereo Base","37.35174","-121.983546"
+"xgI6DrIezS","03/10/2013 02:07:22","04/03/2013 03:24:29","5231 Stevens Creek Blvd
+Santa Clara, CA 95051","408-243-0698","http://www.houseofbagel.com/","er40l6k8M0","House Of Bagels","37.323119","-121.99564"
+"m1AXvVwqom","03/10/2013 02:08:50","04/03/2013 03:35:39","2735 Scott Blvd
+Santa Clara, CA 95050","408-844-9380","http://www.pierresilber.com/","zn2nLkxdqN","Pierre Silber","37.369726","-121.959279"
+"qPCYDZL5dB","03/10/2013 02:11:33","04/03/2013 03:37:01","165 S Murphy Ave
+Sunnyvale, CA 94086","650-328-6490","http://www.zvartalterations.com/","dmTUzt6dmM","Zvart Alterations ","37.376568","-122.030399"
+"IqH3s4MaBS","03/13/2013 07:47:59","04/03/2013 03:36:53","855 E El Camino Real
+Sunnyvale, CA 94087","408-245-8434","http://www.golfland.com/sunnyvale/","dmTUzt6dmM","Golfland USA","37.354803","-122.015288"
+"7Kgt5UCFEJ","03/21/2013 09:48:25","04/03/2013 03:35:14","510 Lawrence Expy
 #107
-Sunnyvale, CA 94085","408-737-8883","","","Eci Mobile, Inc.","37.3827","-121.9955023"
-"uPsHQvsclL","03/21/2013 09:53:32","03/21/2013 09:53:52","530 Shower Dr #1
-Mountain View Ca 94040","650-917-2318","","","Focus Optical","37.4022503","-122.1069705"
+Sunnyvale, CA 94085","408-737-8883","","zn2nLkxdqN","Eci Mobile, Inc.","37.3827","-121.9955023"
+"uPsHQvsclL","03/21/2013 09:53:32","04/03/2013 03:35:10","530 Shower Dr #1
+Mountain View Ca 94040","650-917-2318","","zn2nLkxdqN","Focus Optical","37.4022503","-122.1069705"
 "ZTbrQxKtuG","03/28/2013 19:25:30","03/28/2013 19:41:02","211 Hope St Mountain View, CA 94043","650-366-9999","","dmTUzt6dmM","Airport Taxi Cab SFO SJO OAK","37.3932272","-122.0778207"
-"RrEYf8twTa","03/28/2013 20:01:43","03/28/2013 20:02:14","730 E. El Camino Real Ste.B Sunnyvale, CA 94087","408-245-6898","","","Wellness Chiropractice Clinic","37.3584249","-122.021635"
-"iiFCeHxM0B","03/29/2013 17:24:27","03/29/2013 17:25:54","842 W. El Camino Real Sunnyvale, CA 94087","408-733-1234","","","Cash For Gold","37.3703446","-122.0422974"
-"le2JbSUxKG","03/29/2013 17:34:20","03/29/2013 17:56:56","936 E El Camino Real Sunnyvale, CA 94087","408-362-1234","","","Facial Town","37.3519814","-122.0120593"
-"fNXx41lgzm","03/10/2013 02:31:33","03/12/2013 10:22:44","10123 N Wolfe Road
+"iiFCeHxM0B","03/29/2013 17:24:27","04/03/2013 03:36:34","842 W. El Camino Real Sunnyvale, CA 94087","408-733-1234","","dmTUzt6dmM","Cash For Gold","37.3703446","-122.0422974"
+"le2JbSUxKG","03/29/2013 17:34:20","04/03/2013 03:28:07","936 E El Camino Real Sunnyvale, CA 94087","408-362-1234","","8AZk438nSv","Facial Town","37.3519814","-122.0120593"
+"R9xL4GYcFs","04/01/2013 01:59:48","04/03/2013 03:35:05","842 W. El Camino Real
+Sunnyvale, CA 94087"," 408-685-2120","","zn2nLkxdqN","Peter Cassara Clothiers","37.3703446","-122.0422974"
+"fNXx41lgzm","03/10/2013 02:31:33","04/03/2013 03:35:28","10123 N Wolfe Road
 Suite 2052
-Cupertino, CA 95014","408-252-5065","http://www.sterlingcity.net/","","Sterling City","37.326859","-122.015013"
-"3VFewlqJMD","03/10/2013 02:32:51","03/12/2013 10:23:57","10123 N Wolfe Road
+Cupertino, CA 95014","408-252-5065","http://www.sterlingcity.net/","zn2nLkxdqN","Sterling City","37.326859","-122.015013"
+"3VFewlqJMD","03/10/2013 02:32:51","04/03/2013 03:24:08","10123 N Wolfe Road
 Suite 2052
-Cupertino, CA 95014","408-996-1680","http://www.teriyakiexperience.com/","","Teriyaki Experience","37.326859","-122.015013"
-"kQdzhozVEh","03/11/2013 02:18:39","03/12/2013 10:28:05","10919 N Wolfe Rd
-Cupertino, CA 95014","408-725-8466","http://www.vuakhobo.us/","","Vua Kho Bo","37.334305","-122.014374"
-"Mki0ucDzSX","03/16/2013 18:35:55","03/16/2013 18:40:22","43785 Boscell Rd
-Fremont, CA 94538","510-683-8800","http://www.kaenyama.com","","Kaenyama Sushi","37.500569","-121.972947"
-"2qQCpXfEXv","03/21/2013 09:47:37","03/23/2013 02:34:04","10251 Torre Ave #130
-Cupertino, CA 95014","408-252-8171","http://www.cupertinosmile.com/","","Dr. Hrisula Cristea","37.318861","-122.0294193"
-"MtqeX6XpQ3","03/21/2013 09:49:23","03/21/2013 09:53:20","141 E Washington Ave
-Sunnyvale, CA 94086","408-730-1344","","","Goldfield's Jewelers","37.3760076","-122.0299998"
-"i9dXOdVDpe","03/21/2013 09:54:06","03/21/2013 09:55:07","1040 Grant Rd #170
-Mountain View Ca 94040","650-210-9700","http://www.nypizza.info/","","New York Pizza","37.3795936","-122.0750531"
+Cupertino, CA 95014","408-996-1680","http://www.teriyakiexperience.com/","er40l6k8M0","Teriyaki Experience","37.326859","-122.015013"
+"kQdzhozVEh","03/11/2013 02:18:39","04/03/2013 03:23:56","10919 N Wolfe Rd
+Cupertino, CA 95014","408-725-8466","http://www.vuakhobo.us/","er40l6k8M0","Vua Kho Bo","37.334305","-122.014374"
+"Mki0ucDzSX","03/16/2013 18:35:55","04/03/2013 03:23:10","43785 Boscell Rd
+Fremont, CA 94538","510-683-8800","http://www.kaenyama.com","er40l6k8M0","Kaenyama Sushi","37.500569","-121.972947"
+"2qQCpXfEXv","03/21/2013 09:47:37","04/03/2013 03:36:45","10251 Torre Ave #130
+Cupertino, CA 95014","408-252-8171","http://www.cupertinosmile.com/","dmTUzt6dmM","Dr. Hrisula Cristea","37.318861","-122.0294193"
+"MtqeX6XpQ3","03/21/2013 09:49:23","04/03/2013 03:35:13","141 E Washington Ave
+Sunnyvale, CA 94086","408-730-1344","","zn2nLkxdqN","Goldfield's Jewelers","37.3760076","-122.0299998"
+"i9dXOdVDpe","03/21/2013 09:54:06","04/03/2013 03:22:51","1040 Grant Rd #170
+Mountain View Ca 94040","650-210-9700","http://www.nypizza.info/","er40l6k8M0","New York Pizza","37.3795936","-122.0750531"
 "b6FYok6ljB","03/24/2013 21:38:42","03/24/2013 21:44:47","1189 S. De Anza Blvd #B
 San Jose, CA 95129","408-725-1888","http://www.yangzhoufootspa.com/","8AZk438nSv","Yang Zhou Foot Spa","37.302993","-122.032722"
 "p0p6Q8ZOxF","03/24/2013 22:26:18","03/24/2013 22:44:49","3521 Homestead Road
@@ -130,4 +96,142 @@ Santa Clara, CA 95050","408-244-4353","","8AZk438nSv","Barbie Hair and Nail","37
 "IX2Ke9IhRf","03/28/2013 19:04:21","03/28/2013 19:07:30","10495 S. Deanza Blvd. #A Cupertino, CA 95014","408-366-0111","www.no1footspabodymassage.com","8AZk438nSv","No. 1 Foot Spa & Full Body Massage","37.315928","-122.032763"
 "M0SdwevJ3G","03/28/2013 19:39:18","03/28/2013 19:40:55","165 El Camino Real Mountain View, CA 94040","  650-965-1111","www.chaatparadise.com","er40l6k8M0","Chaat Paradise Vegetarian Restaurant","37.3784866","-122.0711813"
 "ab8qdVpgjn","03/28/2013 20:47:50","03/28/2013 20:48:39","730-F East El Camino Real Sunnyvale, CA 94087","408-773-0809","","8AZk438nSv","Hair Now USA","37.3584249","-122.021635"
-"qIpswfnQls","03/29/2013 17:20:27","03/29/2013 17:24:12","103 E. El Camino Real, Ste.B Sunnyvale Ca 94087","408-736-0333","","","A Better Discount Vacumn And Sewing Center","37.36875","-122.032412"
+"qIpswfnQls","03/29/2013 17:20:27","04/03/2013 03:36:37","103 E. El Camino Real, Ste.B Sunnyvale Ca 94087","408-736-0333","","dmTUzt6dmM","A Better Discount Vacumn And Sewing Center","37.36875","-122.032412"
+"xV4R7s29Tv","04/01/2013 02:13:45","04/03/2013 03:27:59","834 W. El Camino Real
+Sunnyvale, CA 94087","408-738-4260","","8AZk438nSv","Image Eyebrow Threading","37.3703336","-122.0422545"
+"sG0VK6aC4D","04/01/2013 05:01:34","04/03/2013 03:22:07","10074 E. Estates Dr Cupertino, CA 95014","408-996-8088","","er40l6k8M0","Red Hot Wok","37.322135","-122.01501"
+"mPmwYUTBJB","04/01/2013 05:37:52","04/03/2013 03:21:50","932 E. El Camino Real Sunnyvale, CA 94087","408-245-6512","","er40l6k8M0","Lovely Sweets & Snacks","37.3521976","-122.012005"
+"p9GTsDDiY1","04/01/2013 05:04:59","04/03/2013 03:21:54","19541 Richwood Dr Cupertino Ca 95014","408-873-1444","www.kitshosushi.com","er40l6k8M0","Kitsho Japanese Restaurant","37.321975","-122.014927"
+"Ql7hcFyhBv","03/04/2013 07:25:23","04/03/2013 03:24:53","43755 Boscell Rd
+Fremont, CA 94538","510-668-0898","","er40l6k8M0","Food Talk Cafe","37.500668","-121.973083"
+"geeQIPYSZh","01/31/2013 05:23:26","04/03/2013 03:25:41","1113 Tasman Drive
+Sunnyvale, CA 94089","408-745-6002","","er40l6k8M0","Susan's Donut","37.4036095","-121.9955416"
+"At7RW2ZDye","03/04/2013 07:27:23","04/03/2013 03:25:51","43749 Boscell Rd
+Fremont, CA 94538","510-656-1638","","er40l6k8M0","Shao Mountain","37.500477","-121.973355"
+"ImENfyDFm7","01/31/2013 05:23:26","04/03/2013 03:26:24","10877 N Wolfe Rd
+Cupertino, CA 95014","408-873-4813","","er40l6k8M0","Shanghai Restaurant","37.3354142","-122.0150292"
+"54Q65pu2KK","01/31/2013 05:23:26","04/03/2013 03:26:34","10893 N Wolfe Rd
+Cupertino, CA 95014","408-873-8298","","er40l6k8M0","Ai Noodle","37.3342966","-122.0143745"
+"bcyXX3p4Uh","01/31/2013 05:23:26","04/03/2013 03:26:44","10851 N Wolfe Rd
+Cupertino, CA 95014","408-253-3998","","er40l6k8M0","Guandong House","37.3342583","-122.0143762"
+"JOxAJN1Mn5","03/10/2013 02:00:28","04/03/2013 03:30:18","375 Saratoga Ave
+Ste K
+San Jose, CA 95129","408-296-6441","","8AZk438nSv","DD Beauty Salon","37.321456","-121.972037"
+"ouACEsyKPZ","03/04/2013 07:08:14","04/03/2013 03:30:25","43737 Boscell Rd
+Fremont, CA 94538","510-498-8843","","8AZk438nSv","Flawless Beauty & Slimming","37.50031","-121.97386"
+"lqNj2MI9YZ","02/27/2013 05:11:20","04/03/2013 03:30:27","10841 N Wolfe Rd
+Cupertino, CA 95014","408-446-4664","","8AZk438nSv","Beauty Studio","37.335705","-122.014341"
+"eP4WLioUEY","01/31/2013 05:23:26","04/03/2013 03:30:37","1049 E El Camino Real
+Sunnyvale, CA 94087","408-774-1917","","8AZk438nSv","Pro Cuts","37.352606","-122.005192"
+"ZFGl8Q2EWU","02/27/2013 05:36:13","04/03/2013 03:34:02","1170 Willow Ave
+Sunnyvale, CA 94086","408-249-7588","","Yhhrcb165j","Sunny Auto Care","37.367548","-121.996734"
+"ra42dKI6Mj","03/10/2013 02:43:12","04/03/2013 03:35:24","10123 N Wolfe Rd
+#2044
+Cupertino CA 95014","408-210-4850","","zn2nLkxdqN","Eurbana","37.326859","-122.015013"
+"Ztu5g0hLFU","03/10/2013 01:37:33","04/03/2013 03:35:47","165 S Murphy Ave
+Street A
+Sunnyvale CA 94086","408-992-0666","","zn2nLkxdqN","Souren Master Shoe Repair","37.376568","-122.030399"
+"zOI7MU31hk","01/31/2013 05:23:26","04/03/2013 03:36:10","1125 Tasman Drive
+Sunnyvale, CA 94089","408-744-0970","","zn2nLkxdqN","Grewalz Liquor","37.4035002","-121.9933597"
+"RrEYf8twTa","03/28/2013 20:01:43","04/03/2013 03:36:42","730 E. El Camino Real Ste.B Sunnyvale, CA 94087","408-245-6898","","dmTUzt6dmM","Wellness Chiropractice Clinic","37.3584249","-122.021635"
+"SfeH00H8NZ","03/10/2013 01:37:32","04/03/2013 03:37:13","2181 El Camino Real
+Santa Clara CA 95050","408-242-1001","","dmTUzt6dmM","Master Charles J.Hwang Taekwondo Studio","37.352457","-121.961725"
+"2AR9wX0TOR","01/31/2013 05:23:26","04/03/2013 03:37:24","1698 S Wolfe Rd. #116
+Sunnyvale, CA 94087","408-738-3300","","dmTUzt6dmM","Rong Fu Accountant","37.338073","-122.013811"
+"L4EnWl2FiQ","04/05/2013 21:48:35","04/05/2013 21:49:41","404 Saratoga Avesan Jose, CA 95129","408-241-8001","","Yhhrcb165j","Oil Stop Drive thru Oil Change","37.3204083","-121.9720121"
+"25Iag4sTGn","04/05/2013 22:19:43","04/05/2013 22:21:39","5145 Stevens Creek Ste140
+Santa Clara, CA 95051","408-241-0328","dahnyoga.com","dmTUzt6dmM","Dahn Yoga","37.323455","-121.99298"
+"5tvcvlMXLq","04/06/2013 01:03:49","04/06/2013 01:04:26","3295 El Camino Real Ste A
+Santa Clara Ca 95051","","","Yhhrcb165j","Jeff's Garage","37.352946","-121.986515"
+"yrOLsK0H2H","04/06/2013 01:16:29","04/06/2013 01:17:19","3258 El Camino Real
+Santa Clara, CA 95051","408-244-8531","","er40l6k8M0","Shuskorean Restaurant","37.3522746","-121.9859774"
+"6voWJB6V7E","04/06/2013 01:32:16","04/06/2013 01:33:53","2465 El Camino Real
+Santa Clara, CA 95051","408-243-8173","","dmTUzt6dmM","Motel Capri","37.352936","-121.969827"
+"xMw97tK1r5","04/06/2013 01:50:38","04/06/2013 02:14:24","1316 Saratoga Ave.
+San Jose, CA 95129","408-984-2160","","dmTUzt6dmM","Saratoga Pure Water","37.3006733","-121.9817361"
+"2R5JaX2CEv","04/06/2013 03:16:41","04/06/2013 03:50:33","5161 Moonpark Ave.
+San Jose, CA 95129","408-253-0500","http://jtctkd.com/","dmTUzt6dmM","J.W. Suh's Tae Kwon Do Center","37.3095231","-121.9938325"
+"24GYc3C79y","04/06/2013 03:51:12","04/06/2013 03:52:00","481 Saratoga Ave
+San Jose, CA 95129","408-249-3055","","dmTUzt6dmM","MWM Acupunture & Herb Inc","37.3188704","-121.9736754"
+"UfcXa4Zgyb","04/06/2013 04:54:59","04/06/2013 04:58:24","1114 Saratoga Ave
+San Jose, CA 95129","408-241-1162","","dmTUzt6dmM","PC Clinic","37.3048462","-121.97817"
+"wzvAJB6Hb5","04/06/2013 05:26:07","04/06/2013 05:27:07","485 Saratoga Ave
+San Jose, CA 95129","408-249-3755","","er40l6k8M0","Tasty Donuts","37.3188097","-121.973727"
+"yiHYxSfNla","04/06/2013 06:40:34","04/06/2013 06:41:22","4481 Stevens Creek Blvd
+Santa Clara Ca 95051","408-244-2699","","zn2nLkxdqN","Zad Grocery","37.323649","-121.980855"
+"x5Qq5S2tJf","04/06/2013 06:48:42","04/06/2013 06:49:31","1118 Saratoga Ave
+San Jose, CA 95129","408-260-2763","","8AZk438nSv","Wonder Cuts Barber","37.3047997","-121.9783443"
+"6V8Y5SKXUz","04/06/2013 07:04:03","04/06/2013 07:04:45","3570 Ryder St.
+Santa Clara Ca, 95051","408-735-7533","baycityfuniture.com","zn2nLkxdqN","Bay City Funiture","37.3762413","-121.9951966"
+"t9p451aJsF","04/08/2013 01:24:06","04/08/2013 01:33:33","5223 Stevens Creek Blvd Santa Clara, CA 95051","408-296-7281","www.phoanhdaobistro.com","er40l6k8M0","Pho Anh Dao Bistro","37.3239639","-121.994352"
+"EGBaY5xBcC","04/08/2013 04:09:19","04/08/2013 04:10:07","3531 El Camino Real
+#108
+Santa Clara, CA 95051","408-247-4825","","zn2nLkxdqN","Comforters House","37.3536022","-121.9935905"
+"jtp8F9715v","04/08/2013 04:25:37","04/08/2013 04:26:18","3561 El Camino Real #60 Santa Clara, CA 95051","408-564-0119","","zn2nLkxdqN","Home Shopping Korea","37.3536992","-121.9942582"
+"SqFPjuLTPS","04/08/2013 04:32:46","04/08/2013 04:33:38","926 E. Fremont At Wolfe Sunnyvale, CA 94087","408-739-2605","","dmTUzt6dmM","McAlister's TV & Appliance Service Center","37.3520177","-122.0127435"
+"7CtuqNa3KZ","04/08/2013 04:55:14","04/08/2013 04:56:14","4495 Stevens Creek Blvd
+Santa Clara Ca 95051","408-249-2784","","er40l6k8M0","Lock Chun Peking and Szechuan Cuisine","37.3234169","-121.9811089"
+"kDyhArBJSr","04/08/2013 05:09:59","04/16/2013 20:34:36","1699 W. San Carlos St.
+San Jose, CA 95128","408-273-8988","asianexpres.com","er40l6k8M0","Asian Express Ca 9 Mon","37.3235178","-121.921692"
+"v6DvD7YU9f","04/08/2013 18:04:53","04/08/2013 18:05:26","137 E. El Camino Real Mountain View, CA 94040","650-210-9488","www.andersenbabery.com","er40l6k8M0","Grain D'or Bakery Cafe","37.3796895","-122.0718364"
+"VIDE1yygPK","04/08/2013 18:15:46","04/08/2013 18:16:38","3075 Lawrence Expy
+Santa Clara Ca 95051","408-773-1111","www.ipargolfacademy.com","dmTUzt6dmM","i Par Golf Academy","37.3767934","-121.9953738"
+"SlDo2hmy10","04/08/2013 18:38:41","04/08/2013 18:39:25","1314 Saratoga Ave
+San Jose Ca 95129","408-244-0199","","dmTUzt6dmM","Jenny Cleaners","37.3006768","-121.9805279"
+"XqW2JyQ2e6","04/08/2013 18:47:00","04/08/2013 18:47:39","5175 Moorpark Ave. Ste#3
+San Jose, CA 95129","408-334-8984","","dmTUzt6dmM","Moorpark Cleaners","37.309809","-121.994916"
+"5LdBIouLuD","04/08/2013 18:56:19","04/08/2013 18:57:11","375 Saratoga Ave
+Ste K
+San Jose, CA 95129","408-296-6441","","8AZk438nSv","DD Beauty Salon","37.3214558","-121.9720373"
+"bvPdKN9ylJ","04/08/2013 19:05:59","04/08/2013 19:06:40","1709 W. San Carlos St.
+San Jose, CA 95128","408-688-6273","","8AZk438nSv","99 Foot SPA","37.3235178","-121.9218703"
+"EhNIIXU4XU","04/09/2013 23:23:15","04/09/2013 23:24:16","3056 El Camino Real Santa Clara, CA 95051","408-890-8063","","8AZk438nSv","Diamond Beauty Skin Care","37.3521161","-121.9818262"
+"1dHwyDLbzX","04/10/2013 00:01:23","04/10/2013 05:56:46","3069 Lawrence Expy Santa Clara, CA 95051","408-830-0200","","dmTUzt6dmM","Pain & Allergy Specialist Acupunture & Herb","37.3660575","-121.9959342"
+"xnB8XDUwHk","04/10/2013 00:35:43","04/10/2013 00:36:43","1712 Berryessa Rd., Ste10 San Jose, CA 95133","408-929-3188","www.hawaiianbarbecue.com","er40l6k8M0","L&L Hawaiian Barbecue","37.3732333","-121.8730027"
+"xfp9sE7gAL","04/10/2013 00:55:09","04/10/2013 00:55:56","1698 Hostetter Rd Ste D San Jose, CA 95131","408-441-8168","","er40l6k8M0","ASJ Restaurant","37.3870492","-121.8831544"
+"JfgtZzy0HO","04/10/2013 01:13:14","04/10/2013 01:14:05","1755 W San Carlos St San Jose, CA 95128","408-217-2940","","zn2nLkxdqN","San Carlos Fresh Foods & Groceries","37.3235084","-121.9236314"
+"rhwMTy0Ru1","04/10/2013 01:39:24","04/10/2013 01:43:34","1698 Hostetter Rd San Jose, CA 95131","408-453-5566","","er40l6k8M0","Hello Desserts!","37.3870492","-121.8831544"
+"T1MiAKsf0T","04/10/2013 01:58:27","04/10/2013 01:59:02","1160 North Capital Ave. San Jose Ca 95132","408-258-5615","","er40l6k8M0","Ruby Frozen Yogurt & Smoothies","37.3858649","-121.8596123"
+"VeHnXIpuC9","04/10/2013 02:59:47","04/10/2013 05:57:14","1688 Hostetter Road Ste C San Jose, CA 95131","408-573-8699","www.happiness_cafe.com","er40l6k8M0","Happiness Cafe","37.3876185","-121.884055"
+"d3Pmgc6znD","04/10/2013 03:49:52","04/10/2013 03:50:50","4546 El Camino Real Los Altos, CA 94022","650-941-3600","","er40l6k8M0","Oregano's Wood-Fired Pizza","37.400651","-122.115173"
+"0T7iD6kXLe","04/10/2013 05:14:57","04/10/2013 05:15:38","1350-6 Grant Rd
+Mountain View, CA 94040","408-838-4962","","er40l6k8M0","Sushi 85","37.3768748","-122.0763739"
+"DPbl3lNnuG","04/10/2013 05:27:48","04/10/2013 05:28:22","2668 Monterey Rd
+Ste160
+San Jose, CA 95111","408-771-4272","http://www.seattlesbest.com","er40l6k8M0","Seattle's Best Coffee","37.2955154","-121.8528"
+"G8Q3bRJ8gL","04/10/2013 05:42:41","04/10/2013 05:43:34","1701 Lundy Ave
+#160
+San Jose, CA 95131","408-573-8208","","er40l6k8M0","Cafe 97","37.387543","-121.88727"
+"qAtNByWsnl","04/10/2013 18:00:13","04/10/2013 18:01:04","1715 Berryessa Rd
+San Jose Ca 95133","408-259-0403","","zn2nLkxdqN","Berryessa Chevron Extra Mile Food Store","37.374429","-121.873049"
+"syPUGNM7zm","04/10/2013 18:09:36","04/10/2013 18:12:20","14392 Union Ave
+San Jose, CA 95124","408-369-9078","","er40l6k8M0","Heartbeat Cafe","37.2610863","-121.9311102"
+"6TbTk5h0EE","04/10/2013 18:20:23","04/10/2013 18:26:36","1727 Berryessa Rd
+Ste A
+San Jose, CA 95133","408-251-7000","","er40l6k8M0","Coco Coffee Milk Tea & Snacks","37.3746704","-121.8724843"
+"ufHSi1zosK","04/15/2013 04:05:51","04/15/2013 04:07:11","2800 Benton St. Santa Clara, CA 95057","408-246-0517","","er40l6k8M0","Seven-Eleven ","37.346206","-121.978096"
+"21dmQbEVNy","04/15/2013 04:18:25","04/15/2013 04:19:08","3378 Monterey Rd. San Jose, CA 95111","408-225-4381","","er40l6k8M0","Southern Kitchen Coffee Shop","37.284495","-121.8417097"
+"XojFeyrADp","04/15/2013 04:26:39","04/15/2013 04:27:13","2652 Alum Rock Ave. Ste F San Jose, CA 95116","408-251-9888","","er40l6k8M0","Coco Ice Cream","37.361516","-121.836152"
+"iSbHOWllBD","04/15/2013 04:31:30","04/15/2013 04:32:03","1741-B Berryessa Rd. San Jose, CA 95133","408-254-1740","","er40l6k8M0","Hung Vuong Tofu and Vegetarian","37.374621","-121.8724746"
+"7WyENuDgIu","04/16/2013 05:15:55","04/16/2013 05:37:37","1040 Grant Rd. Ste 160 Mountain View, CA 94040","650-988-0279","","er40l6k8M0","The Better Bagel","37.3795936","-122.0750531"
+"uwsGC3ACR4","04/16/2013 05:56:34","04/16/2013 20:12:00","185 Castro St. Mountain View, CA 94041","650-625-8155","","er40l6k8M0","Ephesus","37.3942856","-122.0786549"
+"3NNRPJ349B","04/17/2013 18:29:31","04/17/2013 18:30:46","372 Barber Lane Milpitas, CA 95035","408-428-0880","","er40l6k8M0","Sweetheart Cafe","37.4222849","-121.9182433"
+"lC1HmRVbhA","04/17/2013 19:01:13","04/17/2013 19:03:12","3077 El Camino Real Santa Clara, CA 95051","408-984-6601","","er40l6k8M0","Real Ice Cream, Inc.","37.3525705","-121.982485"
+"ssgybOF7zi","04/17/2013 19:07:52","04/17/2013 19:08:25","939 El Camino Real Sunnyvale, CA 94087","408-984-6601","","er40l6k8M0","Real Ice Cream, Inc.","37.3747711","-122.0589011"
+"gS1e7NymJh","04/19/2013 18:25:27","04/22/2013 20:05:31","1312 Saratoga Ave. San Jose, CA 95129","408-682-0777","","er40l6k8M0","Kyusu Burrnese Cuisine","37.3006733","-121.9817361"
+"Bhc02NKbMk","04/22/2013 20:20:51","04/23/2013 06:44:20","570 N. Shoreline Blvd Mountain View, CA 94043","650-988-9998","www.alluredentalcenter.com","dmTUzt6dmM","Allure Dental Center","37.402947","-122.079037"
+"mDlau0UJiG","04/22/2013 20:28:53","04/23/2013 07:22:04","1679 Hollenback Ave. Sunnyvale Ca 94087","408-732-7673","rosecart.com","dmTUzt6dmM","Rose Cart Florist","37.3384538","-122.041513"
+"2vgbYNnrGS","04/23/2013 07:00:54","04/23/2013 07:02:17","1290 S. Bascom Ave. San Jose, CA 95128","408-995-6666","pizzaexpressbascom.com","er40l6k8M0","Pizza Express","37.301777","-121.931254"
+"bU9SrivmLE","04/23/2013 07:12:04","04/23/2013 07:12:41","12888 Saratoga Rd. Saratoga Ca 95070","408-867-9028","","er40l6k8M0","Togo's","37.2811431","-122.002868"
+"0U2qlBXOPD","04/23/2013 07:22:39","04/23/2013 07:30:40","225 N. White Rd. San Jose, CA 95127","408-288-8007","rosecart.net","dmTUzt6dmM","Rose Cart of San Jose","37.372878","-121.834248"
+"VsPIfVWGna","04/23/2013 07:37:58","04/23/2013 07:38:47","19672 Stevens Creek Blvd Cupertino, CA 95014","408-255-2170","www.olarnthai.com","er40l6k8M0","Olarn Thai Cuisine","37.3226823","-122.0171412"
+"b2zEAKA86M","04/23/2013 07:48:42","04/23/2013 07:49:50","4060 Monterey Rd. San Jose, CA 95111","408-281-9060","leesandwiches.com","er40l6k8M0","Lee's Sandwiches","37.2787636","-121.8358598"
+"qmB4l85l2l","04/23/2013 07:58:33","04/23/2013 07:59:18","971 N. San Antonio Rd. Los Altos, CA 94022","650-948-9865","www.estrellitarest.com","er40l6k8M0","Estrellita Restaurant","37.399788","-122.1141544"
+"w53VeleVJW","04/23/2013 08:05:41","04/23/2013 08:06:28","3848 Monterey Rd. San Jose, CA 95111","408-629-1807","","er40l6k8M0","El-Rancho Steak House","37.2818857","-121.8390263"
+"jhM6x9tqaB","04/23/2013 17:53:26","04/23/2013 17:53:59","2538 Berryessa Rd. San Jose, CA 95132","408-937-8888","","er40l6k8M0","Phu Yen Vietnamese Sandwiches & Food Togo","37.3874396","-121.8594422"
+"aYpXOhP2H8","04/23/2013 18:03:46","04/23/2013 18:04:56","1145 S. Deanza Blvd
+San Jose, CA 95129","408-446-4996","","8AZk438nSv","Longevity Foot Spa","37.3268591","-122.0150134"
+"WjPEZDNDhL","04/23/2013 18:15:29","04/24/2013 19:14:38","1049A El Monte Ave. Mountain View, CA 94040","650-691-1077","","dmTUzt6dmM","Blue Bird Cleaners","37.281112","-122.031811"
+"kppfpvaHtg","04/24/2013 19:21:40","04/24/2013 19:22:24","14416 Union Ave San Jose, CA 95124","408-377-4932","","dmTUzt6dmM","Plaza Shoe Repair","37.2637711","-122.0378223"
+"z1li7eNNJO","04/26/2013 00:42:44","04/26/2013 00:44:14","3077 El Camino Real Santa Clara, CA 95051","408-984-6601","www.bangalorecafe.net","er40l6k8M0","Bangalore Cafe","37.352338","-122.0110397"
+"QwRbyoRSmt","04/24/2013 20:01:11","04/29/2013 17:55:09","14414 Union Ave. San Jose, CA 95124","408-337-0412","www.cambrianplazecleaners.com","dmTUzt6dmM","Cambrian Plaza Dry Cleaners Inc","37.2603502","-121.9312665"

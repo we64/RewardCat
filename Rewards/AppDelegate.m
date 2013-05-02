@@ -13,7 +13,6 @@
 #import "PointRewardsViewController.h"
 #import "AccountViewController.h"
 #import "DiscountsViewController.h"
-#import "Flurry.h"
 #import "GameUtils.h"
 #import "LocationManager.h"
 #import "AdsUtils.h"
@@ -21,6 +20,7 @@
 #import <FacebookSDK/FacebookSDK.h>
 
 #define kAlertViewOne 1
+#define kAlertViewBonusCoins 2
 
 @implementation AppDelegate
 
@@ -38,35 +38,66 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Parse Prod
-    [Parse setApplicationId:@"ZU1qV0453AatIvaV2lYD1DgwvLZ1UPHA8zhQ9mSD" clientKey:@"VupiJigC5X3DwpavzcQNK8IKDlEL03IE9UwHgUcV"];
+    //[Parse setApplicationId:@"ZU1qV0453AatIvaV2lYD1DgwvLZ1UPHA8zhQ9mSD" clientKey:@"VupiJigC5X3DwpavzcQNK8IKDlEL03IE9UwHgUcV"];
     
     // Parse Dev
-    //[Parse setApplicationId:@"Lw85NFZvjs7L2yGzSpdUDeimKKpIv1xKdpayewza" clientKey:@"MOhIoElZG3UDhhdJAfE81BJf3tNB5eiUutBUtq4m"];
-    
-    // Flurry Prod
-    [Flurry startSession:@"XTMKDSXVZY8RDR5K3SV3"];
-    
-    // Flurry Dev
-    //[Flurry startSession:@"7J7DYNJS748WZG9R5VW7"];
-    
+    [Parse setApplicationId:@"Lw85NFZvjs7L2yGzSpdUDeimKKpIv1xKdpayewza" clientKey:@"MOhIoElZG3UDhhdJAfE81BJf3tNB5eiUutBUtq4m"];
+
     [PFFacebookUtils initializeFacebook];
-    NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
-    [Flurry setSessionReportsOnPauseEnabled:YES];
-    
-    [Flurry logEvent:@"action_app_launch"];
 
     // get all vendor objects and store in cache
     if ([self checkConnectivity]) {
         [PFQuery clearAllCachedResults];
     }
 
+    // Handle launching from a notification
+    UILocalNotification *localNotif = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+    if (localNotif) {
+        [self showNotificationView:localNotif];
+    }
+
     return YES;
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application
-{
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+- (void)application:(UIApplication *)app didReceiveLocalNotification:(UILocalNotification *)notification {
+    [self showNotificationView:notification];
+}
+
+- (void)showNotificationView:(UILocalNotification *)notification {
+    if (notification.userInfo) {
+        NSNumber *coins = [notification.userInfo objectForKey:@"coinReward"];
+        
+        // save
+        [[PFUser currentUser] incrementKey:@"rewardcatPoints" byAmount:coins];
+        PFObject *transaction = [PFObject objectWithClassName:@"Transaction"];
+        [transaction setObject:@"Bonus Coins" forKey:@"activityType"];
+        [transaction setObject:coins forKey:@"rewardcatPointsDelta"];
+        [transaction setObject:[PFUser currentUser] forKey:@"user"];
+        NSArray *objectsToBeSaved = [NSArray arrayWithObjects:transaction, [PFUser currentUser], nil];
+        
+        if ([self checkConnectivity]) {
+            // there is connection, save
+            [PFObject saveAllInBackground:objectsToBeSaved block:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
+                    [GameUtils refreshCurrentUser];
+                } else {
+                    // TODO: handle error somehow
+                }
+            }];
+        } else {
+            [transaction saveEventually];
+            [[PFUser currentUser] saveEventually];
+        }
+
+        NSString *message =[NSString stringWithFormat:@"You have received %@ coins, go to the Coins tab and see what you can get now!", coins];
+        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"Congradulations"
+                                                             message:message
+                                                            delegate:self
+                                                   cancelButtonTitle:@"Cancel"
+                                                   otherButtonTitles:@"Go Now", nil] autorelease];
+        alertView.tag = kAlertViewBonusCoins;
+        [alertView show];
+    }
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -133,12 +164,44 @@
     
     [[UIApplication sharedApplication] scheduleLocalNotification:notif2];
     [notif2 release];
+    
+    // 7 day notification
+    UILocalNotification *notif3 = [[UILocalNotification alloc] init];
+
+    // add 7 days
+    NSDateComponents *dateComponents3 = [calendar components:( NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit )
+                                                   fromDate:[[NSDate date] dateByAddingTimeInterval:60*60*168]];
+    // 11:30 every morning
+    [dateComponents3 setHour:11];
+    [dateComponents3 setMinute:30];
+    [dateComponents3 setSecond:0];
+    
+    notif3.fireDate = [calendar dateFromComponents:dateComponents3];
+    notif3.timeZone = [NSTimeZone defaultTimeZone];
+
+    message = @"Checkout RewardCat and receive 2 free Coins now!";
+
+    notif3.alertBody = message;
+    notif3.alertAction = @"Get Rewards";
+    notif3.soundName = UILocalNotificationDefaultSoundName;
+    notif3.applicationIconBadgeNumber = 3;
+
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:2] forKey:@"coinReward"];
+    notif3.userInfo = infoDict;
+
+    [[UIApplication sharedApplication] scheduleLocalNotification:notif3];
+    [notif3 release];
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    [Flurry logEvent:@"action_app_enter_from_background"];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -164,8 +227,6 @@
 
     // check connectivity
     if ([self checkConnectivity]) {
-        [Flurry logEvent:@"connectivity_on_app_start_yes"];
-        
         // check to see if user needs to be logged in
         [self login];
         
@@ -177,8 +238,10 @@
 
         // setup all tab views
         [self setupAllViews];
+        
+        // check to see if new update is available
+        [GameUtils checkIfNewVersionAvailable];
     } else {
-        [Flurry logEvent:@"connectivity_on_app_start_no"];
         [self.noNetworkAlertView show];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"disableCamera" object:nil];
     }
@@ -194,13 +257,6 @@
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"dismissTutorialView" object:nil];
     return [PFFacebookUtils handleOpenURL:url];
-}
-
-void uncaughtExceptionHandler(NSException *exception)
-{
-    [Flurry logError:@"Uncaught"
-             message:@"Crash!"
-           exception:exception];
 }
 
 - (void)showFacebookPrompt {
@@ -278,6 +334,10 @@ void uncaughtExceptionHandler(NSException *exception)
     if (alertView.tag == kAlertViewOne) {
         [PFFacebookUtils linkUser:[PFUser currentUser]
                       permissions:[GameUtils instance].facebookPermissions];
+    } else if (alertView.tag == kAlertViewBonusCoins) {
+        if (buttonIndex == 1) {
+            [self.tabBarController setSelectedIndex:2];
+        }
     } else {
         if ([self checkConnectivity]) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"enableCamera" object:nil];
@@ -314,8 +374,7 @@ void uncaughtExceptionHandler(NSException *exception)
         viewController4.tabBarController = self.tabBarController;
         viewController5.tabBarController = self.tabBarController;
         self.window.rootViewController = self.tabBarController;
-        
-        [Flurry logAllPageViews:self.tabBarController];
+
         [self.window makeKeyAndVisible];
         
         if ([GameUtils instance].firstTimeUser) {

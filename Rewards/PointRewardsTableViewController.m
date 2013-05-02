@@ -40,7 +40,7 @@
         return self;
     }
     self.title = @"Coin Rewards";
-    self.className = @"PointReward";
+    self.parseClassName = @"PointReward";
     self.objectsPerPage = 20;
     self.loadingViewEnabled = NO;
     self.shouldRefresh = NO;
@@ -150,12 +150,25 @@
     [super objectsDidLoad:error];
     [GameUtils hideProgressing];
     self.shouldRefresh = NO;
+    if ([GameUtils instance].nextGoToPointsRewardId) {
+        for (int i = 0; i < self.objects.count; i++) {
+            PFObject *object = [self.objects objectAtIndex:i];
+            if ([object.objectId isEqualToString:[GameUtils instance].nextGoToPointsRewardId]) {
+                DetailViewController *detailViewController = [[[DetailViewController alloc] initWithReward:object] autorelease];
+                [self.navigationController pushViewController:detailViewController animated:YES];
+                [GameUtils instance].nextGoToPointsRewardId = nil;
+            }
+        }
+        if ([GameUtils instance].nextGoToPointsRewardId) {
+            [self loadNextPage];
+        }
+    }
 }
 
 #pragma mark - Table view data source
 
 - (PFQuery *)queryForTable {
-    PFQuery *query = [PFQuery queryWithClassName:self.className];
+    PFQuery *query = [PFQuery queryWithClassName:self.parseClassName];
     
     // If Pull To Refresh is enabled, query against the network by default.
     if (self.pullToRefreshEnabled) {
@@ -221,7 +234,7 @@
             break;
         }
         PFObject *object = [self.objects objectAtIndex:indexInTable];
-        if (![object respondsToSelector:@selector(className)] || ![object.className isEqualToString:@"PointReward"]) {
+        if (![object respondsToSelector:@selector(className)] || ![object.parseClassName isEqualToString:@"PointReward"]) {
             return [super tableView:tableView cellForRowAtIndexPath:indexPath];
         }
         [objects addObject:object];
@@ -237,7 +250,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForNextPageAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSLog(@"next page load more path %d", indexPath.row);
     static NSString *CellIdentifier = @"LoadMoreTableViewCell";
     
     LoadMoreTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -245,6 +257,8 @@
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
         cell = [nib objectAtIndex:0];
     }
+    
+    [self loadNextPage];
     return cell;
 }
 
@@ -254,7 +268,7 @@
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
     } else if (indexPath.row == [self numberOfObjectRows]) {
         // hack to get next page cell the correct height on 4.3 at least
-        return 50.0f;
+        return 35.0f;
     } else {
         return self.cellHeight;
     }
@@ -287,6 +301,7 @@
     return self.headerHeight;
 }
 
+/*
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0 && indexPath.row >= [self numberOfObjectRows]) {
         int newRow = self.objects.count;
@@ -304,5 +319,5 @@
         [super tableView:tableView didDeselectRowAtIndexPath:indexPath];
     }
 }
-
+*/
 @end

@@ -23,7 +23,7 @@
         return self;
     }
     self.title = @"History";
-    self.className = @"Transaction";
+    self.parseClassName = @"Transaction";
     self.objectsPerPage = 15;
     self.loadingViewEnabled = YES;
     self.tableView.tableHeaderView = nil;
@@ -64,7 +64,7 @@
 #pragma mark - Table view data source
 
 - (PFQuery *)queryForTable {
-    PFQuery *query = [PFQuery queryWithClassName:self.className];
+    PFQuery *query = [PFQuery queryWithClassName:self.parseClassName];
     
     // If Pull To Refresh is enabled, query against the network by default.
     if (self.pullToRefreshEnabled) {
@@ -109,6 +109,8 @@
     } else if ([[object objectForKey:@"activityType"] isEqualToString:@"Facebook Invite Friends"]) {
         message = [NSString stringWithFormat:@"Thanks for inviting %@ friends! Go to the Coins tab to start redeeming your rewards!",
                    [object objectForKey:@"rewardcatPointsDelta"]];
+    } else if ([[object objectForKey:@"activityType"] isEqualToString:@"Bonus Coins"]) {
+        message = [NSString stringWithFormat:@"Thanks for using RewardCat! Go to the Coins tab to start redeeming your rewards!"];
     } else {
         message = [NSString stringWithFormat:@"Thanks for signing up! Go to the Coins tab to start redeeming your rewards!"];
     }

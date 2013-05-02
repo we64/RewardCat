@@ -18,10 +18,6 @@
     return self;
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-}
-
 - (IBAction)showShare:(id)sender {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"sendShareTextMessage" object:nil];
 }

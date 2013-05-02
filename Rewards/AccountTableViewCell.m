@@ -10,6 +10,7 @@
 #import "GameUtils.h"
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
+#import "Logger.h"
 
 @interface AccountTableViewCell ()
 
@@ -49,25 +50,27 @@
     switch (self.type) {
         case FacebookLike:
             [self.loggedInAccountViewController likeButtonClicked];
+            [Logger.instance logButtonClick:@"Like on Facebook" pageName:@"Account"];
             break;
         case Support:
             [self.loggedInAccountViewController supportButtonClicked];
+            [Logger.instance logButtonClick:@"Contact Support" pageName:@"Account"];
             break;
         case Rate:
             [self.loggedInAccountViewController rateButtonClicked];
+            [Logger.instance logButtonClick:@"Rate On App Store" pageName:@"Account"];
             break;
         case History:
             [self.loggedInAccountViewController historyButtonClicked];
+            [Logger.instance logButtonClick:@"History" pageName:@"Account"];
             break;
         case Help:
             [GameUtils showTutorialWithFacebook:NO];
+            [Logger.instance logButtonClick:@"Help" pageName:@"Account"];
             break;
         case Invite:
             [GameUtils showFacebookDialog];
-            PFObject *logger = [PFObject objectWithClassName:@"Log"];
-            [logger setObject:[PFUser currentUser] forKey:@"user"];
-            [logger setObject:@"Clicked Facebook invite button on account tab" forKey:@"activityDescription"];
-            [logger saveEventually];
+            [Logger.instance logButtonClick:@"Facebook Invite" pageName:@"Account"];
             break;
         default:
             self.titleLabel.text = @"";

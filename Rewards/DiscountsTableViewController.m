@@ -15,6 +15,7 @@
 #import "AdsUtils.h"
 #import <QuartzCore/QuartzCore.h>
 #import "CategoryViewController.h"
+#import "Logger.h"
 
 @interface DiscountsTableViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -34,7 +35,7 @@
         return self;
     }
     self.title = @"Discounts";
-    self.className = @"Discount";
+    self.parseClassName = @"Discount";
     self.objectsPerPage = 20;
     self.loadingViewEnabled = YES;
     self.shouldRefresh = NO;
@@ -130,7 +131,7 @@
 #pragma mark - Table view data source
 
 - (PFQuery *)queryForTable {
-    PFQuery *query = [PFQuery queryWithClassName:self.className];
+    PFQuery *query = [PFQuery queryWithClassName:self.parseClassName];
     PFQuery *subQuery = [PFQuery queryWithClassName:@"Vendor"];
     
     // If Pull To Refresh is enabled, query against the network by default.
@@ -180,10 +181,7 @@
         cell.discountsTableViewController = self;
         [cell updateAdForHeight:checkingForHeight];
         if (!checkingForHeight) {
-            PFObject *logger = [PFObject objectWithClassName:@"Log"];
-            [logger setObject:[PFUser currentUser] forKey:@"user"];
-            [logger setObject:cell.item forKey:@"discount"];
-            [logger saveEventually];
+            [Logger.instance logAdImpression:cell.item];
             NSLog(@"Ads showing");
         }
         return cell;
@@ -194,7 +192,7 @@
     }
 
     PFObject *object = [self.objects objectAtIndex:indexPath.row];
-    if (![object respondsToSelector:@selector(className)] || ![object.className isEqualToString:@"Discount"]) {
+    if (![object respondsToSelector:@selector(className)] || ![object.parseClassName isEqualToString:@"Discount"]) {
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
     }
     
@@ -217,6 +215,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForNextPageAtIndexPath:(NSIndexPath *)indexPath {
+
     static NSString *CellIdentifier = @"LoadMoreTableViewCell";
     
     LoadMoreTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -224,6 +223,8 @@
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
         cell = [nib objectAtIndex:0];
     }
+    
+    [self loadNextPage];
     return cell;
 }
 
@@ -246,7 +247,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row >= self.objects.count && indexPath.section > 0) {
         // load more cell height
-        return 50.0f;
+        return 35.0f;
     } else if (indexPath.row >= self.objects.count && indexPath.section <= 0) {
         // if only ads shows up, make sure it is 80 in size
         return 80.0f;

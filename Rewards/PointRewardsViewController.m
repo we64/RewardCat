@@ -9,6 +9,7 @@
 #import "PointRewardsViewController.h"
 #import "PointRewardsTableViewController.h"
 #import "CustomNavigationController.h"
+#import "Logger.h"
 
 @interface PointRewardsViewController ()
 
@@ -47,15 +48,21 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (self.isViewLoaded && self.view.window) {
+        // this is visible
+        [Logger.instance logPageImpression:@"Coin"];
+    }
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [Flurry logEvent:@"page_view_tab_coins"];
 }
 
 - (void)didReceiveMemoryWarning

@@ -8,8 +8,8 @@
 
 #import "SignUpViewController.h"
 #import <QuartzCore/QuartzCore.h>
-#import "Flurry.h"
 #import "GameUtils.h"
+#import "Logger.h"
 
 @interface SignUpViewController ()
 
@@ -119,9 +119,12 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [Flurry logEvent:@"page_view_signup"];
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (self.isViewLoaded && self.view.window) {
+        // this is visible
+        [Logger.instance logPageImpression:@"Sign Up"];
+    }
 }
 
 - (void)dealloc {

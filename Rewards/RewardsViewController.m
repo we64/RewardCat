@@ -10,6 +10,7 @@
 #import "RewardsTableViewController.h"
 #import "CustomNavigationController.h"
 #import "GameUtils.h"
+#import "Logger.h"
 
 @interface RewardsViewController ()
 
@@ -43,15 +44,21 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (self.isViewLoaded && self.view.window) {
+        // this is visible
+        [Logger.instance logPageImpression:@"Loyalty"];
+    }
+}
+
+- (void)viewDidLoad {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [Flurry logEvent:@"page_view_tab_rewards"];
 }
 
 - (void)dealloc {

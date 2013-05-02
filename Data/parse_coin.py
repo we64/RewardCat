@@ -1,7 +1,7 @@
 import json
 import dateutil.parser
 from pprint import pprint
-json_data = open('/Users/changliu/Downloads/backup_mar_30_2013/PointReward.json')
+json_data = open('/Users/changliu/Downloads/parse_raw_source/PointReward.json')
 
 data = json.load(json_data)
 json_data.close()
@@ -21,7 +21,10 @@ for trans in transArray:
   descriptionLong = trans["description"]["longDescription"]
   target = trans["target"]
   redeemTimeLength = trans["redeemTimeLength"]
-  expireDate = dateutil.parser.parse(trans["expireDate"]["iso"])
+  if trans.get("expireDate"):
+    expireDate = dateutil.parser.parse(trans["expireDate"]["iso"])
+  else:
+    expireDate = dateutil.parser.parse("1999-01-01T15:59:00.000Z")
 
   print '"' + objectId + '","' + createdAt.strftime('%m/%d/%Y %H:%M:%S') + \
         '","' + updatedAt.strftime('%m/%d/%Y %H:%M:%S') + '","' + \

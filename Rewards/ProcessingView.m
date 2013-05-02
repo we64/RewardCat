@@ -10,6 +10,8 @@
 
 @implementation ProcessingView
 
+@synthesize imageView;
+
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -17,6 +19,11 @@
         // Initialization code
     }
     return self;
+}
+
+- (void)dealloc {
+    [imageView release], imageView = nil;
+    [super dealloc];
 }
 
 /*

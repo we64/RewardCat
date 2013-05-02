@@ -10,4 +10,6 @@
 
 @interface ProcessingView : UIView
 
+@property (nonatomic, retain) IBOutlet UIImageView *imageView;
+
 @end
